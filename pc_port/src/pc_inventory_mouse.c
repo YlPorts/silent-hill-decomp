@@ -26,6 +26,7 @@
 #include "bodyprog/bodyprog.h"
 #include "bodyprog/item_screens.h"
 #include "bodyprog/items.h"
+#include "bodyprog/sound/sound_system.h"
 #include "bodyprog/sys/joy.h"
 #include "pc_config.h"
 #include "pc_inventory_mouse.h"
