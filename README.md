@@ -27,6 +27,14 @@ The port is playable start to finish — the full game can be completed, and non
 
 Nightly builds: https://github.com/SlickAmogus/silent-hill-pc-nightly
 
+## Android port (experimental)
+
+An ARM64 Android native-port foundation lives in [`pc_port/android`](pc_port/android/README.md).
+It uses SDL2, OpenGL ES 3, OpenAL Soft, Android's document picker for a user-owned
+disc dump, and an on-screen multi-touch controller. No copyrighted game assets are
+included. See [`docs/ANDROID_PORT_STATUS.md`](docs/ANDROID_PORT_STATUS.md) for the
+current validation status and remaining work.
+
 ## Known Issues / Bugs
 
 The bigger items still being worked on (roughly by priority, no strict order):

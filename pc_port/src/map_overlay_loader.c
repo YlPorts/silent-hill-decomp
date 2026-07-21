@@ -11,10 +11,19 @@
 #include <string.h>
 
 #ifdef _WIN32
+#define DLL_PREFIX "maps/"
 #define DLL_EXT ".dll"
 #elif defined(__APPLE__)
+#define DLL_PREFIX "maps/"
 #define DLL_EXT ".dylib"
+#elif defined(__ANDROID__)
+/* Android packages native libraries as lib<name>.so in nativeLibraryDir.
+ * Passing a bare soname lets the platform linker find the extracted APK
+ * library without relying on an executable app-private data directory. */
+#define DLL_PREFIX "lib"
+#define DLL_EXT ".so"
 #else
+#define DLL_PREFIX "maps/"
 #define DLL_EXT ".so"
 #endif
 
@@ -48,8 +57,8 @@ s_MapOverlayHdr* MapOverlay_Load(e_MapIdx id)
         return &g_MapOverlayHeader_map0_s00;
     }
 
-    /* Build DLL path: maps/<mapname>.dll */
-    snprintf(dllPath, sizeof(dllPath), "maps/%s%s", mapName, DLL_EXT);
+    /* Desktop: maps/<mapname>.(dll|so). Android: lib<mapname>.so. */
+    snprintf(dllPath, sizeof(dllPath), "%s%s%s", DLL_PREFIX, mapName, DLL_EXT);
 
     /* Build symbol name: g_MapOverlayHeader_<mapname> */
     snprintf(symbolName, sizeof(symbolName), "g_MapOverlayHeader_%s", mapName);

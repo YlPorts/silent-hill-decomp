@@ -13,3 +13,15 @@
 [submodule "pc_port/PsyCross"]
 	path = pc_port/PsyCross
 	url = https://github.com/SlickAmogus/PsyCross.git
+[submodule "pc_port/android/vendor/SDL"]
+	path = pc_port/android/vendor/SDL
+	url = https://github.com/libsdl-org/SDL.git
+	branch = SDL2
+[submodule "pc_port/android/vendor/openal-soft"]
+	path = pc_port/android/vendor/openal-soft
+	url = https://github.com/kcat/openal-soft.git
+	branch = 1.25.2
+[submodule "pc_port/android/vendor/libjpeg-turbo"]
+	path = pc_port/android/vendor/libjpeg-turbo
+	url = https://github.com/libjpeg-turbo/libjpeg-turbo.git
+	branch = 3.1.4.1

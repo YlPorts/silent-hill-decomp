@@ -1,0 +1,16 @@
+if(TARGET SDL2::SDL2)
+    set(SDL2_FOUND TRUE)
+    set(SDL2_LIBRARIES SDL2::SDL2)
+    get_target_property(SDL2_INCLUDE_DIRS SDL2::SDL2 INTERFACE_INCLUDE_DIRECTORIES)
+elseif(TARGET SDL2)
+    add_library(SDL2::SDL2 ALIAS SDL2)
+    set(SDL2_FOUND TRUE)
+    set(SDL2_LIBRARIES SDL2::SDL2)
+    get_target_property(SDL2_INCLUDE_DIRS SDL2 INTERFACE_INCLUDE_DIRECTORIES)
+else()
+    set(SDL2_FOUND FALSE)
+endif()
+
+include(FindPackageHandleStandardArgs)
+find_package_handle_standard_args(SDL2 REQUIRED_VARS SDL2_FOUND)
+

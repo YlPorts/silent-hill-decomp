@@ -389,6 +389,8 @@ void Pc_CharaGlobal_Open(void)
     dll = DllLoader_Open("maps/chara_global.dll");
 #elif defined(__APPLE__)
     dll = DllLoader_Open("maps/chara_global.dylib");
+#elif defined(__ANDROID__)
+    dll = DllLoader_Open("libchara_global.so");
 #else
     dll = DllLoader_Open("maps/chara_global.so");
 #endif
