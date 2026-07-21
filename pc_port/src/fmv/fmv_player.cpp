@@ -20,7 +20,9 @@
 #include <PsyX/PsyX_public.h>
 #include <PsyX/PsyX_render.h>
 #include <PsyX/util/timer.h>
+#ifndef __ANDROID__
 #include <PsyX/common/glad.h>
+#endif
 
 #include <psx/libgpu.h>
 #include <psx/libetc.h>

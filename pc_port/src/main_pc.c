@@ -299,4 +299,910 @@ extern void Sh_InstallCrashFilter(void);
 static char g_GameDataPath[512] = "./gamedata";
 
 /* Android applications cannot rely on the process working directory and do
- * not have unrestricted access to shared storage. The Java ïÞ¼¶‰žËkºwµçl(€€€•áÑ•É¸Ù½¥MÁ±¥Ñ!•…‘¹¥µ%¹™½Í}%¹¥Ð¡Ù½¥¤ì(€€€MÁ±¥Ñ!•…‘¹¥µ%¹™½Í}%¹¥Ð ¤ì(€€€•áÑ•É¸Ù½¥I½µÁ•É¹¥µ%¹™½Í}%¹¥Ð¡Ù½¥¤ì(€€€I½µÁ•É¹¥µ%¹™½Í}%¹¥Ð ¤ì((€€€€¼¨	¥¹…Éäµ•áÑÉ…Ñ•‰…Ñ € ÈÀÈØ´ÀØ´ÄÀ¤è‰½ÍÍ•Ì€¬±…Ñ”µ…µ”…ÍÐÑ¡…ÐÝ•É”(€€€€€¨ÍÑ¥±°é•É¼µÍÑÕ‰Ì¸•¹•É…Ñ•‰äÁ}Á½ÉÐ½Ñ½½±Ì½•áÑÉ…Ñ}…¹¥µ}¥¹™½Ì¹Áä¸€¨¼(€€€•áÑ•É¸Ù½¥1½­•É•…‘	½‘å¹¥µ%¹™½Í}%¹¥Ð¡Ù½¥¤ì(€€€1½­•É•…‘	½‘å¹¥µ%¹™½Í}%¹¥Ð ¤ì(€€€•áÑ•É¸Ù½¥QÝ¥¹™••±•É¹¥µ%¹™½Í}%¹¥Ð¡Ù½¥¤ì(€€€QÝ¥¹™••±•É¹¥µ%¹™½Í}%¹¥Ð ¤ì(€€€•áÑ•É¸Ù½¥±½…ÑÍÑ¥¹•É¹¥µ%¹™½Í}%¹¥Ð¡Ù½¥¤ì(€€€±½…ÑÍÑ¥¹•É¹¥µ%¹™½Í}%¹¥Ð ¤ì(€€€•áÑ•É¸Ù½¥5½¹ÍÑ•Éå‰¥±¹¥µ%¹™½Í}%¹¥Ð¡Ù½¥¤ì(€€€5½¹ÍÑ•Éå‰¥±¹¥µ%¹™½Í}%¹¥Ð ¤ì(€€€•áÑ•É¸Ù½¥±…ÕÉ½Í¹¥µ%¹™½Í}%¹¥Ð¡Ù½¥¤ì(€€€±…ÕÉ½Í¹¥µ%¹™½Í}%¹¥Ð ¤ì(€€€•áÑ•É¸Ù½¥A…É…Í¥Ñ•¹¥µ%¹™½Í}%¹¥Ð¡Ù½¥¤ì(€€€A…É…Í¥Ñ•¹¥µ%¹™½Í}%¹¥Ð ¤ì(€€€•áÑ•É¸Ù½¥¡½ÍÑ½Ñ½É¹¥µ%¹™½Í}%¹¥Ð¡Ù½¥¤ì(€€€¡½ÍÑ½Ñ½É¹¥µ%¹™½Í}%¹¥Ð ¤ì(€€€•áÑ•É¸Ù½¥	±½½‘å%¹Õ‰…Ñ½É¹¥µ%¹™½Í}%¹¥Ð¡Ù½¥¤ì(€€€	±½½‘å%¹Õ‰…Ñ½É¹¥µ%¹™½Í}%¹¥Ð ¤ì(€€€•áÑ•É¸Ù½¥%¹Õ‰…Ñ½É¹¥µ%¹™½Í}%¹¥Ð¡Ù½¥¤ì(€€€%¹Õ‰…Ñ½É¹¥µ%¹™½Í}%¹¥Ð ¤ì(€€€•áÑ•É¸Ù½¥1¥ÑÑ±•%¹Õ‰ÕÍ¹¥µ%¹™½Í}%¹¥Ð¡Ù½¥¤ì(€€€1¥ÑÑ±•%¹Õ‰ÕÍ¹¥µ%¹™½Í}%¹¥Ð ¤ì(€€€•áÑ•É¸Ù½¥%¹Õ‰ÕÍ¹¥µ%¹™½Í}%¹¥Ð¡Ù½¥¤ì(€€€%¹Õ‰ÕÍ¹¥µ%¹™½Í}%¹¥Ð ¤ì(€€€•áÑ•É¸Ù½¥U¹­­½Ý¸ÈÍ¹¥µ%¹™½Í}%¹¥Ð¡Ù½¥¤ì(€€€U¹­­½Ý¸ÈÍ¹¥µ%¹™½Í}%¹¥Ð ¤ì((€€€•áÑ•É¸Ù½¥5…ÀÙLÀÑáÑÉ…¹¥µ%¹™½Í}%¹¥Ð¡Ù½¥¤ì(€€€5…ÀÙLÀÑáÑÉ…¹¥µ%¹™½Í}%¹¥Ð ¤ì((€€€€¼¨µ…ÀÝ}ÌÀÌ•¹‘¥¹œ5LÁ¡…Í”Á½¥¹Ñ•ÉÌè|àÀÁÈÌÁmÁ¡…Í•tÍ•±•ÑÌÝ¡¥ L(€€€€€¨‰Õ™™•È¡½±‘ÌÑ¡”…Ñ¥Ù”ÕÑÍ•¹”ÌÉ•™½Éµ…ÑÑ•5L¡•…‘•È¸]…Ì„é•É¼µÍÑÕˆ(€€€€€¨€¡9U10¤Ý¡¥ ™½É•Ñ¡”5LÉ•‘¥É•Ð½¹Ñ¼Ñ¡”Í¥¹±”±…Ñ•ÍÐ}µÍ!•…Á!•…‘•È°(€€€€€¨‘•Íå¹¥¹œÑ¡”µÕ±Ñ¤µÁ¡…Í”•¹‘¥¹œ¸M}	UI|¨…É”}AÍáI…´µÉ•±…Ñ¥Ù”Í¼Ñ¡¥Ì(€€€€€¨µÕÍÐÉÕ¸…™Ñ•ÈAÍá5•µ½Éå}%¹¥Ð€¡…‰½Ù”¤¸€¨¼(€€€ì(€€€€€€€•áÑ•É¸Ù½¥¨|àÀÁÈÌÁlÉtì(€€€€€€€|àÀÁÈÌÁlÁt€ôM}	UI|ÈÀì(€€€€€€€|àÀÁÈÌÁlÅt€ôM}	UI|Äàì(€€€ô((€€€€¼¨%¹¥Ñ¥…±¥é”½Ù•É±…äÁ½¥¹Ñ•ÉÌÑ¼•µÕ±…Ñ•AM`I4€¨¼(¥˜YIM%=9}%L¡)@À¤(€€€}=Ù±å¹…µ¥Œ€€ôAMa}H ÁàÀÀÁ	à¤ì(•±Í”(€€€}=Ù±å¹…µ¥Œ€€ôAMa}H ÁàÀÀÁäÔÜà¤ì(•¹‘¥˜(€€€}=Ù±	½‘åÁÉ½œ€ôAMa}H ÁàÀÀÀÈÑØÀ¤ì(€€€}•µ½}A±…å¥±•	Õ™™•ÉAÑÈ€ô€¡Í}•µ½É…µ•…Ñ„¨¥AMa}H ÁàÀÀÁÕÀÀ¤ì((€€€€¼¨-•å‰½…Éµ…ÁÁ¥¹œ¥ÌÍ•Ð‰äAÍåÉ½ÍÌ‘•™…Õ±ÑÌ¥¸AÍåa}%¹¥Ñ¥…±¥Í”è(€€€€€¨É½ÍÌõ°¥É±”õX°QÉ¥…¹±”õh°MÅÕ…É”õ`°MÑ…ÉÐõ¹Ñ•È°M•±•ÐõMÁ…”(€€€€€¨A…õÉÉ½Ü­•åÌ°0Äõ1M¡¥™Ð°HÄõIM¡¥™Ð°0Èõ1ÑÉ°°HÈõIÑÉ°€¨¼((€€€€¼¨I½ÕÑ”AÍåÉ½ÍÌ±½¥¹œ¥¹Ñ¼½ÕÈM¥±•¹Ñ!¥±°¹±½œ¡…¹‘±”€¡½ÈÍ¥±•¹”¥Ð(€€€€€¨Ý¡•¸•¹…‰±•}‘•‰Õ}±½œôÀ¤	=IAÍåa}%¹¥Ñ¥…±¥Í”°Í¼AÍåÉ½ÍÌ¹•Ù•È(€€€€€¨É•…Ñ•Ì¥ÑÌ½Ý¸€‰M¥±•¹Ð!¥±°¹±½œˆ…¹¹•Ù•È™±½Í•Ì½ÕÈ¡…¹‘±”…Ð(€€€€€¨Í¡ÕÑ‘½Ý¸€¡¥ÐÕÍ•Ñ¼°±•…Ù¥¹œ}M¡•‰Õ1½œ‘…¹±¥¹œ™½È…¹ä±½¥¹œ(€€€€€¨…™Ñ•ÈAÍåa}M¡ÕÑ‘½Ý¸¤¸€¨¼(€€€AÍåa}1½}M•ÑMÑÉ•…´¡}A½¹™¥œ¹•¹…‰±••‰Õ1½œ€ü}M¡•‰Õ1½œ€è9U10¤ì((€€€€¼¨5MµÕÍÐ‰”Í•Ð	=IAÍåa}%¹¥Ñ¥…±¥Í”ƒŠP¥Ð‘É¥Ù•ÌÑ¡”M0µÕ±Ñ¥Í…µÁ±”(€€€€€¨0…ÑÑÉ¥‰ÕÑ•Ì¡½Í•¸…Ð½¹Ñ•áÐµÉ•…Ñ¥½¸Ñ¥µ”€¡¥¹Í¥‘”I}%¹¥Ñ¥…±¥Í•I•¹‘•È¤¸(€€€€€¨%˜Ñ¡”‘É¥Ù•È…¸Ð¡½¹½È¥Ð°AÍåÉ½ÍÌÉ•ÑÉ¥•ÌÝ¥Ñ¡½ÕÐ5M…¹±•…ÉÌ(€€€€€¨}™}µÍ……M…µÁ±•Ì‰…¬Ñ¼€À¸€¨¼(€€€}™}µÍ……M…µÁ±•Ì€ô}A½¹™¥œ¹µÍ……M…µÁ±•Ìì(€€€M!}1= ‰5Mè€•‘àˆ°}™}µÍ……M…µÁ±•Ì¤ì((€€€€¼¨%¹¥Ñ¥…±¥é”AÍåÉ½ÍÌ€¡É•…Ñ•ÌM0ÈÝ¥¹‘½Ü€¬=Á•¹0½¹Ñ•áÐ¤€¨¼(€€€M!}1= ‰%¹¥Ñ¥…±¥é¥¹œAÍåÉ½ÍÌ€¡M0È€¬=Á•¹0¤¸¸¸ˆ¤ì(€€€AÍåa}%¹¥Ñ¥…±¥Í” ‰M¥±•¹Ð!¥±°ˆ°Ý¥¹‘½Ý]¥‘Ñ °Ý¥¹‘½Ý!•¥¡Ð°}A½¹™¥œ¹™Õ±±ÍÉ••¸¤ì((€€€M!}1= ‰AÍåÉ½ÍÌ¥¹¥Ñ¥…±¥é•¸]¥¹‘½Üè€•‘à•ˆ°Ý¥¹‘½Ý]¥‘Ñ °Ý¥¹‘½Ý!•¥¡Ð¤ì((€€€ì(€€€€€€€½¹ÍÐ¡…È¨±}É•¹‘•É•È€ô€¡½¹ÍÐ¡…È¨¥±•ÑMÑÉ¥¹œ¡1}I9IH¤ì(€€€€€€€½¹ÍÐ¡…È¨±}Ù•¹‘½È€€€ô€¡½¹ÍÐ¡…È¨¥±•ÑMÑÉ¥¹œ¡1}Y9=H¤ì(€€€€€€€½¹ÍÐ¡…È¨±}Ù•ÉÍ¥½¸€€ô€¡½¹ÍÐ¡…È¨¥±•ÑMÑÉ¥¹œ¡1}YIM%=8¤ì(€€€€€€€M!}1= ‰0I•¹‘•É•Èè€•Ìˆ°±}É•¹‘•É•È€ü±}É•¹‘•É•È€è€ˆ¡¹Õ±°¤ˆ¤ì(€€€€€€€M!}1= ‰0Y•¹‘½Èè€€€•Ìˆ°±}Ù•¹‘½È€€€ü±}Ù•¹‘½È€€€è€ˆ¡¹Õ±°¤ˆ¤ì(€€€€€€€M!}1= ‰0Y•ÉÍ¥½¸è€€•Ìˆ°±}Ù•ÉÍ¥½¸€€ü±}Ù•ÉÍ¥½¸€€è€ˆ¡¹Õ±°¤ˆ¤ì(€€€ô((€€€€¼¨ÁÁ±ä­•å‰½…É½½¹ÑÉ½±±•È‰¥¹‘¥¹Ì€¬µ½Ù•µ•¹Ð½‘•‰Õœ½ÁÑ¥½¹Ì™É½´½¹™¥œ(€€€€€¨€¡½Ù•ÉÉ¥‘•ÌÑ¡”AÍåÉ½ÍÌ‘•™…Õ±ÑÌÍ•Ð¥¹Í¥‘”AÍåa}%¹¥Ñ¥…±¥Í”¤¸ÁÁ±¥•ÌÑ¡”(€€€€€¨±…ÍÍ¥ŒÍ¡•µ”¡•É”ìA}½¹ÑÉ½±MÑå±•%¹¥ÐÉ”µ…ÁÁ±¥•ÌÑ¡”µ…Ñ¡¥¹œÍ¡•µ”(€€€€€¨½¹”Ñ¡”Í…Ù•…µ•É„ÍÑå±”¥Ì­¹½Ý¸¸€¨¼(€€€A}ÁÁ±åÑ¥Ù•½¹ÑÉ½±M¡•µ” ¤ì((€€€€¼¨ÁÁ±äÑ¡”Í…Ù•½¹ÑÉ½°ÍÑå±”€¬ÁÕ‰±¥Í Ñ¡”ÍÑå±”É•¥ÍÑÉäÑ¼½¹™¥œ¹™œ(€€€€€¨Í¼Ñ¡”±…Õ¹¡•ÈÌ½¹ÑÉ½°MÑå±”‘É½Á‘½Ý¸É•™±•ÑÌÑ¡¥Ì‰Õ¥±¸€¨¼(€€€ì(€€€€€€€•áÑ•É¸Ù½¥A}½¹ÑÉ½±MÑå±•%¹¥Ð¡Ù½¥¤ì(€€€€€€€A}½¹ÑÉ½±MÑå±•%¹¥Ð ¤ì(€€€ô((€€€€¼¨	É¥¹œÑ¡”…µ”Ý¥¹‘½ÜÑ¼Ñ¡”™½É•É½Õ¹½¸±…Õ¹ ¸M¥±•¹Ñ!¥±±A¹•á”¥Ì„(€€€€€¨½¹Í½±”µÍÕ‰ÍåÍÑ•´…ÁÀ°Í¼]¥¹‘½ÝÌÍÁ…Ý¹Ì„½¹Í½±”Ý¥¹‘½Ü…ÐÍÑ…ÉÑÕÀÑ¡…Ð(€€€€€¨É…‰Ì™½ÕÌ‰•™½É”Ñ¡¥ÌM0Ý¥¹‘½Ü•á¥ÍÑÌ€¡…¹°Ý¥Ñ ½¹Í½±”½™˜°¥ÌÑ¡•¸(€€€€€¨É••½¹Í½±”¤¸Q¡”±…Õ¹¡•ÈÌM•Ñ½É•É½Õ¹‘]¥¹‘½ÜÑ…É•ÑÌÑ¡”ÁÉ½•ÍÌœ(€€€€€¨5…¥¹]¥¹‘½Ý!…¹‘±”°Ý¡¥ É•Í½±Ù•ÌÑ¼Ñ¡…Ð½¹Í½±”€¡½Èé•É¼¤°Í¼Ñ¡”…µ”(€€€€€¨Ý¥¹‘½Ü¹•Ù•ÈÉ•±¥…‰±ä•ÑÌ™½ÕÌ¸I…¥Í”½ÕÈ½Ý¸Ý¥¹‘½Ü¡•É”ƒŠPÑ¡”(€€€€€¨±…Õ¹¡•ÈÌ±±½ÝM•Ñ½É•É½Õ¹‘]¥¹‘½ÜÉ…¹Ð±•ÑÌÑ¡¥ÌÑ…­”Ñ¡”™½É•É½Õ¹¸€¨¼(€€€ì(€€€€€€€•áÑ•É¸M1}]¥¹‘½Ü¨}Ý¥¹‘½Üì(€€€€€€€¥˜€¡}Ý¥¹‘½Ü¤(€€€€€€€ì(€€€€€€€€€€€M1}I…¥Í•]¥¹‘½Ü¡}Ý¥¹‘½Ü¤ì(€€€€€€€ô(€€€ô((€€€€¼¨ÁÁ±äÉ•™É•Í É…Ñ”…¹ÙÍå¹Œ™É½´½¹™¥œ¸(€€€€€¨AÍåÉ½ÍÌ‘•™…Õ±ÑÌÑ¼ÙÍå¹Œõ½™˜ìÝ”½Ù•ÉÉ¥‘”Ù¥„M0‘¥É•Ñ±ä¸(€€€€€¨á±ÕÍ¥Ù”™Õ±±ÍÉ••¸½¹±äƒŠP‰½É‘•É±•ÍÌ€¡™Õ±±ÍÉ••¸ôôÈ¤ÉÕ¹Ì…ÐÑ¡”(€€€€€¨‘•Í­Ñ½Àµ½‘”°Ý¡•É”M1}M•Ñ]¥¹‘½Ý¥ÍÁ±…å5½‘”¡…Ì¹¼•™™•Ð¸€¨¼(€€€¥˜€¡}A½¹™¥œ¹É•™É•Í¡I…Ñ”€ø€À€˜˜}A½¹™¥œ¹™Õ±±ÍÉ••¸€ôô€Ä¤(€€€ì(€€€€€€€•áÑ•É¸M1}]¥¹‘½Ü¨}Ý¥¹‘½Üì(€€€€€€€M1}¥ÍÁ±…å5½‘”µ½‘”ì(€€€€€€€¥˜€¡M1}•Ñ]¥¹‘½Ý¥ÍÁ±…å5½‘”¡}Ý¥¹‘½Ü°€™µ½‘”¤€ôô€À¤(€€€€€€€ì(€€€€€€€€€€€µ½‘”¹É•™É•Í¡}É…Ñ”€ô}A½¹™¥œ¹É•™É•Í¡I…Ñ”ì(€€€€€€€€€€€¥˜€¡M1}M•Ñ]¥¹‘½Ý¥ÍÁ±…å5½‘”¡}Ý¥¹‘½Ü°€™µ½‘”¤€ôô€À¤(€€€€€€€€€€€€€€€M!}1= ‰¥ÍÁ±…äµ½‘”Í•ÐÑ¼€•¡èˆ°}A½¹™¥œ¹É•™É•Í¡I…Ñ”¤ì(€€€€€€€€€€€•±Í”(€€€€€€€€€€€€€€€M!}1= ‰…¥±•Ñ¼Í•Ð€•¡è‘¥ÍÁ±…äµ½‘”è€•Ìˆ°}A½¹™¥œ¹É•™É•Í¡I…Ñ”°M1}•ÑÉÉ½È ¤¤ì(€€€€€€€ô(€€€ô(€€€€¼¨‘¥É•ÐM1}1}M•ÑMÝ…Á%¹Ñ•ÉÙ…°¡•É”¥Ì½Ù•ÉÝÉ¥ÑÑ•¸•Ù•Éä™É…µ”‰ä(€€€€€¨AÍåa}	•¥¹M•¹”€¡Ý¡¥ ‘•É¥Ù•ÌÑ¡”¥¹Ñ•ÉÙ…°™É½´}™}ÍÝ…Á%¹Ñ•ÉÙ…°¤°Í¼(€€€€€¨…ÁÁ±äÙÍå¹ŒÑ¡É½Õ Ñ¡…Ð…Ñ”¥¹ÍÑ•…ƒŠPÍ…µ”Á…Ñ Ñ¡”¥¸µ…µ”A=ÁÑ¥½¹Ì(€€€€€¨µ•¹ÔÕÍ•Ì°Í¼‰½½Ð…¹ÉÕ¹Ñ¥µ”ÍÑ…ä½¹Í¥ÍÑ•¹Ð¸€¨¼(€€€AÍåa}ÁÁ±åYÍå¹Œ¡}A½¹™¥œ¹ÙÍå¹Œ¤ì(€€€M!}1= ‰YMå¹Œè€•Ìˆ°}A½¹™¥œ¹ÙÍå¹Œ€„ô€À€ü€‰½¸ˆ€è€‰½™˜ˆ¤ì((€€€€¼¨ÁÁ±äÑ•áÑÕÉ”µ™¥±Ñ•É¥¹œµ½‘”™É½´½¹™¥œè€À€ô¹•¥Ñ¡•È°€Ä€ôAM`(€€€€€¨‘¥Ñ¡•È°€È€ô‰¥±¥¹•…È¸5ÕÑÕ…±±ä•á±ÕÍ¥Ù”ƒŠP‰¥±¥¹•…ÈÍ½™Ñ•¹Ì(€€€€€¨•Ù•ÉåÑ¡¥¹œÝ¡¥±”‘¥Ñ¡•È­••ÁÌÑ¡”½É¥¥¹…°±½½¬‰ÕÐµ…Í­ÌÑ¡”(€€€€€¨Ñ•áÑÕÉ”µÁ…”Í•…´…ÉÑ¥™…ÑÌ…¹…‘‘ÌÑ¡”…ÕÑ¡•¹Ñ¥ŒAM`¹½¥Í”¸€¨¼(€€€ÍÝ¥Ñ €¡}A½¹™¥œ¹ÁÍá¥Ñ¡•È¤ì(€€€…Í”€Äè€}™}ÁÍá¥Ñ¡•È€ô€Äì}™}‰¥±¥¹•…É¥±Ñ•É¥¹œ€ô€Àì‰É•…¬ì(€€€…Í”€Èè€}™}ÁÍá¥Ñ¡•È€ô€Àì}™}‰¥±¥¹•…É¥±Ñ•É¥¹œ€ô€Äì‰É•…¬ì(€€€‘•™…Õ±Ðè}™}ÁÍá¥Ñ¡•È€ô€Àì}™}‰¥±¥¹•…É¥±Ñ•É¥¹œ€ô€Àì‰É•…¬ì(€€€ô(€€€€¼¨5•¹ÕÌ€¼€Éµ½¹±ä™É…µ•Ì€¡}AÍá¥Ñ¡•ÉMÕÁÁÉ•ÍÍ•¤•Ð‰¥±¥¹•…È¥˜•¹…‰±•°(€€€€€¨¥¹‘•Á•¹‘•¹Ð½˜Ñ¡”€ÍÁÍá}‘¥Ñ¡•Èµ½‘”…‰½Ù”¸€¨¼(€€€}™}µ•¹Õ¥±Ñ•È€ô}A½¹™¥œ¹µ•¹Õ¥±Ñ•È€ü€Ä€è€Àì(€€€}™}‘¥Í…‰±•Á…‘5½Ù•µ•¹Ð€ô€Àì€¼¨‘É¥Ù•¸Á•Èµ™É…µ”‰ä…µ•Á±…äÍÑ…Ñ”€¡…µ•}µ…¥¸¹Œ¤Í¼Ñ¡”µÁ…ÍÑ¥±°¹…Ù¥…Ñ•Ìµ•¹ÕÌ€¨¼(€€€M!}1= ‰¥±Ñ•É¥¹œè€•Ìˆ°(€€€€€€€€€€}™}ÁÍá¥Ñ¡•È€ü€‰AM`‘¥Ñ¡•Èˆ€è(€€€€€€€€€€}™}‰¥±¥¹•…É¥±Ñ•É¥¹œ€ü€‰‰¥±¥¹•…Èˆ€è€‰½™˜ˆ¤ì((€€€€¼¨Aa@µ…ÍÑ•È…Ñ”èAÍåÉ½ÍÌ¥Ì½µÁ¥±•Ý¥Ñ UM}Aa@ôÄ°‰ÕÐÑ¡”(€€€€€¨ÉÕ¹Ñ¥µ”Á…Ñ ¥Ì½ÁÐµ¥¸Ù¥„½¹™¥œ¹™œÕÍ•}ÁáÀ¸]¡•¸€À°ÁÉ¥´•µ¥Ð(€€€€€¨ÝÉ¥Ñ•Ì…}éÜôÀ…¹Ñ¡”Ù•ÉÑ•àÍ¡…‘•ÈÑ…­•ÌÑ¡”€Éµ½ÉÑ¡¼‰É…¹ (€€€€€¨€¡AM`µ…™™¥¹”±½½¬¤¸]¡•¸€Ä°Q…ÁÑÕÉ•Ì@ÑÝ¥¹Ì…¹Í¡…‘•È‘½•Ì(€€€€€¨Á•ÉÍÁ•Ñ¥Ù”µ½ÉÉ•ÐÁÉ½©•Ñ¥½¸Ù¥„AÉ½©•Ñ¥½¸Í€¬…¡”±½½­ÕÁÌ¸(€€€€€¨€¡‘•±…É•¥¸AÍå`½AÍåa}ÁÕ‰±¥Œ¹ °‘•™¥¹•¥¸AÍåa}É•¹‘•È¹ÁÀ¤€¨¼(€€€}AÍáUÍ•AáÀ€ô}A½¹™¥œ¹ÕÍ•AáÀ€ü€Ä€è€Àì(€€€M!}1= ‰Aa@è€•Ìˆ°}AÍáUÍ•AáÀ€ü€‰=8€¡Á•ÉÍÁ•Ñ¥Ù”µ½ÉÉ•Ð°]%@¤ˆ€è€‰½™˜€¡…™™¥¹”¤ˆ¤ì((€€€€¼¨Õ±°µÍÉ••¸Á½ÍÐµÁÉ½•ÍÌ±½½¬€¡½±½ÈÉ…‘”€¼IP€¼Í…¹±¥¹•Ì€¼Ù¥¹•ÑÑ”€¼(€€€€€¨É…¥¸€¼Í¡…ÉÁ•¸€¼AM`‘½Ý¹Í…µÁ±”€¼¥¹•µ…Ñ¥Œ¤¸IÕ¹Ñ¥µ”µÍ•ÑÑ…‰±”ìÈå±•Ì(€€€€€¨¥Ð¥¸µ…µ”€¡‘‰}½Ù•É±…ä¹Œ¤¸€¨¼(€€€}™}Á½ÍÑAÉ½•ÍÌ€ô}A½¹™¥œ¹Á½ÍÑAÉ½•ÍÌì(€€€M!}1= ‰A½ÍÐµÁÉ½•ÍÌèµ½‘”€•ˆ°}™}Á½ÍÑAÉ½•ÍÌ¤ì((€€€€¼¨Q½¹”µµ…À½Á•É…Ñ½È½¸Ñ¡”™¥¹…°¥µ…”€ Àõ½™˜°ÄõI•¥¹¡…É°ÈõL°Ìõ¥±µ¥Œ¤¸(€€€€€¨IÕ¹Ñ¥µ”µÍ•ÑÑ…‰±”ìÌå±•Ì¥Ð¥¸µ…µ”€¡‘‰}½Ù•É±…ä¹Œ¤¸€¨¼(€€€ì(€€€€€€€•áÑ•É¸¥¹Ð}™}Ñ½¹•µ…Àì(€€€€€€€}™}Ñ½¹•µ…À€ô}A½¹™¥œ¹Ñ½¹•µ…Àì(€€€€€€€M!}1= ‰Q½¹”µ…ÁÁ¥¹œèµ½‘”€•ˆ°}™}Ñ½¹•µ…À¤ì(€€€ô((€€€€¼¨±…Í¡±¥¡Ðµ½‘”è±…ÍÍ¥Œ€¡AM`Á•ÈµÙ•ÉÑ•à¤€¼±…ÍÍ¥Œ€¬M¡…‘½ÝÌ€¡Á•ÈµÁ¥á•°°(€€€€€¨AM`µ…±¥‰É…Ñ•ÍÑå±”¤€¼5½‘•É¸€¡Á•ÈµÁ¥á•°ÍÑå±¥é•ÍÁ½Ñ±¥¡Ð¤€¼5½‘•É¸€¬(€€€€€¨M¡…‘½ÝÌ¸Ðå±•Ì¥ÐìA=ÁÑ¥½¹Ì€‰±…Í¡±¥¡ÐˆÉ½Üì½¹Í½±”™±µ½‘•€¸(€€€€€¨Q¡”…ÁÁ±ä¡•±Á•È‘•É¥Ù•ÌÑ¡”Á•ÈµÁ¥á•°½ÍÑå±”½Í¡…‘½ÜAÍå`±½‰…±Ì…¹Ñ¡”(€€€€€¨Á•ÈµÍÑå±”¥¹Ñ•¹Í¥Ñä½Í¥é”‘•™…Õ±ÑÌ¸€¨¼(€€€ì(€€€€€€€A}±…Í¡±¥¡Ñ5½‘•ÁÁ±ä¡}A½¹™¥œ¹™±…Í¡±¥¡Ñ5½‘”°€À¤ì(€€€€€€€M!}1= ‰±…Í¡±¥¡Ðµ½‘”è€•Ìˆ°A}±…Í¡±¥¡Ñ5½‘•1…‰•°¡}A½¹™¥œ¹™±…Í¡±¥¡Ñ5½‘”¤¤ì(€€€ô((€€€€¼¨MATMH•¹Ù•±½Á•Ì€¡…ÑÑ…¬½É•±•…Í”¥¹ÍÑÉÕµ•¹Ð™…‘•Ì¥¸Ñ¡”Í•ÅÕ•¹•	4¤(€€€€€¨€¬É•Ù•Éˆ‘•ÁÑ ´ùÝ•ÐÍ…±”¸…‘ÍÈ‘•™…Õ±Ð½¸ì…‘ÍÈ€À¼Å€½¹Í½±”½Ù•ÉÉ¥‘•Ì(€€€€€¨±¥Ù”°É•ÙÍ…±•€ÑÕ¹•ÌÑ¡”É•Ù•Éˆµ…ÁÁ¥¹œ¸€¨¼(€€€ì(€€€€€€€•áÑ•É¸Ù½¥€AÍåa}MAU1}M•Ñ‘ÍÉ¹…‰±•¡¥¹Ð½¸¤ì(€€€€€€€•áÑ•É¸Ù½¥€AÍåa}MAU1}M•ÑI•Ù•É‰•ÁÑ¡M…±”¡™±½…ÐÍ…±”¤ì(€€€€€€€AÍåa}MAU1}M•Ñ‘ÍÉ¹…‰±•¡}A½¹™¥œ¹…‘ÍÈ€ü€Ä€è€À¤ì(€€€€€€€¥˜€¡}A½¹™¥œ¹É•Ù•É‰M…±”€ø€À¸Á˜¤(€€€€€€€€€€€AÍåa}MAU1}M•ÑI•Ù•É‰•ÁÑ¡M…±”¡}A½¹™¥œ¹É•Ù•É‰M…±”¤ì(€€€€€€€M!}1= ‰MATMH•¹Ù•±½Á•Ìè€•Ì°É•Ù•ÉˆÍ…±”€”¸É˜ˆ°(€€€€€€€€€€€€€€}A½¹™¥œ¹…‘ÍÈ€ü€‰=8ˆ€è€‰½™˜ˆ°}A½¹™¥œ¹É•Ù•É‰M…±”¤ì(€€€ô((€€€€¼¨MÁ•…­•È±…å½ÕÐ€¡…Õ‘¥½}½ÕÑÁÕÐ€ô…ÕÑ½ñÍÑ•É•½ñÅÕ…‘ðÔÅðÜÅñ¡ÉÑ˜¤¸5ÕÍÐ‰”(€€€€€¨±…Ñ¡•‰•™½É”MÁÕ%¹¥Ð‰•±½ÜƒŠPÑ¡”=Á•¹0½¹Ñ•áÐ¥ÌÉ•…Ñ•Ñ¡•É”…¹(€€€€€¨…¸•áÁ±¥¥Ð±…å½ÕÐÉ¥‘•Ì¥¸…Ì„½¹Ñ•áÐ…ÑÑÉ¥‰ÕÑ”¸ÕÑ¼Á…ÍÍ•Ì¹¼(€€€€€¨…ÑÑÉ¥‰ÕÑ”Í¼=Á•¹0M½™Ð‘•Ñ•ÑÌÑ¡”ÍåÍÑ•´±…å½ÕÐ¥ÑÍ•±˜¸€¨¼(€€€ì(€€€€€€€•áÑ•É¸Ù½¥AÍåa}MAU1}M•Ñ=ÕÑÁÕÑ5½‘”¡¥¹Ðµ½‘”¤ì(€€€€€€€ÍÑ…Ñ¥Œ½¹ÍÐ¡…È¨½¹ÍÐ­MÁ•…­•É9…µ•Ímt€ôì€‰…ÕÑ¼ˆ°€‰ÍÑ•É•¼ˆ°€‰ÅÕ…ˆ°€ˆÔ¸Äˆ°€ˆÜ¸Äˆ°€‰¡ÉÑ˜ˆôì(€€€€€€€AÍåa}MAU1}M•Ñ=ÕÑÁÕÑ5½‘”¡}A½¹™¥œ¹…Õ‘¥½=ÕÑÁÕÐ¤ì(€€€€€€€M!}1= ‰MÁ•…­•È±…å½ÕÐÉ•ÅÕ•ÍÐè€•Ìˆ°­MÁ•…­•É9…µ•Ím}A½¹™¥œ¹…Õ‘¥½=ÕÑÁÕÑt¤ì(€€€ô((€€€€¼¨™™•Ð¥¹Ñ•¹Í¥Ñ¥•Ì€¡¥¸µ…µ”l±½Ý•ÉÌ€¼tÉ…¥Í•Ì°pÍÝ¥Ñ¡•ÌÝ¡¥ •¹…‰±•(€€€€€¨•™™•Ðì½¹Í½±”™±¥¹Ñ•¹Í¥Ñä€¼Á½ÍÑ¥¹Ñ•¹Í¥Ñä€¼Ñµ¥¹Ñ•¹Í¥Ñä¤¸€¨¼(€€€ì(€€€€€€€•áÑ•É¸™±½…Ð}AÍåa}±…Í¡±¥¡Ñ%¹Ñ•¹Í¥Ñä°}™}Á½ÍÑAÉ½•ÍÍ%¹Ñ•¹Í¥Ñä°}™}Ñ½¹•µ…Á%¹Ñ•¹Í¥Ñäì(€€€€€€€•áÑ•É¸™±½…Ð}AÍåa}±…Í¡±¥¡ÑM¥é”ì(€€€€€€€•áÑ•É¸™±½…Ð}AÍåa}±…Í¡±¥¡Ñ%¹Ñ•¹Í¥ÑåÁÌ°}AÍåa}±…Í¡±¥¡ÑM¥é•ÁÌì(€€€€€€€}AÍåa}±…Í¡±¥¡Ñ%¹Ñ•¹Í¥Ñä€ô}A½¹™¥œ¹™±…Í¡±¥¡Ñ%¹Ñ•¹Í¥Ñäì(€€€€€€€}™}Á½ÍÑAÉ½•ÍÍ%¹Ñ•¹Í¥Ñä€ô}A½¹™¥œ¹Á½ÍÑAÉ½•ÍÍ%¹Ñ•¹Í¥Ñäì(€€€€€€€}™}Ñ½¹•µ…Á%¹Ñ•¹Í¥Ñä€€€€€ô}A½¹™¥œ¹Ñ½¹•µ…Á%¹Ñ•¹Í¥Ñäì(€€€€€€€ì(€€€€€€€€€€€•áÑ•É¸™±½…Ð}™}‰É¥¡Ñ¹•ÍÌ°}™}½¹ÑÉ…ÍÐ°}™}Í…ÑÕÉ…Ñ¥½¸ì(€€€€€€€€€€€}™}‰É¥¡Ñ¹•ÍÌ€ô}A½¹™¥œ¹‰É¥¡Ñ¹•ÍÌì(€€€€€€€€€€€}™}½¹ÑÉ…ÍÐ€€€ô}A½¹™¥œ¹½¹ÑÉ…ÍÐì(€€€€€€€€€€€}™}Í…ÑÕÉ…Ñ¥½¸€ô}A½¹™¥œ¹Í…ÑÕÉ…Ñ¥½¸ì(€€€€€€€ô(€€€€€€€}AÍåa}±…Í¡±¥¡ÑM¥é”€€€€€€ô}A½¹™¥œ¹™±…Í¡±¥¡ÑM¥é”ì(€€€€€€€}AÍåa}±…Í¡±¥¡Ñ%¹Ñ•¹Í¥ÑåÁÌ€ô}A½¹™¥œ¹™±…Í¡±¥¡Ñ%¹Ñ•¹Í¥ÑåÁÌì(€€€€€€€}AÍåa}±…Í¡±¥¡ÑM¥é•ÁÌ€€€€€€ô}A½¹™¥œ¹™±…Í¡±¥¡ÑM¥é•ÁÌì(€€€€€€€M!}1= ‰™™•Ð¥¹Ñ•¹Í¥Ñäè™±…Í¡±¥¡Ð€”¸É˜°Á½ÍÐ€”¸É˜°Ñ½¹•µ…À€”¸É˜ì™±…Í¡±¥¡ÐÍ¥é”€”¸É˜ˆ°(€€€€€€€€€€€€€€}AÍåa}±…Í¡±¥¡Ñ%¹Ñ•¹Í¥Ñä°}™}Á½ÍÑAÉ½•ÍÍ%¹Ñ•¹Í¥Ñä°}™}Ñ½¹•µ…Á%¹Ñ•¹Í¥Ñä°}AÍåa}±…Í¡±¥¡ÑM¥é”¤ì(€€€ô((€€€€¼¨5X½Ù½¥”€¡a¤µ…ÍÑ•ÈÙ½±Õµ”€¡½ÁÑ¥½¹Ìµµ•¹ÔÍ±¥‘•È€¬á…Ù½±Õµ•€½¹Í½±”¤¸(€€€€€¨M•ÐÑ¡”±½‰…°Ñ¡”aÁ±…å•ÈµÕ±Ñ¥Á±¥•Ì¥¹Ñ¼Ñ¡”=Á•¹0Í½ÕÉ”…¥¸¸€¨¼(€€€ì(€€€€€€€•áÑ•É¸™±½…Ð}Aa…Y½±Õµ”ì(€€€€€€€•áÑ•É¸™±½…Ð}AµÙY½±Õµ”ì(€€€€€€€}Aa…Y½±Õµ”€ô}A½¹™¥œ¹á…Y½±Õµ”ì(€€€€€€€}AµÙY½±Õµ”€ô}A½¹™¥œ¹™µÙY½±Õµ”ì(€€€€€€€M!}1= ‰aÙ½¥”Ù½±Õµ”è€”¸É˜°5Xµ½Ù¥”Ù½±Õµ”è€”¸É˜ˆ°}Aa…Y½±Õµ”°}AµÙY½±Õµ”¤ì(€€€ô((€€€€¼¨%¹¥Ñ¥…±¥é”AMdµDÍÕ‰ÍåÍÑ•µÌÙ¥„AÍåÉ½ÍÌ€¨¼(€€€M!}1= ‰%¹¥Ñ¥…±¥é¥¹œAMdµDÍÕ‰ÍåÍÑ•µÌ¸¸¸ˆ¤ì(€€€I•Í•Ñ…±±‰…¬ ¤ì(€€€MÁÕ%¹¥Ð ¤ì((€€€€¼¨%¹¥Ñ¥…±¥é”™¥±•ÍåÍÑ•´€´ÑÉä±½…‘¥¹œ™É½´¥µ…”½È‘¥É•Ñ½Éä€¨¼(€€€M!}1= ‰%¹¥Ñ¥…±¥é¥¹œ™¥±•ÍåÍÑ•´¸¸¸ˆ¤ì(€€€ì(€€€€€€€€¼¨I•Í½±Ù”Ñ¡”‘¥ÍŒ€¡UL½A0¤°Í•±•ÐÑ¡”É•¥½¸Ì™¥±”Ñ…‰±”°…¹½Á•¸¥Ð¸€¨¼(€€€€€€€½¹ÍÐ¡…È¨‘%µ…•A…Ñ €ôAA½ÉÑ}•Ñ…µ•¥ÍA…Ñ  ¤ì((€€€€€€€¥˜€¡‘%µ…•A…Ñ¡lÁt¤ì(€€€€€€€€€€€M!}1= ‰¥µ…”™½Õ¹°¥¹¥Ñ¥…±¥é¥¹œL¸¸¸ˆ¤ì(€€€€€€€€€€€AÍåa}M}%¹¥Ð¡‘%µ…•A…Ñ °€À°€À¤ì(€€€€€€€ô•±Í”ì(€€€€€€€€€€€M!}]I8 ‰…µ”Ý¥±°¹½Ð‰”…‰±”Ñ¼±½……ÍÍ•ÑÌÝ¥Ñ¡½ÕÐ„‘¥ÍŒ¥µ…”¸ˆ¤ì(€€€€€€€ô(€€€ô((€€€€¼¨I•¥½¸µÍÁ•¥™¥Œ‘…Ñ„ÑÝ•…­Ì¹½ÜÑ¡…Ð}…µ•I•¥½¸¥Ì­¹½Ý¸€¡”¹œ¸A0Ì(€€€€€¨É•äµ¡¥±€´ø5Õµ‰±•Èµ½‘•°ÍÝ…À°A0™½¹Ð±…å½ÕÐ½YI4¡½µ”¤¸€¨¼(€€€ì•áÑ•É¸Ù½¥¡…É……Ñ…}ÁÁ±åI•¥½¹A…Ñ¡•Ì¡Ù½¥¤ì¡…É……Ñ…}ÁÁ±åI•¥½¹A…Ñ¡•Ì ¤ìô(€€€ì•áÑ•É¸Ù½¥½¹Ñ}ÁÁ±åI•¥½¹A…Ñ¡•Ì¡Ù½¥¤ì½¹Ñ}ÁÁ±åI•¥½¹A…Ñ¡•Ì ¤ìô(€€€ì•áÑ•É¸Ù½¥A}1…¹%¹¥Ð¡Ù½¥¤ìA}1…¹%¹¥Ð ¤ìô((€€€‘%¹¥Ð ¤ì((€€€€¼¨%¹¥Ñ¥…±¥é”AT€¨¼(€€€M!}1= ‰%¹¥Ñ¥…±¥é¥¹œAT¸¸¸ˆ¤ì(€€€I•Í•ÑÉ…Á  À¤ì(€€€M•ÑÉ…Á¡•‰Õœ À¤ì((€€€€¼¨%¹¥Ñ¥…±¥é”™¥±”ÍåÍÑ•´ÅÕ•Õ”€¨¼(€€€M!}1= ‰%¹¥Ñ¥…±¥é¥¹œ™¥±•ÍåÍÑ•´ÅÕ•Õ”¸¸¸ˆ¤ì(€€€Í}EÕ•Õ•%¹¥Ñ¥…±¥é” ¤ì((€€€€¼¨I…¹‘½µ¥é•Èè™½É•ÌÑ¡”ÍÑ…ÉÐµ…À€¡µ…ÀÉ}ÌÀÐ¤…¹ÑÕÉ¹ÌÑ¡”±½‰…°¡…É„Á½½°(€€€€€¨½¸°Í¼¥ÐµÕÍÐÉÕ¸‰•™½É”5…ÁI•¥ÍÑÉå}%¹¥ÐÉ•…‘Ì}A½¹™¥œ¹µ…Á9…µ”9(€€€€€¨‰•™½É”A}¡…É…±½‰…±}=Á•¸°Ý¡¥ •…É±äµ½ÕÑÌ½¸±½‰…±¡…É…A½½°€ôô€À¸€¨¼(€€€ì(€€€€€€€•áÑ•É¸Ù½¥A}I…¹‘½}%¹¥Ð¡Ù½¥¤ì(€€€€€€€A}I…¹‘½}%¹¥Ð ¤ì(€€€ô((€€€€¼¨±½‰…°¡…É„Á½½°è½Á•¸¡…É…}±½‰…°¹‘±°€¡$ÕÁ‘…Ñ”™Õ¹Ì™½È•Ù•Éä(€€€€€¨Á½ÉÑ…‰±”µ½¹ÍÑ•È¤‰•™½É”Ñ¡”™¥ÉÍÐ5…ÁI•¥ÍÑÉå}1½…Í¼¥ÑÌ‰…­™¥±°(€€€€€¨¡½½¬…¸ÕÍ”¥Ð¸ÍÍ•Ð±½…‘¥¹œ¡…ÁÁ•¹Ì±…Ñ•È°½¸µ…À±½…¸€¨¼(€€€ì(€€€€€€€•áÑ•É¸Ù½¥A}¡…É…±½‰…±}=Á•¸¡Ù½¥¤ì(€€€€€€€A}¡…É…±½‰…±}=Á•¸ ¤ì(€€€ô((€€€€¼¨%¹¥Ñ¥…±¥é”µ…ÀÉ•¥ÍÑÉäƒŠPÍ•ÑÌ}Á5…Á=Ù•É±…å!•…‘•È‰…Í•½¸½¹™¥œ¹™œ¸(€€€€€¨5ÕÍÐ¡…ÁÁ•¸…™Ñ•ÈAA½ÉÑ}%¹¥Ñ¡…É…¹¥µ%¹™¼€¡…¹¥´ÍÑÕ‰Ì¤‰ÕÐ‰•™½É”5…¥¹1½½À¸€¨¼(€€€M!}1= ‰%¹¥Ñ¥…±¥é¥¹œµ…ÀÉ•¥ÍÑÉä¸¸¸ˆ¤ì(€€€5…ÁI•¥ÍÑÉå}%¹¥Ð ¤ì(€€€M!}1= ‰Ñ¥Ù”µ…Àè€•Ìˆ°}A½¹™¥œ¹µ…Á9…µ”¤ì((€€€M!}1= ‰±°ÍÕ‰ÍåÍÑ•µÌ¥¹¥Ñ¥…±¥é•¸¹Ñ•É¥¹œ5…¥¹1½½À¸¸¸ˆ¤ì((€€€€¼¨Q¡”É…Á¡¥Œµ½¹Ñ•¹ÐÝ…É¹¥¹œ€ ‰Q¡•É”…É”Ù¥½±•¹Ð…¹‘¥ÍÑÕÉ‰¥¹œ(€€€€€¨¥µ…•Ì¥¸Ñ¡¥Ì…µ”ˆ¤ÕÍ•Ñ¼™¥É”¡•É”°‰ÕÐ¥ÐÉ…¸‰•™½É”(€€€€€¨5…¥¹1½½ÀÌÍ%¹¥ÑY½Õ¹Ð½%¹¥Ñ•½´½M}%¹¥ÐÍ¼ÍÕ‰Í•ÅÕ•¹Ð‰½½Ð(€€€€€¨ÍÑ…Ñ•Ì€¡-½¹…µ¤°-P¤Í…Ü„¹½Ñ¥•…‰±”±½……À¸5½Ù•¥¹Ñ¼(€€€€€¨5…¥¹1½½ÀÌÍÑ…ÉÑÕÀÁ¡…Í”É¥¡Ð‰•™½É”Ñ¡”…µ”µÍÑ…Ñ”±½½ÀƒŠP(€€€€€¨Í•”ÍÉŒ½‰½‘åÁÉ½œ½ÍåÌ½…µ•}µ…¥¸¹Œ¹•…ÈÑ¡”M}%¹¥Ð‰±½¬¸€¨¼((€€€€¼¨(€€€€€¨=¸AM`°µ…¥¸ ¤±½…‘Ì	=eAI=¹	%8…¹	}-=95$¹	%8½Ù•É±…åÌ°(€€€€€¨Ñ¡•¸…±±Ì5…¥¹1½½À ¤Ý¡¥ ¥Ì¥¸	=eAI=¸(€€€€€¨(€€€€€¨=¸A°•Ù•ÉåÑ¡¥¹œ¥ÌÍÑ…Ñ¥…±±ä±¥¹­•°Í¼Ý”…±°5…¥¹1½½À ¤‘¥É•Ñ±ä¸(€€€€€¨¼(€€€5…¥¹1½½À ¤ì((€€€€¼¨±•…¹ÕÀ€¨¼(€€€M!}	 ‰mM!t5…¥¹1½½À•á¥Ñ•¹½Éµ…±±ä¸M¡ÕÑÑ¥¹œ‘½Ý¸¸¸¸ˆ¤ì(€€€AÍåa}M¡ÕÑ‘½Ý¸ ¤ì((€€€É•ÑÕÉ¸€Àì)ô(
+ * not have unrestricted access to shared storage. The Java launcher imports a
+ * user-selected, legally obtained disc image into the app's private files
+ * directory. Make that directory the process root so all existing relative
+ * paths (config.cfg, gamedata/, logs, saves and texture packs) keep working. */
+static void PcPort_PreparePlatformPaths(void)
+{
+#ifdef __ANDROID__
+    const char* internalPath = SDL_AndroidGetInternalStoragePath();
+    if (internalPath != NULL && internalPath[0] != '\0')
+    {
+        if (chdir(internalPath) == 0)
+        {
+            snprintf(g_GameDataPath, sizeof(g_GameDataPath), "%s/gamedata", internalPath);
+        }
+        else
+        {
+            fprintf(stderr, "[ANDROID] Could not enter private storage: %s\n", internalPath);
+        }
+    }
+#endif
+}
+
+/* Public accessor â€” used by xa_player.c (and anything else that needs to
+ * locate the disc image at runtime) so we don't sprinkle search-path arrays
+ * across the codebase. Always returns a NUL-terminated path. */
+const char* PcPort_GetGameDataPath(void)
+{
+    return g_GameDataPath;
+}
+
+/* Region-remapped file-table sector for C++ callers (fmv_player.cpp) â€”
+ * fileinfo.h has no extern "C" guards, so g_FileTable isn't reachable there. */
+unsigned int PcPort_FileTableStartSector(int fileIdx)
+{
+    return g_FileTable[fileIdx].startSector;
+}
+
+/* Resolved disc image path (cached) and its region. The PC port is a single
+ * executable that supports multiple disc regions; the active file table / XA
+ * offsets are chosen here from whichever disc is present. */
+static char g_GameDiscPath[1024] = { 0 };
+static int  g_DiscResolved       = 0;
+
+/* Read the boot executable name (SLUS/SLES/SLPM prefix) from a BIN's ISO9660
+ * root directory to identify the region. Returns a Region_* value or -1. */
+static int Pc_DetectRegionFromBin(const char* path)
+{
+    FILE*         f = fopen(path, "rb");
+    unsigned char sec[2048];
+    unsigned int  rlba;
+    unsigned int  exeLba = 0;
+    unsigned      o;
+    int           region = -1;
+
+    if (!f)
+        return -1;
+
+    /* PVD at LBA 16 (raw 2352-byte sectors; 2048 data bytes at offset 24). */
+    fseek(f, 16 * 2352 + 24, SEEK_SET);
+    if (fread(sec, 1, 2048, f) != 2048) { fclose(f); return -1; }
+    rlba = sec[156 + 2] | (sec[156 + 3] << 8) | (sec[156 + 4] << 16) | ((unsigned)sec[156 + 5] << 24);
+
+    fseek(f, (long)rlba * 2352 + 24, SEEK_SET);
+    if (fread(sec, 1, 2048, f) != 2048) { fclose(f); return -1; }
+
+    for (o = 0; o + 33 < 2048; )
+    {
+        unsigned L  = sec[o];
+        unsigned nl = sec[o + 32];
+        if (L == 0)
+            break;
+        if (o + 33 + nl <= 2048 && nl >= 4)
+        {
+            if (memcmp(&sec[o + 33], "SLUS", 4) == 0) region = Region_USA;
+            else if (memcmp(&sec[o + 33], "SLES", 4) == 0) region = Region_EUR;
+            else if (memcmp(&sec[o + 33], "SLPM", 4) == 0 ||
+                     memcmp(&sec[o + 33], "SLPS", 4) == 0 ||
+                     memcmp(&sec[o + 33], "SIPS", 4) == 0)
+            {
+                region = Region_JPN;
+                exeLba = sec[o + 2] | (sec[o + 3] << 8) | (sec[o + 4] << 16) | ((unsigned)sec[o + 5] << 24);
+            }
+        }
+        o += L;
+    }
+
+    /* NTSC-J: the region tables in this build are for the Rev 1/Rev 2 exe
+     * (SLPM-86192 99-06-02, PS-X EXE t_size 0x13800). The first print shifts
+     * the containers and file table slightly â€” flag it rather than misload. */
+    if (region == Region_JPN && exeLba != 0)
+    {
+        unsigned int tSize = 0;
+        fseek(f, (long)exeLba * 2352 + 24, SEEK_SET);
+        if (fread(sec, 1, 2048, f) == 2048 && memcmp(sec, "PS-X EXE", 8) == 0)
+            tSize = sec[0x1C] | (sec[0x1D] << 8) | (sec[0x1E] << 16) | ((unsigned)sec[0x1F] << 24);
+        if (tSize != 0x13800)
+            SH_WARN("NTSC-J disc looks like the FIRST PRINT (exe t_size %#x, expected 0x13800 for Rev 1/2) â€” "
+                    "using Rev 1/2 tables; some files may misload", tSize);
+    }
+
+    fclose(f);
+    return region;
+}
+
+/* Read the disc's boot executable (SLUS/SLES/SLPM) into a malloc'd buffer via
+ * the ISO9660 root directory. Returns 1 and fills *outBuf (caller frees) / *outSize
+ * on success. Raw MODE2/2352 sectors: 2048 user bytes at sector*2352 + 24. */
+static int Pc_ReadDiscExe(const char* path, unsigned char** outBuf, unsigned* outSize)
+{
+    FILE*         f = fopen(path, "rb");
+    unsigned char sec[2048];
+    unsigned int  rlba;
+    unsigned int  exeLba  = 0;
+    unsigned int  exeSize = 0;
+    unsigned      o;
+
+    if (!f)
+        return 0;
+
+    fseek(f, 16 * 2352 + 24, SEEK_SET);
+    if (fread(sec, 1, 2048, f) != 2048) { fclose(f); return 0; }
+    rlba = sec[156 + 2] | (sec[156 + 3] << 8) | (sec[156 + 4] << 16) | ((unsigned)sec[156 + 5] << 24);
+
+    fseek(f, (long)rlba * 2352 + 24, SEEK_SET);
+    if (fread(sec, 1, 2048, f) != 2048) { fclose(f); return 0; }
+
+    for (o = 0; o + 33 < 2048; )
+    {
+        unsigned L  = sec[o];
+        unsigned nl = sec[o + 32];
+        if (L == 0)
+            break;
+        if (o + 33 + nl <= 2048 && nl >= 4 &&
+            (memcmp(&sec[o + 33], "SLUS", 4) == 0 || memcmp(&sec[o + 33], "SLES", 4) == 0 ||
+             memcmp(&sec[o + 33], "SLPM", 4) == 0 || memcmp(&sec[o + 33], "SLPS", 4) == 0))
+        {
+            exeLba  = sec[o + 2]  | (sec[o + 3]  << 8) | (sec[o + 4]  << 16) | ((unsigned)sec[o + 5]  << 24);
+            exeSize = sec[o + 10] | (sec[o + 11] << 8) | (sec[o + 12] << 16) | ((unsigned)sec[o + 13] << 24);
+            break;
+        }
+        o += L;
+    }
+
+    if (exeLba == 0 || exeSize == 0 || exeSize > 4u * 1024 * 1024) { fclose(f); return 0; }
+
+    {
+        unsigned       nsec = (exeSize + 2047) / 2048;
+        unsigned       i;
+        unsigned char* buf  = (unsigned char*)malloc((size_t)nsec * 2048);
+        if (!buf) { fclose(f); return 0; }
+        for (i = 0; i < nsec; i++)
+        {
+            fseek(f, (long)(exeLba + i) * 2352 + 24, SEEK_SET);
+            if (fread(buf + (size_t)i * 2048, 1, 2048, f) != 2048) { free(buf); fclose(f); return 0; }
+        }
+        fclose(f);
+        *outBuf  = buf;
+        *outSize = exeSize;
+        return 1;
+    }
+}
+
+/* Correct g_FileTable for a rearranged USA fan disc. Reads the disc's own file
+ * table out of its boot exe and remaps every sector by name (Fs_RemapFromDiscTable).
+ * The table sits at a build-specific offset in the exe (a rebuilt disc shifts it),
+ * so locate it by anchoring on the baked table's first four file names â€” data we
+ * already hold, so no filename is hardcoded. A no-op on a stock/Spanish USA disc
+ * (its table equals ours). Any failure leaves the baked table intact. */
+static void Pc_RemapFileTableFromDisc(const char* discPath)
+{
+    unsigned char* exe     = NULL;
+    unsigned       exeSize = 0;
+    unsigned       off;
+    unsigned       tableOff = 0;
+    unsigned       a0n0, a0n4, a1n0, a1n4, a2n0, a2n4, a3n0, a3n4;
+
+    if (!Pc_ReadDiscExe(discPath, &exe, &exeSize))
+    {
+        SH_WARN("fan-disc remap: could not read boot exe from %s (keeping baked sectors)", discPath);
+        return;
+    }
+
+    a0n0 = g_FileTable[0].name0123; a0n4 = g_FileTable[0].name4567;
+    a1n0 = g_FileTable[1].name0123; a1n4 = g_FileTable[1].name4567;
+    a2n0 = g_FileTable[2].name0123; a2n4 = g_FileTable[2].name4567;
+    a3n0 = g_FileTable[3].name0123; a3n4 = g_FileTable[3].name4567;
+
+    for (off = 0x800; off + 4 * 12 <= exeSize; off += 4)
+    {
+        const s_FileInfo* e = (const s_FileInfo*)(exe + off);
+        if (e[0].name0123 == a0n0 && e[0].name4567 == a0n4 &&
+            e[1].name0123 == a1n0 && e[1].name4567 == a1n4 &&
+            e[2].name0123 == a2n0 && e[2].name4567 == a2n4 &&
+            e[3].name0123 == a3n0 && e[3].name4567 == a3n4)
+        {
+            tableOff = off;
+            break;
+        }
+    }
+
+    if (tableOff == 0)
+    {
+        SH_WARN("fan-disc remap: file table not found in boot exe (keeping baked sectors)");
+        free(exe);
+        return;
+    }
+
+    {
+        unsigned avail   = (exeSize - tableOff) / 12;
+        s32      count   = (s32)(avail < 2200u ? avail : 2200u);
+        s32      changed = Fs_RemapFromDiscTable((const s_FileInfo*)(exe + tableOff), count);
+        if (changed > 0)
+            SH_LOG("Fan disc detected: remapped %d file sectors from disc's own table", changed);
+    }
+
+    free(exe);
+}
+
+/* Select region tables for a resolved disc, then correct sectors from the disc
+ * itself for USA fan re-translations that rearranged the CD (no-op otherwise). */
+static void Pc_ApplyDiscRegion(const char* discPath, e_GameRegion region)
+{
+    Fs_InitFileTableForRegion(region);
+    if (region == Region_USA && discPath && discPath[0])
+        Pc_RemapFileTableFromDisc(discPath);
+    /* Also to the log file: the "Disc:" SH_LOG line only reaches stdout/the
+     * in-game console, so a launcher run leaves no record of the applied
+     * region in SilentHill.log. */
+    SH_DBG("[REGION] applied region=%d (%s) disc=%s", (int)region,
+           region == Region_EUR ? "EUR/PAL" : region == Region_JPN ? "NTSC-J" : "USA",
+           (discPath && discPath[0]) ? discPath : "(none)");
+}
+
+/* Locate the disc image and select the matching region tables. Priority:
+ * USA, then PAL, then the long European name (US wins if several exist). If
+ * none of those names match but some .bin is present, autodetect by region. */
+const char* PcPort_GetGameDiscPath(void)
+{
+    static const struct { const char* name; int region; } s_known[] = {
+        { "Silent Hill (USA).bin",                        Region_USA },
+        { "Silent Hill (PAL).bin",                        Region_EUR },
+        { "Silent Hill (Europe) (En,Fr,De,Es,It).bin",    Region_EUR },
+        { "Silent Hill (Japan).bin",                      Region_JPN },
+    };
+    char path[1024];
+    int  i;
+    DIR* dir;
+
+    if (g_DiscResolved)
+        return g_GameDiscPath;
+    g_DiscResolved = 1;
+
+    /* Config `disc_image` (launcher Disc dropdown): an exact filename beats
+     * every auto rule â€” this is how fan-translated / modified images get
+     * selected over the vanilla name-priority order. Region still comes from
+     * the disc's own boot serial. Missing file falls through to auto. */
+    if (g_PcConfig.discImage[0] != '\0')
+    {
+        FILE* f;
+
+        snprintf(path, sizeof(path), "%s/%s", g_GameDataPath, g_PcConfig.discImage);
+        f = fopen(path, "rb");
+        if (f)
+        {
+            int probed = Pc_DetectRegionFromBin(path);
+
+            fclose(f);
+            if (probed >= Region_USA && probed <= Region_JPN)
+            {
+                snprintf(g_GameDiscPath, sizeof(g_GameDiscPath), "%s", path);
+                Pc_ApplyDiscRegion(g_GameDiscPath, (e_GameRegion)probed);
+                SH_LOG("Disc: %s (region %s, by config disc_image)", g_PcConfig.discImage,
+                       probed == Region_EUR ? "EUR/PAL"
+                     : probed == Region_JPN ? "NTSC-J"  : "USA");
+                return g_GameDiscPath;
+            }
+            SH_WARN("disc_image %s: no PSX boot serial found â€” falling back to auto disc pick",
+                    g_PcConfig.discImage);
+        }
+        else
+        {
+            SH_WARN("disc_image %s not found in gamedata/ â€” falling back to auto disc pick",
+                    g_PcConfig.discImage);
+        }
+    }
+
+    /* Config `region` (launcher Region dropdown): when several discs are in
+     * gamedata/, prefer the chosen one instead of the fixed USA-first rule.
+     * -1 = auto (the old behavior). Falls back to auto when the preferred
+     * region has no disc. */
+    {
+        int prefer = (g_PcConfig.region == 1) ? Region_USA
+                   : (g_PcConfig.region == 2) ? Region_EUR
+                   : (g_PcConfig.region == 3) ? Region_JPN
+                                              : -1;
+        int pass;
+
+        for (pass = 0; pass < 2; pass++)
+        {
+            /* Pass 0 honors the preference; pass 1 is the auto fallback. */
+            int want = (pass == 0) ? prefer : -1;
+
+            if (pass == 0 && prefer < 0)
+                continue;
+
+            for (i = 0; i < (int)(sizeof(s_known) / sizeof(s_known[0])); i++)
+            {
+                FILE* f;
+                snprintf(path, sizeof(path), "%s/%s", g_GameDataPath, s_known[i].name);
+                f = fopen(path, "rb");
+                if (f)
+                {
+                    /* Trust the boot serial over the filename â€” a renamed disc
+                     * must select the region its data actually has (and the
+                     * launcher's serial-based display then always agrees).
+                     * The name's region is only the fallback for odd rips. */
+                    int probed = Pc_DetectRegionFromBin(path);
+
+                    fclose(f);
+                    if (probed < 0)
+                        probed = s_known[i].region;
+                    if (want >= 0 && probed != want)
+                        continue;
+
+                    snprintf(g_GameDiscPath, sizeof(g_GameDiscPath), "%s", path);
+                    Pc_ApplyDiscRegion(g_GameDiscPath, (e_GameRegion)probed);
+                    SH_LOG("Disc: %s (region %s%s)", s_known[i].name,
+                           probed == Region_EUR ? "EUR/PAL"
+                         : probed == Region_JPN ? "NTSC-J"  : "USA",
+                           pass == 0 ? ", by config preference" : "");
+                    return g_GameDiscPath;
+                }
+            }
+
+            /* Autodetect any other .bin by its ISO boot serial. */
+            dir = opendir(g_GameDataPath);
+            if (dir)
+            {
+                struct dirent* ent;
+                /* One found-path bucket per region (Region_USA/EUR/JPN). */
+                char regionPath[3][1024] = { { 0 }, { 0 }, { 0 } };
+                int  use;
+
+                while ((ent = readdir(dir)) != NULL)
+                {
+                    const char* nm = ent->d_name;
+                    size_t      l  = strlen(nm);
+                    if (l > 4 && (strcmp(nm + l - 4, ".bin") == 0 || strcmp(nm + l - 4, ".BIN") == 0))
+                    {
+                        int r;
+                        snprintf(path, sizeof(path), "%s/%s", g_GameDataPath, nm);
+                        r = Pc_DetectRegionFromBin(path);
+                        if (r >= Region_USA && r <= Region_JPN && !regionPath[r][0])
+                            snprintf(regionPath[r], sizeof(regionPath[r]), "%s", path);
+                    }
+                }
+                closedir(dir);
+
+                if (want >= 0 && !regionPath[want][0])
+                    continue; /* preferred region absent â€” auto fallback pass */
+
+                /* Auto priority: USA, then PAL, then NTSC-J. */
+                use = (want >= 0)              ? want
+                    : regionPath[Region_USA][0] ? Region_USA
+                    : regionPath[Region_EUR][0] ? Region_EUR
+                    : regionPath[Region_JPN][0] ? Region_JPN
+                                                : -1;
+                if (use >= 0)
+                {
+                    snprintf(g_GameDiscPath, sizeof(g_GameDiscPath), "%s", regionPath[use]);
+                    Pc_ApplyDiscRegion(g_GameDiscPath, (e_GameRegion)use);
+                    SH_LOG("Disc autodetected: %s (region %s%s)", g_GameDiscPath,
+                           use == Region_EUR ? "EUR/PAL"
+                         : use == Region_JPN ? "NTSC-J"  : "USA",
+                           pass == 0 ? ", by config preference" : "");
+                    return g_GameDiscPath;
+                }
+            }
+        }
+    }
+
+    Fs_InitFileTableForRegion(Region_USA); /* keep g_FileTable populated even with no disc */
+    g_GameDiscPath[0] = '\0';
+    SH_WARN("No Silent Hill disc image (.bin) found in %s", g_GameDataPath);
+    return g_GameDiscPath;
+}
+
+static void PrintBanner(void)
+{
+    printf("==============================================\n");
+#ifdef __ANDROID__
+    printf("  Silent Hill - Android Native Port\n");
+#else
+    printf("  Silent Hill - PC Port\n");
+#endif
+    printf("  https://github.com/SlickAmogus/silent-hill-decomp/\n");
+    printf("  Based on the Silent Hill Decompilation\n");
+    printf("==============================================\n");
+    printf("\n");
+}
+
+static void ParseArgs(int argc, char* argv[])
+{
+    for (int i = 1; i < argc; i++)
+    {
+        if (strcmp(argv[i], "-data") == 0 && i + 1 < argc)
+        {
+            strncpy(g_GameDataPath, argv[i + 1], sizeof(g_GameDataPath) - 1);
+            g_GameDataPath[sizeof(g_GameDataPath) - 1] = '\0';
+            i++;
+        }
+        else if (strcmp(argv[i], "-h") == 0 || strcmp(argv[i], "--help") == 0)
+        {
+            printf("Usage: SilentHillPC [options]\n");
+            printf("Options:\n");
+            printf("  -data <path>    Path to game data directory or CD image\n");
+            printf("  -h, --help      Show this help\n");
+            exit(0);
+        }
+    }
+}
+
+int main(int argc, char* argv[])
+{
+    /* Log file is NOT opened until after config load. SH_DBG calls before
+     * that point are silently no-ops (the macro short-circuits on a NULL
+     * handle). Avoids creating SilentHill.log when enable_debug_log=0. */
+    atexit(Sh_LogAtExitFlush);
+    Sh_InstallCrashFilter();
+
+    PcPort_PreparePlatformPaths();
+
+    PrintBanner();
+    ParseArgs(argc, argv);
+
+    /* Load config file */
+    PcConfig_Load("config.cfg");
+
+    /* Now that we know whether logging is enabled, open the log file (or
+     * leave g_ShDebugLog NULL so SH_DBG stays a no-op). */
+    if (g_PcConfig.enableDebugLog) {
+        SH_DebugLogInit();
+        SH_DBG("[SH] main() entered (log opened post-config)");
+        {
+            /* Build identification â€” first thing to check in user logs.
+             * Generated fresh each build by cmake/gen_build_info.cmake. */
+            #include "sh_build_info.h"
+            SH_DBG("[SH] build " SH_BUILD_GIT_HASH " (" SH_BUILD_STAMP ")");
+        }
+        /* One-line render-config fingerprint: these are the axes every remote
+         * corruption report gets bisected on â€” stop having to ask for the cfg. */
+        SH_DBG("[CONFIG] flashlight_mode=%d use_pgxp=%d resident_textures=%d global_chara_pool=%d",
+               g_PcConfig.flashlightMode, g_PcConfig.usePgxp,
+               g_PcConfig.residentTextures, g_PcConfig.globalCharaPool);
+    }
+
+    /* PsyCross horizontal pixel-aspect compensation. Silent Hill renders a 320x224
+     * framebuffer the PSX displays as a 4:3 picture, so its pixels are NOT square
+     * (PAR = (4/3)/(320/224) = 14/15). PsyCross's Hor+ ortho and the matching game-side
+     * cull bounds scale the framebuffer-aspect horizontal extent by g_PsxPixelAspect;
+     * the value that restores the 4:3 picture is (320/224)*(3/4) = 15/14 ~= 1.0714.
+     * Baked in â€” it was a config knob, but no other value is correct for this game. */
+    {
+        extern float g_PsxPixelAspect;
+        g_PsxPixelAspect = (320.0f / 224.0f) * (3.0f / 4.0f);
+    }
+
+    /* Apply widescreen mode to PsyCross. */
+    {
+        extern int g_PcWidescreenMode;
+        extern int g_PcMenuPillarbox;
+        g_PcWidescreenMode = g_PcConfig.widescreenMode;
+        g_PcMenuPillarbox  = g_PcConfig.menuPillarbox;
+    }
+
+    /* show_console now only controls the EXTERNAL console window (1 or 3 =
+     * create it; other values = none). The INGAME console is no longer
+     * config-gated: `~` opens/closes it at runtime (dbg_overlay.c), always. */
+    {
+        int show = g_PcConfig.showConsole;
+        if (show == 1 || show == 3) {
+#ifdef _WIN32
+            /* GUI-subsystem app: no console exists at launch, so create one for
+             * external mode and point stdout/stderr at it. */
+            extern __declspec(dllimport) int __stdcall AllocConsole(void);
+            AllocConsole();
+            freopen("CONOUT$", "w", stdout);
+            freopen("CONOUT$", "w", stderr);
+#endif
+            /* On Linux/macOS the process is launched from a terminal, so
+             * stdout/stderr already point at a console â€” just echo to them. */
+            g_ShDebugEchoStdout = 1;
+            setvbuf(stdout, NULL, _IONBF, 0);
+            setvbuf(stderr, NULL, _IONBF, 0);
+        } else {
+            /* No console â€” route stdout/stderr to the log file (or the null
+             * device) so stray printf doesn't hit an invalid handle. */
+            if (g_PcConfig.enableDebugLog) {
+                freopen(SH_LogPath(), "a", stdout);
+                freopen(SH_LogPath(), "a", stderr);
+                setvbuf(stdout, NULL, _IONBF, 0);
+                setvbuf(stderr, NULL, _IONBF, 0);
+            } else {
+                freopen(SH_NULL_DEVICE, "w", stdout);
+                freopen(SH_NULL_DEVICE, "w", stderr);
+            }
+        }
+        /* Always capture log lines into the overlay ring buffer so the in-game
+         * console (opened with `~` at runtime) immediately shows recent output. */
+        {
+            extern void DbgOverlay_PushLine(const char* line);
+            extern void DbgOverlay_ToastLine(const char* line);
+            g_ShOverlayPushLine  = DbgOverlay_PushLine;
+            g_ShOverlayToastLine = DbgOverlay_ToastLine;
+        }
+        /* Draw the dev console AFTER the freeze-frame is captured (inside PsyX_EndScene),
+         * so it's never baked into a frozen pause / "no map" image â€” fixes the console
+         * ghosting/doubling when it was already open before pausing. */
+        {
+            extern void DbgOverlay_Render(void);
+            extern void (*g_PsyX_PostCaptureHook)(void);
+            g_PsyX_PostCaptureHook = DbgOverlay_Render;
+        }
+    }
+    int windowWidth = g_PcConfig.windowWidth;
+    int windowHeight = g_PcConfig.windowHeight;
+
+    SH_LOG("Game data path: %s", g_GameDataPath);
+
+    /* Initialize PSX memory emulation */
+    SH_LOG("Initializing PSX memory emulation...");
+    PsxMemory_Init();
+    SH_LOG("PSX RAM base: %p", (void*)g_PsxRam);
+    SH_LOG("TEMP_MEMORY_ADDR -> %p (offset 0x1A2600)", (void*)TEMP_MEMORY_ADDR);
+
+    /* Initialize runtime data that depends on PSX memory addresses */
+    PcPort_InitCharaAnimInfo();
+    extern void PcPort_InitSdBuffers(void);
+    PcPort_InitSdBuffers();
+
+    /* Translate the Air Screamer per-keyframe AI rodata from PSX layout
+     * (16-byte s_AnimInfo, 4-byte ptrs) to PC layout (32-byte s_AnimInfo,
+     * 8-byte ptrs). Without this, every read past animInfo_0[] in
+     * sharedData_800CAA98_0_s01 returns garbage from a wrong offset and
+     * the AS AI breaks (or the earlier band-aids force a degraded
+     * fallback). See pc_port/src/as_rodata_reformat.c. */
+    extern void AsRodata_Reformat(void);
+    AsRodata_Reformat();
+
+    /* Populate GROANER_ANIM_INFOS â€” its playbackFunc fields point to
+     * Anim_BlendLinear / Anim_PlaybackOnce / Anim_PlaybackLoop, which
+     * MinGW won't accept in a static initializer (treats function
+     * symbols from another TU as non-constant). Built at runtime. */
+    extern void GroanerAnimInfos_Init(void);
+    GroanerAnimInfos_Init();
+
+    extern void BloodsuckerAnimInfos_Init(void);
+    BloodsuckerAnimInfos_Init();
+    extern void BloodyLisaAnimInfos_Init(void);
+    BloodyLisaAnimInfos_Init();
+    extern void AlessaAnimInfos_Init(void);
+    AlessaAnimInfos_Init();
+    extern void GhostChildAlessaAnimInfos_Init(void);
+    GhostChildAlessaAnimInfos_Init();
+    extern void LisaAnimInfos_Init(void);
+    LisaAnimInfos_Init();
+    extern void KaufmannAnimInfos_Init(void);
+    KaufmannAnimInfos_Init();
+    extern void DahliaAnimInfos_Init(void);
+    DahliaAnimInfos_Init();
+    extern void CatAnimInfos_Init(void);
+    CatAnimInfos_Init();
+    extern void PuppetNurseData_Init(void);
+    PuppetNurseData_Init();
+    extern void LarvalStalkerAnimInfos_Init(void);
+    LarvalStalkerAnimInfos_Init();
+    extern void HangedScratcherAnimInfos_Init(void);
+    HangedScratcherAnimInfos_Init();
+    extern void CreeperAnimInfos_Init(void);
+    CreeperAnimInfos_Init();
+    extern void SplitHeadAnimInfos_Init(void);
+    SplitHeadAnimInfos_Init();
+    extern void RomperAnimInfos_Init(void);
+    RomperAnimInfos_Init();
+
+    /* Binary-extracted batch (2026-06-10): bosses + late-game cast that were
+     * still zero-stubs. Generated by pc_port/tools/extract_anim_infos.py. */
+    extern void LockerDeadBodyAnimInfos_Init(void);
+    LockerDeadBodyAnimInfos_Init();
+    extern void TwinfeelerAnimInfos_Init(void);
+    TwinfeelerAnimInfos_Init();
+    extern void FloatstingerAnimInfos_Init(void);
+    FloatstingerAnimInfos_Init();
+    extern void MonsterCybilAnimInfos_Init(void);
+    MonsterCybilAnimInfos_Init();
+    extern void FlaurosAnimInfos_Init(void);
+    FlaurosAnimInfos_Init();
+    extern void ParasiteAnimInfos_Init(void);
+    ParasiteAnimInfos_Init();
+    extern void GhostDoctorAnimInfos_Init(void);
+    GhostDoctorAnimInfos_Init();
+    extern void BloodyIncubatorAnimInfos_Init(void);
+    BloodyIncubatorAnimInfos_Init();
+    extern void IncubatorAnimInfos_Init(void);
+    IncubatorAnimInfos_Init();
+    extern void LittleIncubusAnimInfos_Init(void);
+    LittleIncubusAnimInfos_Init();
+    extern void IncubusAnimInfos_Init(void);
+    IncubusAnimInfos_Init();
+    extern void Unkkown23AnimInfos_Init(void);
+    Unkkown23AnimInfos_Init();
+
+    extern void Map6S04ExtraAnimInfos_Init(void);
+    Map6S04ExtraAnimInfos_Init();
+
+    /* map7_s03 ending DMS phase pointers: D_800ED230[phase] selects which FS
+     * buffer holds the active cutscene's reformatted DMS header. Was a zero-stub
+     * (NULL) which forced the DMS redirect onto the single latest g_DmsHeapHeader,
+     * desyncing the multi-phase ending. FS_BUFFER_* are g_PsxRam-relative so this
+     * must run after PsxMemory_Init (above). */
+    {
+        extern void* D_800ED230[2];
+        D_800ED230[0] = FS_BUFFER_20;
+        D_800ED230[1] = FS_BUFFER_18;
+    }
+
+    /* Initialize overlay pointers to emulated PSX RAM */
+#if VERSION_IS(JAP0)
+    g_OvlDynamic  = PSX_ADDR(0x000CBAA8);
+#else
+    g_OvlDynamic  = PSX_ADDR(0x000C9578);
+#endif
+    g_OvlBodyprog = PSX_ADDR(0x00024B60);
+    g_Demo_PlayFileBufferPtr = (s_DemoFrameData*)PSX_ADDR(0x000F5E00);
+
+    /* Keyboard mapping is set by PsyCross defaults in PsyX_Initialise:
+     * Cross=C, Circle=V, Triangle=Z, Square=X, Start=Enter, Select=Space
+     * DPad=Arrow keys, L1=LShift, R1=RShift, L2=LCtrl, R2=RCtrl */
+
+    /* Route PsyCross logging into our SilentHill.log handle (or silence it
+     * when enable_debug_log=0) BEFORE PsyX_Initialise, so PsyCross never
+     * creates its own "Silent Hill.log" and never fcloses our handle at
+     * shutdown (it used to, leaving g_ShDebugLog dangling for any logging
+     * after PsyX_Shutdown). */
+    PsyX_Log_SetStream(g_PcConfig.enableDebugLog ? g_ShDebugLog : NULL);
+
+    /* MSAA must be set BEFORE PsyX_Initialise â€” it drives the SDL multisample
+     * GL attributes chosen at context-creation time (inside GR_InitialiseRender).
+     * If the driver can't honor it, PsyCross retries without MSAA and clears
+     * g_cfg_msaaSamples back to 0. */
+    g_cfg_msaaSamples = g_PcConfig.msaaSamples;
+    SH_LOG("MSAA: %dx", g_cfg_msaaSamples);
+
+    /* Initialize PsyCross (creates SDL2 window + OpenGL context) */
+    SH_LOG("Initializing PsyCross (SDL2 + OpenGL)...");
+    PsyX_Initialise("Silent Hill", windowWidth, windowHeight, g_PcConfig.fullscreen);
+
+    SH_LOG("PsyCross initialized. Window: %dx%d", windowWidth, windowHeight);
+
+    {
+        const char* gl_renderer = (const char*)glGetString(GL_RENDERER);
+        const char* gl_vendor   = (const char*)glGetString(GL_VENDOR);
+        const char* gl_version  = (const char*)glGetString(GL_VERSION);
+        SH_LOG("GL Renderer: %s", gl_renderer ? gl_renderer : "(null)");
+        SH_LOG("GL Vendor:   %s", gl_vendor   ? gl_vendor   : "(null)");
+        SH_LOG("GL Version:  %s", gl_version  ? gl_version  : "(null)");
+    }
+
+    /* Apply keyboard/controller bindings + movement/debug options from config
+     * (overrides the PsyCross defaults set inside PsyX_Initialise). Applies the
+     * classic scheme here; Pc_ControlStyleInit re-applies the matching scheme
+     * once the saved camera style is known. */
+    Pc_ApplyActiveControlScheme();
+
+    /* Apply the saved control style + publish the style registry to config.cfg
+     * so the launcher's Control Style dropdown reflects this build. */
+    {
+        extern void Pc_ControlStyleInit(void);
+        Pc_ControlStyleInit();
+    }
+
+    /* Bring the game window to the foreground on launch. SilentHillPC.exe is a
+     * console-subsystem app, so Windows spawns a console window at startup that
+     * grabs focus before this SDL window exists (and, with console off, is then
+     * FreeConsole'd). The launcher's SetForegroundWindow targets the process'
+     * MainWindowHandle, which resolves to that console (or zero), so the game
+     * window never reliably gets focus. Raise our own window here â€” the
+     * launcher's AllowSetForegroundWindow grant lets this take the foreground. */
+    {
+        extern SDL_Window* g_window;
+        if (g_window)
+        {
+            SDL_RaiseWindow(g_window);
+        }
+    }
+
+    /* Apply refresh rate and vsync from config.
+     * PsyCross defaults to vsync=off; we override via SDL directly.
+     * Exclusive fullscreen only â€” borderless (fullscreen==2) runs at the
+     * desktop mode, where SDL_SetWindowDisplayMode has no effect. */
+    if (g_PcConfig.refreshRate > 0 && g_PcConfig.fullscreen == 1)
+    {
+        extern SDL_Window* g_window;
+        SDL_DisplayMode mode;
+        if (SDL_GetWindowDisplayMode(g_window, &mode) == 0)
+        {
+            mode.refresh_rate = g_PcConfig.refreshRate;
+            if (SDL_SetWindowDisplayMode(g_window, &mode) == 0)
+                SH_LOG("Display mode set to %d hz", g_PcConfig.refreshRate);
+            else
+                SH_LOG("Failed to set %d hz display mode: %s", g_PcConfig.refreshRate, SDL_GetError());
+        }
+    }
+    /* A direct SDL_GL_SetSwapInterval here is overwritten every frame by
+     * PsyX_BeginScene (which derives the interval from g_cfg_swapInterval), so
+     * apply vsync through that gate instead â€” same path the in-game PC Options
+     * menu uses, so boot and runtime stay consistent. */
+    PsyX_ApplyVsync(g_PcConfig.vsync);
+    SH_LOG("VSync: %s", g_PcConfig.vsync != 0 ? "on" : "off");
+
+    /* Apply texture-filtering mode from config: 0 = neither, 1 = PSX
+     * dither, 2 = bilinear. Mutually exclusive â€” bilinear softens
+     * everything while dither keeps the original look but masks the
+     * texture-page seam artifacts and adds the authentic PSX noise. */
+    switch (g_PcConfig.psxDither) {
+    case 1:  g_cfg_psxDither = 1; g_cfg_bilinearFiltering = 0; break;
+    case 2:  g_cfg_psxDither = 0; g_cfg_bilinearFiltering = 1; break;
+    default: g_cfg_psxDither = 0; g_cfg_bilinearFiltering = 0; break;
+    }
+    /* Menus / 2D-only frames (g_PsxDitherSuppressed) get bilinear if enabled,
+     * independent of the 3D psx_dither mode above. */
+    g_cfg_menuFilter = g_PcConfig.menuFilter ? 1 : 0;
+    g_cfg_disableDpadMovement = 0; /* driven per-frame by gameplay state (game_main.c) so the D-pad still navigates menus */
+    SH_LOG("Filtering: %s",
+           g_cfg_psxDither ? "PSX dither" :
+           g_cfg_bilinearFiltering ? "bilinear" : "off");
+
+    /* PGXP master gate: PsyCross is compiled with USE_PGXP=1, but the
+     * runtime path is opt-in via config.cfg use_pgxp. When 0, prim emit
+     * writes a_zw=0 and the vertex shader takes the 2D-ortho branch
+     * (PSX-affine look). When 1, GTE captures FP twins and shader does
+     * perspective-correct projection via Projection3D + cache lookups.
+     * (declared in PsyX/PsyX_public.h, defined in PsyX_render.cpp) */
+    g_PsxUsePgxp = g_PcConfig.usePgxp ? 1 : 0;
+    SH_LOG("PGXP: %s", g_PsxUsePgxp ? "ON (perspective-correct, WIP)" : "off (affine)");
+
+    /* Full-screen post-process look (color grade / CRT / scanlines / vignette /
+     * grain / sharpen / PSX downsample / cinematic). Runtime-settable; F2 cycles
+     * it in-game (dbg_overlay.c). */
+    g_cfg_postProcess = g_PcConfig.postProcess;
+    SH_LOG("Post-process: mode %d", g_cfg_postProcess);
+
+    /* Tone-map operator on the final image (0=off,1=Reinhard,2=ACES,3=Filmic).
+     * Runtime-settable; F3 cycles it in-game (dbg_overlay.c). */
+    {
+        extern int g_cfg_tonemap;
+        g_cfg_tonemap = g_PcConfig.tonemap;
+        SH_LOG("Tone mapping: mode %d", g_cfg_tonemap);
+    }
+
+    /* Flashlight mode: Classic (PSX per-vertex) / Classic + Shadows (per-pixel,
+     * PSX-calibrated style) / Modern (per-pixel stylized spotlight) / Modern +
+     * Shadows. F4 cycles it; PC Options "Flashlight" row; console `flmode`.
+     * The apply helper derives the per-pixel/style/shadow PsyX globals and the
+     * per-style intensity/size defaults. */
+    {
+        Pc_FlashlightModeApply(g_PcConfig.flashlightMode, 0);
+        SH_LOG("Flashlight mode: %s", Pc_FlashlightModeLabel(g_PcConfig.flashlightMode));
+    }
+
+    /* SPU ADSR envelopes (attack/release instrument fades in the sequenced BGM)
+     * + reverb depth->wet scale. adsr default on; `adsr 0/1` console overrides
+     * live, `revscale` tunes the reverb mapping. */
+    {
+        extern void  PsyX_SPUAL_SetAdsrEnabled(int on);
+        extern void  PsyX_SPUAL_SetReverbDepthScale(float scale);
+        PsyX_SPUAL_SetAdsrEnabled(g_PcConfig.adsr ? 1 : 0);
+        if (g_PcConfig.reverbScale > 0.0f)
+            PsyX_SPUAL_SetReverbDepthScale(g_PcConfig.reverbScale);
+        SH_LOG("SPU ADSR envelopes: %s, reverb scale %.2f",
+               g_PcConfig.adsr ? "ON" : "off", g_PcConfig.reverbScale);
+    }
+
+    /* Speaker layout (audio_output = auto|stereo|quad|51|71|hrtf). Must be
+     * latched before SpuInit below â€” the OpenAL context is created there and
+     * an explicit layout rides in as a context attribute. Auto passes no
+     * attribute so OpenAL Soft detects the system layout itself. */
+    {
+        extern void PsyX_SPUAL_SetOutputMode(int mode);
+        static const char* const kSpeakerNames[] = { "auto", "stereo", "quad", "5.1", "7.1", "hrtf" };
+        PsyX_SPUAL_SetOutputMode(g_PcConfig.audioOutput);
+        SH_LOG("Speaker layout request: %s", kSpeakerNames[g_PcConfig.audioOutput]);
+    }
+
+    /* Effect intensities (in-game [ lowers / ] raises, \ switches which enabled
+     * effect; console flintensity / postintensity / tmintensity). */
+    {
+        extern float g_PsyX_FlashlightIntensity, g_cfg_postProcessIntensity, g_cfg_tonemapIntensity;
+        extern float g_PsyX_FlashlightSize;
+        extern float g_PsyX_FlashlightIntensityFps, g_PsyX_FlashlightSizeFps;
+        g_PsyX_FlashlightIntensity = g_PcConfig.flashlightIntensity;
+        g_cfg_postProcessIntensity = g_PcConfig.postProcessIntensity;
+        g_cfg_tonemapIntensity     = g_PcConfig.tonemapIntensity;
+        {
+            extern float g_cfg_brightness, g_cfg_contrast, g_cfg_saturation;
+            g_cfg_brightness = g_PcConfig.brightness;
+            g_cfg_contrast   = g_PcConfig.contrast;
+            g_cfg_saturation = g_PcConfig.saturation;
+        }
+        g_PsyX_FlashlightSize      = g_PcConfig.flashlightSize;
+        g_PsyX_FlashlightIntensityFps = g_PcConfig.flashlightIntensityFps;
+        g_PsyX_FlashlightSizeFps      = g_PcConfig.flashlightSizeFps;
+        SH_LOG("Effect intensity: flashlight %.2f, post %.2f, tonemap %.2f; flashlight size %.2f",
+               g_PsyX_FlashlightIntensity, g_cfg_postProcessIntensity, g_cfg_tonemapIntensity, g_PsyX_FlashlightSize);
+    }
+
+    /* FMV/voice (XA) master volume (options-menu slider + `xavolume` console).
+     * Set the global the XA player multiplies into the OpenAL source gain. */
+    {
+        extern float g_PcXaVolume;
+        extern float g_PcFmvVolume;
+        g_PcXaVolume = g_PcConfig.xaVolume;
+        g_PcFmvVolume = g_PcConfig.fmvVolume;
+        SH_LOG("XA voice volume: %.2f, FMV movie volume: %.2f", g_PcXaVolume, g_PcFmvVolume);
+    }
+
+    /* Initialize PSY-Q subsystems via PsyCross */
+    SH_LOG("Initializing PSY-Q subsystems...");
+    ResetCallback();
+    SpuInit();
+
+    /* Initialize CD filesystem - try loading from image or directory */
+    SH_LOG("Initializing CD filesystem...");
+    {
+        /* Resolve the disc (US/PAL), select the region's file table, and open it. */
+        const char* cdImagePath = PcPort_GetGameDiscPath();
+
+        if (cdImagePath[0]) {
+            SH_LOG("CD image found, initializing CDFS...");
+            PsyX_CDFS_Init(cdImagePath, 0, 0);
+        } else {
+            SH_WARN("Game will not be able to load assets without a disc image.");
+        }
+    }
+
+    /* Region-specific data tweaks now that g_GameRegion is known (e.g. PAL's
+     * Grey-Child -> Mumbler model swap, PAL font layout/VRAM home). */
+    { extern void CharaData_ApplyRegionPatches(void); CharaData_ApplyRegionPatches(); }
+    { extern void Font_ApplyRegionPatches(void); Font_ApplyRegionPatches(); }
+    { extern void Pc_LangInit(void); Pc_LangInit(); }
+
+    CdInit();
+
+    /* Initialize GPU */
+    SH_LOG("Initializing GPU...");
+    ResetGraph(0);
+    SetGraphDebug(0);
+
+    /* Initialize file system queue */
+    SH_LOG("Initializing filesystem queue...");
+    Fs_QueueInitialize();
+
+    /* Randomizer: forces the start map (map2_s04) and turns the global chara pool
+     * on, so it must run before MapRegistry_Init reads g_PcConfig.mapName AND
+     * before Pc_CharaGlobal_Open, which early-outs on globalCharaPool == 0. */
+    {
+        extern void Pc_Rando_Init(void);
+        Pc_Rando_Init();
+    }
+
+    /* Global chara pool: open chara_global.dll (AI update funcs for every
+     * portable monster) before the first MapRegistry_Load so its backfill
+     * hook can use it. Asset loading happens later, on map load. */
+    {
+        extern void Pc_CharaGlobal_Open(void);
+        Pc_CharaGlobal_Open();
+    }
+
+    /* Initialize map registry â€” sets g_pMapOverlayHeader based on config.cfg.
+     * Must happen after PcPort_InitCharaAnimInfo (anim stubs) but before MainLoop. */
+    SH_LOG("Initializing map registry...");
+    MapRegistry_Init();
+    SH_LOG("Active map: %s", g_PcConfig.mapName);
+
+    SH_LOG("All subsystems initialized. Entering MainLoop...");
+
+    /* The graphic-content warning ("There are violent and disturbing
+     * images in this game") used to fire here, but it ran before
+     * MainLoop's GsInitVcount/InitGeom/SD_Init so subsequent boot
+     * states (Konami, KCET) saw a noticeable load gap. Moved into
+     * MainLoop's startup phase right before the game-state loop â€”
+     * see src/bodyprog/sys/game_main.c near the SD_Init block. */
+
+    /*
+     * On PSX, main() loads BODYPROG.BIN and B_KONAMI.BIN overlays,
+     * then calls MainLoop() which is in BODYPROG.
+     *
+     * On PC, everything is statically linked, so we call MainLoop() directly.
+     */
+    MainLoop();
+
+    /* Cleanup */
+    SH_DBG("[SH] MainLoop exited normally. Shutting down...");
+    PsyX_Shutdown();
+
+    return 0;
+}
