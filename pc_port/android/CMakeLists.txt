@@ -45,13 +45,38 @@ set(ALSOFT_BACKEND_OPENSL ON CACHE BOOL "" FORCE)
 set(ALSOFT_BACKEND_OBOE OFF CACHE BOOL "" FORCE)
 add_subdirectory("${SH_ANDROID_OPENAL_DIR}" "${CMAKE_BINARY_DIR}/openal-soft")
 
-set(ENABLE_SHARED OFF CACHE BOOL "" FORCE)
-set(ENABLE_STATIC ON CACHE BOOL "" FORCE)
-set(WITH_TURBOJPEG OFF CACHE BOOL "" FORCE)
-set(WITH_TOOLS OFF CACHE BOOL "" FORCE)
-set(WITH_TESTS OFF CACHE BOOL "" FORCE)
-add_subdirectory("${SH_ANDROID_JPEG_DIR}" "${CMAKE_BINARY_DIR}/libjpeg-turbo")
-set(JPEG_LIBRARY jpeg-static CACHE STRING "" FORCE)
+# libjpeg-turbo intentionally rejects add_subdirectory integration. Build it
+# with its supported standalone CMake entry point and expose the resulting
+# archive as an imported target to the game build.
+include(ExternalProject)
+set(SH_ANDROID_JPEG_BUILD_DIR "${CMAKE_BINARY_DIR}/libjpeg-turbo")
+file(MAKE_DIRECTORY "${SH_ANDROID_JPEG_BUILD_DIR}")
+ExternalProject_Add(sh_android_jpeg_build
+    SOURCE_DIR "${SH_ANDROID_JPEG_DIR}"
+    BINARY_DIR "${SH_ANDROID_JPEG_BUILD_DIR}"
+    CMAKE_ARGS
+        "-DCMAKE_TOOLCHAIN_FILE=${CMAKE_TOOLCHAIN_FILE}"
+        "-DANDROID_ABI=${ANDROID_ABI}"
+        "-DANDROID_PLATFORM=${ANDROID_PLATFORM}"
+        "-DANDROID_STL=${ANDROID_STL}"
+        "-DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}"
+        "-DENABLE_SHARED=OFF"
+        "-DENABLE_STATIC=ON"
+        "-DWITH_TURBOJPEG=OFF"
+        "-DWITH_TOOLS=OFF"
+        "-DWITH_TESTS=OFF"
+    BUILD_COMMAND "${CMAKE_COMMAND}" --build <BINARY_DIR> --target jpeg-static
+    INSTALL_COMMAND ""
+    BUILD_BYPRODUCTS "${SH_ANDROID_JPEG_BUILD_DIR}/libjpeg.a"
+)
+add_library(sh_android_jpeg_static STATIC IMPORTED GLOBAL)
+set_target_properties(sh_android_jpeg_static PROPERTIES
+    IMPORTED_LOCATION "${SH_ANDROID_JPEG_BUILD_DIR}/libjpeg.a"
+    INTERFACE_INCLUDE_DIRECTORIES
+        "${SH_ANDROID_JPEG_DIR}/src;${SH_ANDROID_JPEG_BUILD_DIR}"
+)
+add_dependencies(sh_android_jpeg_static sh_android_jpeg_build)
+set(JPEG_LIBRARY sh_android_jpeg_static CACHE STRING "" FORCE)
 
 # PsyCross uses find_package(SDL2/OpenAL). These small Android find modules
 # expose the in-tree targets above without requiring desktop package metadata.
@@ -64,5 +89,5 @@ set(PSYCROSS_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../PsyCross" CACHE PATH "" FORCE)
 
 add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/.." "${CMAKE_BINARY_DIR}/silent-hill")
 
-target_link_libraries(SilentHillPC PRIVATE SDL2::SDL2 OpenAL::OpenAL jpeg-static)
+target_link_libraries(SilentHillPC PRIVATE SDL2::SDL2 OpenAL::OpenAL sh_android_jpeg_static)
 target_compile_definitions(SilentHillPC PRIVATE SH_ANDROID_PORT=1)
