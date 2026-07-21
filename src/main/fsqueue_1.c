@@ -2,9 +2,6 @@
 #ifdef SH_PC_PORT
 #include "sh_log.h"
 #include <stdio.h>
-#ifndef _WIN32
-#include <strings.h>
-#endif
 #endif
 #include "bodyprog/bodyprog.h"
 #include "bodyprog/demo.h"
@@ -194,7 +191,7 @@ s32 Fs_QueueEnqueue(e_FsFile fileIdx, u8 op, u8 postLoad, u8 alloc, void* data, 
 
 void Fs_QueueInitialize(void)
 {
-    bzero(&g_FsQueue, sizeof(g_FsQueue));
+    memset(&g_FsQueue, 0, sizeof(g_FsQueue));
     g_FsQueue.last.idx      = NO_VALUE;
     g_FsQueue.last.ptr      = &g_FsQueue.entries[FS_QUEUE_LENGTH - 1];
     g_FsQueue.read.idx      = 0;
