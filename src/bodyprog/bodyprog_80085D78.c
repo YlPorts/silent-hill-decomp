@@ -18,6 +18,8 @@
 #include "bodyprog/math/math.h"
 #include "bodyprog/sound/sound_system.h"
 #include "main/fsqueue.h"
+
+void func_8005DC1C(e_SfxId sfxId, const VECTOR3* pos, q23_8 vol, s32 soundType);
 extern const RECT D_8002AB10; // defined in events/events_util.c
 
 #ifdef SH_PC_PORT

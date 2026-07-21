@@ -3,6 +3,7 @@
 
 #include <psyq/libpad.h>
 #include <psyq/strings.h>
+#include <stdint.h>
 
 #include "bodyprog/bodyprog.h"
 #include "bodyprog/screen/screen_data.h"
@@ -17,6 +18,7 @@
 extern u8 D_800AFD04;extern u8 D_800AFD05;extern bool (*D_800AFD08[])(s_SysWork_2514* arg0, s_func_8009ECCC* arg1, s_8002AC04* ptr, u32* arg3);
 void func_8008989C(s_SysWork_2514* arg0, u16 arg1, s32 (*arg2)(u16, s32));
 void func_8008992C(s_SysWork_2514* arg0, u16 arg1, s32 (*arg2)(u16, s32));
+s32 func_8009E198(s_SysWork_2514* arg0, u32 arg1);
 
 // ========================================
 // VIBRATION HANDLING RELATED
@@ -520,11 +522,15 @@ bool func_8008973C(s_SysWork_2514* arg0, s_func_8009ECCC* arg1, s_8002AC04* ptr,
             break;
 
         case 5:
-            func_8008989C(arg0, ptr->field_4.func_8008973C_data.field_6, ptr->field_4.func_8008973C_data.field_C);
+            func_8008989C(arg0,
+                          ptr->field_4.func_8008973C_data.field_6,
+                          (s32 (*)(u16, s32))(uintptr_t)ptr->field_4.func_8008973C_data.field_C);
             break;
 
         case 6:
-            func_8008992C(arg0, ptr->field_4.func_8008973C_data.field_6, ptr->field_4.func_8008973C_data.field_C);
+            func_8008992C(arg0,
+                          ptr->field_4.func_8008973C_data.field_6,
+                          (s32 (*)(u16, s32))(uintptr_t)ptr->field_4.func_8008973C_data.field_C);
             break;
 
         case 7:
