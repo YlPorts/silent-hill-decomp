@@ -13,6 +13,7 @@
 #include "tex_pack.h"
 #include "pc_big_lm.h"
 #include "sh_log.h"
+#include "bodyprog/game_boot/fs_chara_anim.h"
 
 #ifndef _WIN32
 /* Loose-file paths are built from the disc file table's UPPERCASE folder/names
@@ -20,8 +21,10 @@
  * Linux (ext4) does not, so a mod authored on Windows or with a lowercased
  * folder silently fails to load. These enable a case-insensitive fallback. */
 #include <dirent.h>
+#include <fcntl.h>
 #include <sys/stat.h>
 #include <strings.h>
+#include <unistd.h>
 #endif
 
 /* Forensics for the FS-queue stomp family (SaveLoad.log / SewerCrash*.log):

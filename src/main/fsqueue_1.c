@@ -2,6 +2,9 @@
 #ifdef SH_PC_PORT
 #include "sh_log.h"
 #include <stdio.h>
+#ifndef _WIN32
+#include <strings.h>
+#endif
 #endif
 #include "bodyprog/bodyprog.h"
 #include "bodyprog/demo.h"
