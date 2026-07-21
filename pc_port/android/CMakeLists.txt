@@ -89,5 +89,8 @@ set(PSYCROSS_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../PsyCross" CACHE PATH "" FORCE)
 
 add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/.." "${CMAKE_BINARY_DIR}/silent-hill")
 
+target_compile_options(psycross_static PRIVATE
+    -include "${CMAKE_CURRENT_SOURCE_DIR}/include/psycross_android_compat.h"
+)
 target_link_libraries(SilentHillPC PRIVATE SDL2::SDL2 OpenAL::OpenAL sh_android_jpeg_static)
 target_compile_definitions(SilentHillPC PRIVATE SH_ANDROID_PORT=1)
