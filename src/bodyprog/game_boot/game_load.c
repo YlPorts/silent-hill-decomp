@@ -19,6 +19,7 @@
 #include "bodyprog/memcard.h"
 #include "bodyprog/player.h"
 #include "bodyprog/ranking.h"
+#include "bodyprog/screen/background_draw.h"
 #include "bodyprog/screen/screen_data.h"
 #include "bodyprog/screen/screen_draw.h"
 #include "bodyprog/sound/sound_system.h"

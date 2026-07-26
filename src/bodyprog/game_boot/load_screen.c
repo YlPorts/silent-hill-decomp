@@ -9,8 +9,10 @@
 #include <psyq/strings.h>
 
 #include "bodyprog/bodyprog.h"
+#include "bodyprog/events/collision_trigger.h"
 #include "bodyprog/game_boot/game_boot.h"
 #include "bodyprog/gfx/map_effects.h"
+#include "bodyprog/screen/background_draw.h"
 #include "bodyprog/view/vc_main.h"
 #include "bodyprog/math/math.h"
 

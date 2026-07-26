@@ -5,6 +5,7 @@
 #include <psyq/strings.h>
 
 #include "main/fsqueue.h"
+#include "main/mem.h"
 #include "bodyprog/bodyprog.h"
 #include "bodyprog/demo.h"
 #include "bodyprog/game_boot/game_boot.h"

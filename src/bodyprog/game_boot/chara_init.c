@@ -9,10 +9,13 @@
 #include <psyq/strings.h>
 
 #include "bodyprog/bodyprog.h"
+#include "bodyprog/events/collision_trigger.h"
 #include "bodyprog/events/npc_main.h"
 #include "bodyprog/events/player_pos_update.h"
+#include "bodyprog/game_boot/fs_chara_anim.h"
 #include "bodyprog/game_boot/game_boot.h"
 #include "bodyprog/gfx/map_effects.h"
+#include "bodyprog/player.h"
 #include "bodyprog/view/vc_util.h"
 #include "main/fsqueue.h"
 
