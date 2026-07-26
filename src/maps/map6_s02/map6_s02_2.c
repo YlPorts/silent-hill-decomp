@@ -14,6 +14,7 @@
 #include "bodyprog/sound/sound_system.h"
 #include "main/rng.h"
 #include "maps/map6/map6_s02.h"
+#include "screens/credits/credits.h"
 
 #include "../src/maps/chara_util.c" // 0x800CDEB0
 
