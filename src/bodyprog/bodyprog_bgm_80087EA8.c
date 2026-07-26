@@ -6,6 +6,7 @@
 
 #include "bodyprog/bodyprog.h"
 #include "bodyprog/events/bgm.h"
+#include "bodyprog/game_boot/background_sound_init.h"
 #include "bodyprog/item_screens.h"
 #include "bodyprog/math/math.h"
 #include "bodyprog/screen/screen_draw.h"

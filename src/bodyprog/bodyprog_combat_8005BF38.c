@@ -4,6 +4,7 @@
 #include <psyq/gtemac.h>
 #include <psyq/libapi.h>
 #include <psyq/strings.h>
+#include <stdlib.h>
 
 #include "bodyprog/bodyprog.h"
 #include "bodyprog/math/math.h"
