@@ -1,4 +1,7 @@
+#include <stdlib.h>
+
 #include "bodyprog/bodyprog.h"
+#include "bodyprog/item_screens.h"
 #include "psyq/libgte.h"
 #include "bodyprog/math/math.h"
 #include "main/rng.h"

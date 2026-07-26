@@ -1,4 +1,7 @@
+#include <stdlib.h>
+
 #include "bodyprog/bodyprog.h"
+#include "bodyprog/item_screens.h"
 #include "bodyprog/math/math.h"
 #include "main/rng.h"
 #include "maps/map7/map7_s03.h"
