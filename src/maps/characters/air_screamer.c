@@ -1,11 +1,17 @@
 ﻿#include "bodyprog/bodyprog.h"
+#include "bodyprog/demo.h"
+#include "bodyprog/events/npc_main.h"
 #include "bodyprog/game_boot/fs_chara_anim.h"
 #include "bodyprog/math/math.h"
 #include "bodyprog/player.h"
+#include "bodyprog/sound/sound_system.h"
 #include "main/rng.h"
 #include "maps/shared.h"
 #include "maps/characters/air_screamer.h"
-bool Ai_AirScreamer_Control(s_SubCharacter* airScreamer);bool Ai_AirScreamer_Init(s_SubCharacter* airScreamer);
+bool Ai_AirScreamer_Control(s_SubCharacter* airScreamer);
+bool Ai_AirScreamer_Init(s_SubCharacter* airScreamer);
+void Ai_AirScreamer_Control_0(s_SubCharacter* airScreamer);
+void Ai_AirScreamer_GroundWarp(s_SubCharacter* airScreamer);
 
 // NOTES:
 // - M0S01 includes some extra functions missing from other maps, but also removes the body of most `Ai_AirScreamer_Control_X` functions.

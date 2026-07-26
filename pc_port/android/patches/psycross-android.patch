@@ -1,0 +1,75 @@
+diff --git a/src/PsyX_main.cpp b/src/PsyX_main.cpp
+index e847dd5..194b98b 100644
+--- a/src/PsyX_main.cpp
++++ b/src/PsyX_main.cpp
+@@ -628,10 +628,10 @@ void PrintMessageToOutput(SpewType_t spewtype, char const* pMsgFormat, va_list a
+ 	}
+ #else
+-	printf(pTempBuffer);
++	printf("%s", pTempBuffer);
+ #endif
+ 
+ 	if(g_logStream)
+-		fprintf(g_logStream, pTempBuffer);
++		fprintf(g_logStream, "%s", pTempBuffer);
+ }
+ 
+ void PsyX_Log(const char* fmt, ...)
+diff --git a/src/render/PsyX_render.cpp b/src/render/PsyX_render.cpp
+index 98c91dc..e7bda10 100644
+--- a/src/render/PsyX_render.cpp
++++ b/src/render/PsyX_render.cpp
+@@ -555,10 +555,8 @@ int GR_InitialiseGLContext(char* windowName, int fullscreen)
+ 	SDL_DisplayMode displayMode;
+ 	if (SDL_GetCurrentDisplayMode(0, &displayMode) == 0)
+ 	{
+-		screenWidth = displayMode.w;
+-		windowWidth = displayMode.w;
+-		screenHeight = displayMode.h;
+-		windowHeight = displayMode.h;
++		g_windowWidth = displayMode.w;
++		g_windowHeight = displayMode.h;
+ 	}
+ #endif
+ 
+@@ -1615,7 +1613,9 @@ int GR_InitialisePSX()
+ 	 * the sample count the driver actually granted (may differ from requested). */
+ 	if (g_cfg_msaaSamples > 0)
+ 	{
++#if defined(RENDERER_OGL)
+ 		glEnable(GL_MULTISAMPLE);
++#endif
+ 		int actualSamples = 0;
+ 		SDL_GL_GetAttribute(SDL_GL_MULTISAMPLESAMPLES, &actualSamples);
+ 		eprintf("*MSAA: requested %dx, got %dx\n", g_cfg_msaaSamples, actualSamples);
+@@ -3072,18 +3072,30 @@ static void GR_EnsureShadowTarget(void)
+ 	             0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+ 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+ 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
++#if defined(RENDERER_OGLES)
++	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
++	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
++#else
+ 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+ 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+ 	{
+ 		float border[4] = { 1.0f, 1.0f, 1.0f, 1.0f };  /* outside the light frustum = fully lit */
+ 		glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, border);
+ 	}
++#endif
+ 	glBindTexture(GL_TEXTURE_2D, 0);
+ 
+ 	glGenFramebuffers(1, &g_shadowFBO);
+ 	glBindFramebuffer(GL_FRAMEBUFFER, g_shadowFBO);
+ 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, g_shadowDepthTex, 0);
++#if defined(RENDERER_OGLES)
++	{
++		const GLenum drawBuffers[] = { GL_NONE };
++		glDrawBuffers(1, drawBuffers);
++	}
++#else
+ 	glDrawBuffer(GL_NONE);
++#endif
+ 	glReadBuffer(GL_NONE);
+ 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+ 
