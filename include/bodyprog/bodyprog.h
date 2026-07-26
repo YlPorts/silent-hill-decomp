@@ -2112,6 +2112,8 @@ void func_8005DC3C(e_SfxId sfxId, const VECTOR3* pos, q23_8 vol, s32 soundType, 
 
 void func_8005DD44(e_SfxId sfxId, VECTOR3* pos, q23_8 vol, s8 pitch);
 
+void func_8005DE0C(e_SfxId sfxId, VECTOR3* pos, s32 vol, q19_12 falloff, s8 pitch);
+
 bool func_80060044(POLY_FT4** poly, s32 idx);
 
 bool func_800611C0(POLY_FT4** poly, s32 idx);
@@ -2180,6 +2182,22 @@ void MapMsg_DisplayAndHandleSelection(bool hasSelection, s32 mapMsgIdx, s32 step
 void func_800865FC(bool isPos, s32 idx0, s32 idx1, q3_12 angleY, q19_12 offsetOrPosX, q19_12 offsetOrPosZ);
 
 void func_800866D4(s32 arg0, s32 arg1, bool reset);
+
+void func_8008605C(e_EventFlag eventFlagIdx, s32 stepTrue, s32 stepFalse, bool stepSecondary);
+
+void func_80086728(s_SubCharacter* chara, s32 arg1, s32 arg2, bool reset);
+
+void func_800868DC(s32 idx);
+
+s32 func_800868F4(s32 arg0, s32 arg1, s32 idx);
+
+void Map_MessageWithAudio(s32 mapMsgIdx, u8* audioIdx, const u16* audioCmds);
+
+void Camera_PositionSet(VECTOR3* pos, q19_12 offsetOrPosX, q19_12 offsetOrPosY, q19_12 offsetOrPosZ,
+                        q19_12 accelXz, q19_12 accelY, q19_12 speedXzMax, q19_12 speedYMax, bool warp);
+
+void Camera_LookAtSet(VECTOR3* lookAt, q19_12 lookAtOffsetOrPosX, q19_12 lookAtOffsetOrPosY, q19_12 lookAtOffsetOrPosZ,
+                      q19_12 angularAccelX, q19_12 angularAccelY, q19_12 angularSpeedXMax, q19_12 angularSpeedYMax, bool warp);
 
 s32 func_800382B0(s32 arg0);
 
