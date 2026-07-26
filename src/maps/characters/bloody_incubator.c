@@ -1,4 +1,5 @@
 #include "bodyprog/bodyprog.h"
+#include "maps/shared.h"
 #include "bodyprog/math/math.h"
 #include "maps/characters/bloody_incubator.h"
 

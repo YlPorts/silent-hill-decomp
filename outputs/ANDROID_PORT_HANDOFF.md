@@ -14,13 +14,13 @@ Actualizado: 2026-07-26
 
 - Archivos totales del repositorio: 2,182.
 - Tareas de la compilación Android/Ninja: 1,029.
-- Última ejecución completada: https://github.com/YlPorts/silent-hill-decomp/actions/runs/30220651551
-- Resultado de esa ejecución: 991 tareas pasaron, 1 falló y 37 no llegaron a ejecutarse.
-- El único fallo es `map7_s01_2.c.o` por pasar enteros a un parámetro `void*` que no se usa.
-- La corrección local cambia ese parámetro de `func_800DD348` a `s32`, conservando los tres argumentos y evitando una conversión de puntero inválida en ARM64; debe verificarse en la ejecución siguiente.
+- Última ejecución completada: https://github.com/YlPorts/silent-hill-decomp/actions/runs/30220848795
+- Resultado de esa ejecución: 1,001 tareas pasaron, 1 falló y 27 no llegaron a ejecutarse.
+- El único fallo es `Chara_GhostDoctor.c.o` por `Chara_CollisionReset` sin declaración visible.
+- La corrección local incluye `maps/shared.h` en `ghost_doctor.c` y en las otras dos fuentes de personajes con el mismo uso; debe verificarse en la ejecución siguiente.
 - Todavía no existe un APK válido. La compilación no ha llegado a `1029/1029`.
 
-Los 37 pendientes no son 37 errores. Ninja se detiene al encontrar un fallo; la mayoría de las tareas pendientes puede pasar sin cambios cuando llegue su turno.
+Los 27 pendientes no son 27 errores. Ninja se detiene al encontrar un fallo; la mayoría de las tareas pendientes puede pasar sin cambios cuando llegue su turno.
 
 ## Cómo calcular el contador sin confundirlo
 

@@ -1,5 +1,6 @@
 #include "bodyprog/bodyprog.h"
 #include "bodyprog/math/math.h"
+#include "maps/shared.h"
 #include "maps/characters/ghost_doctor.h"
 
 #define ghostDocProps ghostDoc->properties.npc
