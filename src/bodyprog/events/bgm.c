@@ -8,6 +8,7 @@
 #include "bodyprog/demo.h"
 #include "bodyprog/events/bodyprog_data_800A99B4.h"
 #include "bodyprog/events/bgm.h"
+#include "bodyprog/game_boot/background_sound_init.h"
 #include "bodyprog/math/math.h"
 #include "bodyprog/screen/screen_data.h"
 #include "bodyprog/screen/screen_draw.h"

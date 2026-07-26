@@ -3,6 +3,7 @@
 
 #ifdef SH_PC_PORT
 #include <stdio.h>
+#include <stdint.h>
 #endif
 
 #include <psyq/libpad.h>
@@ -14,6 +15,7 @@
 #include "bodyprog/item_screens.h"
 #include "bodyprog/math/math.h"
 #include "bodyprog/sound/sound_system.h"
+#include "bodyprog/text/text_debug_draw.h"
 #include "main/fsqueue.h"
 
 // ========================================
@@ -74,8 +76,13 @@ void Dms_HeaderFixOffsets(s_DmsHeader* dmsHdr) // 0x8008C9A0
 
 void Dms_EntryFixOffsets(s_DmsEntry* entry, s_DmsHeader* dmsHdr) // 0x8008CA44
 {
+#ifdef SH_PC_PORT
+    entry->keyframes.character = (s_DmsKeyframeCharacter*)((uintptr_t)entry->keyframes.character + (uintptr_t)dmsHdr);
+    entry->holdRanges          = (s_DmsHoldRange*)((uintptr_t)entry->holdRanges + (uintptr_t)dmsHdr);
+#else
     entry->keyframes.character = (u32)entry->keyframes.character + (u32)dmsHdr;
     entry->holdRanges          = (u32)entry->holdRanges          + (u32)dmsHdr;
+#endif
 }
 
 s_DmsSegment* Dms_SegmentGet(volatile s32 unused, s32 segmentIdx, s_DmsHeader* dmsHdr) // 0x8008CA60
