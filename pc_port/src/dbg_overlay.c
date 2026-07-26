@@ -210,7 +210,6 @@ static GLuint s_toast_tex     = 0;
  * collision pass, projected and drawn as GL lines (no depth test → visible
  * through walls, RE4-style). Cleared after each render. ---- */
 extern MATRIX VbWvsMatrix;          /* world->view rotation (Q12), vw_calc.c */
-extern long   ReadGeomScreen(void); /* GTE projection distance H */
 extern void   CollVis_CaptureCell(q19_12 px, q19_12 pz); /* full-cell wall capture, collision.c */
 
 #define CV_MAX_SEGS 2048
