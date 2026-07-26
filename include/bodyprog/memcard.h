@@ -497,6 +497,8 @@ s32 MemCard_LastMemCardResultGet(void);
 
 s32 MemCard_FileStatusesGet(s32 deviceId);
 
+s32 MemCard_AllFilesStatusGet(s32 deviceId);
+
 s_MemCard_SaveMetadata* MemCard_SaveMetadataGet(s32 deviceId, s32 fileIdx, s32 saveIdx);
 
 /** @brief Returns the count of files used in the memory card. */
