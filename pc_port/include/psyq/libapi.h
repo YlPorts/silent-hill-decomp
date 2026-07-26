@@ -3,6 +3,8 @@
 #define _PSYQ_COMPAT_LIBAPI_H
 #include <libapi.h>
 
+extern unsigned long SetSp(unsigned long stackPtr);
+
 #ifdef __ANDROID__
 #include <stdint.h>
 

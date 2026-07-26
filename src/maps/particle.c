@@ -1,15 +1,19 @@
 #include "inline_no_dmpsx.h"
 
+#include <psyq/libapi.h>
+
 #include "bodyprog/bodyprog.h"
 #include "bodyprog/events/bodyprog_data_800A99B4.h"
 #include "bodyprog/gfx/map_effects.h"
 #include "bodyprog/math/math.h"
+#include "bodyprog/sound/sound_system.h"
 #include "main/rng.h"
 #include "maps/shared.h"
 #include "maps/particle.h"
 
 #ifdef SH_PC_PORT
 #include "sh_log.h"
+#include <stdlib.h>
 #endif
 
 // TODO: Find why removing these includes causes mismatch.
@@ -1496,7 +1500,7 @@ bool func_800CC6E8(s_800E34FC* arg0, s_800E330C* arg1, s32 mapId) // 0x800CC6E8
     {
         for (i = 0; i < D_800E39AC; i++, curArg0++)
         {
-            func_800CE02C(i, func_800D012C(&curArg0->field_0, &sp50, temp_s4), curArg0, mapId);
+            func_800CE02C(i, func_800D012C(&curArg0->field_0, &sp50, &temp_s4), curArg0, mapId);
         }
     }
 
