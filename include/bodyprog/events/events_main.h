@@ -3,6 +3,8 @@
 
 void Event_Update(bool disableButtonEvents);
 
+void func_8003A16C(void);
+
 bool Event_CollideFacingCheck(s_MapPoint2d* mapPoint);
 
 bool Event_CollideObbFacingCheck(s_MapPoint2d* mapPoint);
