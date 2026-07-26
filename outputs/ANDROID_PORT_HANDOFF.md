@@ -14,13 +14,13 @@ Actualizado: 2026-07-26
 
 - Archivos totales del repositorio: 2,182.
 - Tareas de la compilación Android/Ninja: 1,029.
-- Última ejecución completada: https://github.com/YlPorts/silent-hill-decomp/actions/runs/30216621993
-- Resultado de esa ejecución: 606 tareas pasaron, 3 fallaron y 420 no llegaron a ejecutarse.
-- Fallaron `map0_s01_2.c.o`, `Chara_Cybil.c.o` y `map0_s01_events.c.o` por encabezados y declaraciones no visibles para Clang.
-- Las correcciones locales añaden los encabezados de texto debug, eventos, sonido y jugador, y corrigen los nombres públicos `Ai_Cybil_*`; deben verificarse en la ejecución siguiente.
+- Última ejecución completada: https://github.com/YlPorts/silent-hill-decomp/actions/runs/30216852064
+- Resultado de esa ejecución: 618 tareas pasaron, 2 fallaron y 409 no llegaron a ejecutarse.
+- Los dos fallos son `particle.c.o` en dos mapas diferentes por `Game_HyperBlasterBeamColorGet` sin declaración visible.
+- La corrección local incluye `bodyprog/item_screens.h` en `particle.c`; debe verificarse en la ejecución siguiente.
 - Todavía no existe un APK válido. La compilación no ha llegado a `1029/1029`.
 
-Los 420 pendientes no son 420 errores. Ninja se detiene al encontrar un fallo; la mayoría de las tareas pendientes puede pasar sin cambios cuando llegue su turno.
+Los 409 pendientes no son 409 errores. Ninja se detiene al encontrar un fallo; la mayoría de las tareas pendientes puede pasar sin cambios cuando llegue su turno.
 
 ## Cómo calcular el contador sin confundirlo
 
