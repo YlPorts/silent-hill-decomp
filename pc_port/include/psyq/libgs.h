@@ -215,6 +215,7 @@ extern int  GsGetActiveBuff(void);
 /* Ordering table operations */
 extern void GsDrawOt(GsOT *ot);
 extern void GsClearOt(int offset, int point, GsOT *ot);
+extern void GsSortOt(GsOT *src, GsOT *dst);
 extern void GsSortClear(unsigned char r, unsigned char g, unsigned char b, GsOT *ot);
 
 /* Lighting */
@@ -222,6 +223,7 @@ extern void GsSetAmbient(long r, long g, long b);
 extern void GsSetFlatLight(int id, GsF_LIGHT *lt);
 extern void GsSetLightMode(int mode);
 extern void GsSetLightMatrix(MATRIX *m);
+extern void GsSetLsMatrix(MATRIX *m);
 
 /* TMD primitive packet layouts — must match on-disk TMD format.
  * Copied from include/psyq/libgs.h so pc_port code can parse TMD streams. */

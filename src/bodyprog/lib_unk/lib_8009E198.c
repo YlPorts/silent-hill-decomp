@@ -685,7 +685,7 @@ bool func_8009EBB8(s_SysWork_2514* list, s_SysWork_2514_18* node, s32 count) // 
     }
 
     list->field_10 = head;
-    list->unk_14   = NULL;
+    list->unk_14   = 0;
 
     list->head_18.next_0 = &list->head_18;
     list->head_18.prev_4 = &list->head_18;

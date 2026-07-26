@@ -2,6 +2,7 @@
 #include "inline_no_dmpsx.h"
 
 #include <psyq/gtemac.h>
+#include <psyq/libgs.h>
 
 #include "bodyprog/bodyprog.h"
 #include "bodyprog/screen/screen_data.h"

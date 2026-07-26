@@ -10,6 +10,7 @@ extern SpuVoiceAttr s_attr; // @hack BSS
 
 #include "bodyprog/bodyprog.h"
 #include "bodyprog/libsd.h"
+#include "bodyprog/sound/sound_system.h"
 
 SpuVoiceAttr s_attr;
 s32  __pad_bss_800C7730[2];
