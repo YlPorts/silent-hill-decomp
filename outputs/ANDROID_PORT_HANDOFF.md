@@ -8,19 +8,19 @@ Actualizado: 2026-07-26
 - Rama de trabajo: `codex/android-port-foundation`
 - Workflow: `.github/workflows/android.yml`
 - Arquitectura objetivo: Android ARM64 (`arm64-v8a`)
-- Salida prevista: APK debug nativo generado como artefacto de GitHub Actions.
+- Salida producida: APK debug nativo generado como artefacto de GitHub Actions.
 
 ## Estado exacto
 
 - Archivos totales del repositorio: 2,182.
 - Tareas de la compilación Android/Ninja: 1,029.
-- Última ejecución completada: https://github.com/YlPorts/silent-hill-decomp/actions/runs/30221307239
-- Resultado de esa ejecución: 1,025 tareas pasaron, 2 fallaron y 2 no llegaron a ejecutarse.
-- Los fallos son `map7_s03_2.c.o` y `map7_s03_3.c.o` por APIs matemáticas, partículas, animación y `abs` sin declaraciones, además de un parámetro entero tipado como `void*`.
-- La corrección local añade las declaraciones/encabezados correctos y cambia el parámetro no usado de `func_800DAC04` a `s32`; debe verificarse en la ejecución siguiente.
-- Todavía no existe un APK válido. La compilación no ha llegado a `1029/1029`.
-
-Las 2 pendientes no son 2 errores. Ninja se detiene al encontrar un fallo; pueden pasar sin cambios cuando llegue su turno.
+- Última ejecución completada: https://github.com/YlPorts/silent-hill-decomp/actions/runs/30221553172
+- Resultado de esa ejecución: 1,029 tareas pasaron, 0 fallaron y 0 quedaron pendientes.
+- `Build ARM64 debug APK` y `Upload debug APK` terminaron correctamente.
+- Artefacto: `silent-hill-android-debug`, ID `8637381348`, 6,922,782 bytes, SHA-256 del ZIP `2f4152a7bc40884a1ee1c70a66549a79ca005d1dfd23d9967f747bba29e422ae`.
+- APK extraído localmente: `outputs/silent-hill-android-debug.apk`, 6,964,363 bytes, SHA-256 `928685eb99df4568bfe7c70f2d6fa944f1612089518d4ff526ef77d7baed1b58`.
+- El APK contiene el manifiesto, `libmain.so`, SDL2, OpenAL y 42 bibliotecas de secciones de mapas para `arm64-v8a`; `map0_s00` forma parte del núcleo en vez de una biblioteca de overlay separada.
+- La compilación está completa, pero la ejecución aún no está validada: este entorno no tiene `adb` ni emulador Android.
 
 ## Cómo calcular el contador sin confundirlo
 
@@ -34,12 +34,13 @@ No llamar “archivos de código” a las 1,029: son tareas de compilación y en
 
 ## Qué debe hacer la siguiente cuenta
 
-1. Abrir la rama `codex/android-port-foundation` y revisar el workflow Android más reciente.
-2. Si falla, descargar/leer el log del job `build-debug-apk`.
-3. Calcular el contador con la fórmula anterior y comunicar las tres cifras.
-4. Corregir solamente los errores explícitos de Clang/GLES, verificar `git diff --check`, hacer commit y push a la misma rama.
-5. Repetir hasta que Ninja complete `1029/1029` y GitHub suba `silent-hill-android-debug`.
-6. Después de compilar, probar el APK en un dispositivo/emulador Android: arranque, selección de datos, renderizado, audio, video, controles, guardado y reanudación.
+1. Abrir la rama `codex/android-port-foundation` y la ejecución exitosa enlazada arriba.
+2. Descargar el artefacto `silent-hill-android-debug` si el APK local no está disponible.
+3. Conectar un dispositivo/emulador ARM64 y ejecutar `adb install -r silent-hill-android-debug.apk`.
+4. Resolver y lanzar la actividad con `adb shell cmd package resolve-activity --brief com.slickamogus.silenthill` y `adb shell am start -n <actividad-resuelta>`.
+5. Capturar `adb logcat -b crash`, una captura de pantalla y el árbol de UI durante el primer arranque.
+6. Probar selección de datos legales del juego, renderizado, audio, FMV, controles táctiles/físicos, guardado y reanudación.
+7. Si aparece un fallo nativo, corregirlo, verificar `git diff --check`, hacer commit/push y repetir la prueba en la misma rama.
 
 ## Decisiones técnicas ya tomadas
 
@@ -53,7 +54,7 @@ No llamar “archivos de código” a las 1,029: son tareas de compilación y en
 
 ## Riesgos restantes después de compilar
 
-- Errores de enlace que aparecen al final de las 1,029 tareas.
 - Fallos de arranque o búsqueda de datos del juego.
 - Diferencias de OpenGL ES, audio, FMV, entrada táctil/control físico y guardado.
+- `SetMulRotMatrix` todavía tiene una implementación provisional sin efecto en los stubs del port y debe validarse/corregirse durante las pruebas gráficas.
 - Rendimiento y compatibilidad entre distintos dispositivos Android.
