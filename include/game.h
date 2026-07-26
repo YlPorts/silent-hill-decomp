@@ -16,6 +16,18 @@
 #include "bodyprog/sys/joy.h"
 #include "maps/characters/harry.h"
 
+#ifdef __ANDROID__
+/* bzero is a legacy BSD extension that Clang does not expose in strict C mode
+ * on every Android API level. Keep the decompiled call sites intact while
+ * mapping them to the portable C equivalent. Include strings.h first so its
+ * declaration guard is established before the function-like macro exists. */
+#include <string.h>
+#include <strings.h>
+#ifndef bzero
+#define bzero(dest, size) memset((dest), 0, (size))
+#endif
+#endif
+
 #define TICKS_PER_SECOND 60 /** Game has a variable timestep with 60 ticks max. */
 #define TIMESTEP_30_FPS  Q12(1.0f / (float)(TICKS_PER_SECOND / 2))
 #define TIMESTEP_60_FPS  Q12(1.0f / (float)(TICKS_PER_SECOND))
