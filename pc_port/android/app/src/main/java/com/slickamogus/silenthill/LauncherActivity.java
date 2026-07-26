@@ -16,6 +16,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -37,12 +39,28 @@ public final class LauncherActivity extends Activity {
         return new File(gameDataDirectory(), "Silent Hill.bin");
     }
 
+    private File startupStatusFile() {
+        return new File(getFilesDir(), "android_startup_status.txt");
+    }
+
+    private File launchMarkerFile() {
+        return new File(getFilesDir(), "android_launch_requested.flag");
+    }
+
     @Override
     protected void onCreate(Bundle state) {
         super.onCreate(state);
         ensurePrivateFiles();
         setContentView(buildContentView());
         refreshStatus();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (status != null) {
+            refreshStatus();
+        }
     }
 
     private View buildContentView() {
@@ -80,7 +98,7 @@ public final class LauncherActivity extends Activity {
 
         play = new Button(this);
         play.setText("JUGAR");
-        play.setOnClickListener(v -> startActivity(new Intent(this, GameActivity.class)));
+        play.setOnClickListener(v -> launchGame());
         root.addView(play, buttonLayout());
         return root;
     }
@@ -112,6 +130,41 @@ public final class LauncherActivity extends Activity {
                 Toast.makeText(this, "No se pudo crear config.cfg: " + error.getMessage(), Toast.LENGTH_LONG).show();
             }
         }
+        enforceSafeMobileConfig(config);
+    }
+
+    /** Existing installs keep config.cfg, so enforce the safe mobile boot value too. */
+    private void enforceSafeMobileConfig(File config) {
+        if (!config.isFile()) {
+            return;
+        }
+        try {
+            String original = new String(Files.readAllBytes(config.toPath()), StandardCharsets.UTF_8);
+            String updated = original.replaceAll(
+                    "(?m)^\\s*global_chara_pool\\s*=\\s*[^\\r\\n]+$",
+                    "global_chara_pool = 0");
+            if (!updated.contains("global_chara_pool = 0")) {
+                updated = updated + (updated.endsWith("\n") ? "" : "\n")
+                        + "global_chara_pool = 0\n";
+            }
+            if (!updated.equals(original)) {
+                Files.write(config.toPath(), updated.getBytes(StandardCharsets.UTF_8));
+            }
+        } catch (IOException error) {
+            Toast.makeText(this, "No se pudo ajustar config.cfg: " + error.getMessage(), Toast.LENGTH_LONG).show();
+        }
+    }
+
+    private void launchGame() {
+        startupStatusFile().delete();
+        try {
+            Files.write(launchMarkerFile().toPath(), "launch\n".getBytes(StandardCharsets.UTF_8));
+        } catch (IOException error) {
+            Toast.makeText(this, "No se pudo preparar el diagnóstico: " + error.getMessage(), Toast.LENGTH_LONG).show();
+        }
+        status.setText("Iniciando motor nativo…");
+        status.setTextColor(Color.rgb(180, 200, 255));
+        startActivity(new Intent(this, GameActivity.class));
     }
 
     private void chooseDisc() {
@@ -187,13 +240,52 @@ public final class LauncherActivity extends Activity {
         return String.format(java.util.Locale.ROOT, "%.1f MB", bytes / (1024.0 * 1024.0));
     }
 
+    private String readStartupStatus() {
+        File file = startupStatusFile();
+        if (!file.isFile()) {
+            return "";
+        }
+        try {
+            return new String(Files.readAllBytes(file.toPath()), StandardCharsets.UTF_8).trim();
+        } catch (IOException ignored) {
+            return "";
+        }
+    }
+
+    private static String describeStartupStage(String stage) {
+        switch (stage) {
+            case "FILES_READY": return "preparación de archivos privados";
+            case "STARTING_GRAPHICS": return "creación de la pantalla OpenGL ES";
+            case "GRAPHICS_READY": return "inicialización posterior a los gráficos";
+            case "STARTING_DISC": return "lectura de la imagen BIN";
+            case "DISC_READY": return "inicialización de los demás subsistemas";
+            case "ERROR_GRAPHICS_CONTEXT": return "ERROR: no se pudo crear el contexto OpenGL ES";
+            case "RUNNING": return "motor iniciado";
+            default: return stage.isEmpty() ? "sin diagnóstico nativo" : stage;
+        }
+    }
+
     private void refreshStatus() {
         File disc = discFile();
         boolean ready = disc.isFile() && disc.length() >= MINIMUM_BIN_SIZE;
-        status.setText(ready
-                ? "Imagen lista: " + formatBytes(disc.length())
-                : "Falta importar la imagen BIN del juego.");
-        status.setTextColor(ready ? Color.rgb(120, 220, 140) : Color.rgb(240, 170, 120));
+        String startupStage = readStartupStatus();
+        boolean launchPending = launchMarkerFile().isFile();
+
+        if (launchPending && "RUNNING".equals(startupStage)) {
+            launchMarkerFile().delete();
+            launchPending = false;
+        }
+
+        if (launchPending) {
+            String detail = describeStartupStage(startupStage);
+            status.setText("El juego no completó el arranque. Última etapa: " + detail + ".");
+            status.setTextColor(Color.rgb(255, 110, 110));
+        } else {
+            status.setText(ready
+                    ? "Imagen lista: " + formatBytes(disc.length())
+                    : "Falta importar la imagen BIN del juego.");
+            status.setTextColor(ready ? Color.rgb(120, 220, 140) : Color.rgb(240, 170, 120));
+        }
         importDisc.setEnabled(true);
         play.setEnabled(ready);
     }
@@ -204,4 +296,3 @@ public final class LauncherActivity extends Activity {
         ioExecutor.shutdownNow();
     }
 }
-
