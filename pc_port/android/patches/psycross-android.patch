@@ -1,8 +1,7 @@
 diff --git a/src/PsyX_main.cpp b/src/PsyX_main.cpp
-index e847dd5..194b98b 100644
 --- a/src/PsyX_main.cpp
 +++ b/src/PsyX_main.cpp
-@@ -225,6 +225,11 @@ int intrThreadMain(void* data)
+@@ -49,6 +49,11 @@
  		 * g_SpuMutex (never nested under g_intrMutex), throttles on the
  		 * SDL_GetTicks ms delta, no-op unless `adsr 1`. */
  		PsyX_SPUAL_Update();
@@ -14,7 +13,7 @@ index e847dd5..194b98b 100644
  	}
  
  	return 0;
-@@ -237,20 +242,25 @@ static int PsyX_Sys_InitialiseCore()
+@@ -60,18 +65,22 @@
  	Util_InitHPCTimer(&g_vblTimer);
  #else
  
@@ -32,21 +31,20 @@ index e847dd5..194b98b 100644
  	if (NULL == g_intrThread)
  	{
  		eprinterr("SDL_CreateThread failed: %s\n", SDL_GetError());
-+		SDL_DestroyMutex(g_intrMutex);
-+		g_intrMutex = NULL;
- 		return 0;
- 	}
+-		return 0;
+-	}
 -	
 -	g_intrMutex = SDL_CreateMutex();
 -	if (NULL == g_intrMutex)
 -	{
 -		eprinterr("SDL_CreateMutex failed: %s\n", SDL_GetError());
--		return 0;
--	}
++		SDL_DestroyMutex(g_intrMutex);
++		g_intrMutex = NULL;
+ 		return 0;
+ 	}
  #endif
- 	return 1;
- }
-@@ -628,10 +638,10 @@ void PrintMessageToOutput(SpewType_t spewtype, char const* pMsgFormat, va_list a
+@@ -124,11 +133,11 @@
+ 		}, pTempBuffer);
  	}
  #else
 -	printf(pTempBuffer);
@@ -60,13 +58,13 @@ index e847dd5..194b98b 100644
  
  void PsyX_Log(const char* fmt, ...)
 diff --git a/src/render/PsyX_render.cpp b/src/render/PsyX_render.cpp
-index 98c91dc..e7bda10 100644
 --- a/src/render/PsyX_render.cpp
 +++ b/src/render/PsyX_render.cpp
-@@ -527,6 +527,13 @@ int GR_InitialiseGLContext(char* windowName, int fullscreen)
+@@ -1,6 +1,14 @@
+ int GR_InitialiseGLContext(char* windowName, int fullscreen)
  {
  	int windowFlags = SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE;
- 
++
 +#if defined(RENDERER_OGLES)
 +	/* SDL chooses the EGL window configuration during SDL_CreateWindow, so the
 +	 * requested GLES profile must be set before creating the window. */
@@ -74,11 +72,10 @@ index 98c91dc..e7bda10 100644
 +	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
 +	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES);
 +#endif
-+
+ 
  #if defined(__ANDROID__)
  	windowFlags |= SDL_WINDOW_FULLSCREEN;
- #else
-@@ -555,10 +562,8 @@ int GR_InitialiseGLContext(char* windowName, int fullscreen)
+@@ -48,17 +56,10 @@
  	SDL_DisplayMode displayMode;
  	if (SDL_GetCurrentDisplayMode(0, &displayMode) == 0)
  	{
@@ -90,17 +87,15 @@ index 98c91dc..e7bda10 100644
 +		g_windowHeight = displayMode.h;
  	}
  #endif
- 
-@@ -566,11 +571,6 @@ int GR_InitialiseGLContext(char* windowName, int fullscreen)
+-
 -	//SDL_GL_SetAttribute(SDL_GL_CONTEXT_EGL, 1);
 -	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, OGLES_VERSION);
 -	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
 -	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES);
--
+ 
  	if(!SDL_GL_CreateContext(g_window))
  	{
- 		eprinterr("Failed to initialise - OpenGL ES %d.x is not supported.\n", OGLES_VERSION);
-@@ -1615,7 +1615,9 @@ int GR_InitialisePSX()
+@@ -95,7 +96,9 @@
  	 * the sample count the driver actually granted (may differ from requested). */
  	if (g_cfg_msaaSamples > 0)
  	{
@@ -110,7 +105,7 @@ index 98c91dc..e7bda10 100644
  		int actualSamples = 0;
  		SDL_GL_GetAttribute(SDL_GL_MULTISAMPLESAMPLES, &actualSamples);
  		eprintf("*MSAA: requested %dx, got %dx\n", g_cfg_msaaSamples, actualSamples);
-@@ -3072,18 +3074,30 @@ static void GR_EnsureShadowTarget(void)
+@@ -131,18 +134,30 @@
  	             0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
  	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
  	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
@@ -140,4 +135,4 @@ index 98c91dc..e7bda10 100644
 +#endif
  	glReadBuffer(GL_NONE);
  	glBindFramebuffer(GL_FRAMEBUFFER, 0);
- 
+ 	/* continue */
