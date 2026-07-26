@@ -1,5 +1,7 @@
 #include "common.h"
 
+#include <psyq/libetc.h>
+
 // S__SAFE2: First anti-modchip overlay, ran before HP_SAFE1.
 // Calls `SafetyCheck` from Sony `safechk.obj` in a loop to check for non-stealth modchips and display an error message
 // if found.

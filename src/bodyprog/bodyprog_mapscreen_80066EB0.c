@@ -3,6 +3,7 @@
 
 #include <psyq/gtemac.h>
 #include <psyq/libapi.h>
+#include <psyq/libetc.h>
 #include <psyq/strings.h>
 
 #include "bodyprog/bodyprog.h"

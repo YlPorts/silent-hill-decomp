@@ -1,5 +1,7 @@
 #include "game.h"
 
+#include <psyq/libetc.h>
+
 #include "main/fsqueue.h"
 #include "bodyprog/screen/screen_data.h"
 #include "bodyprog/screen/screen_draw.h"
