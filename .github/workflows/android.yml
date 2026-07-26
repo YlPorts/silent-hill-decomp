@@ -48,16 +48,26 @@ jobs:
       - name: Check out pinned native dependencies
         run: git submodule update --init --recursive
 
-      - name: Apply Android PsyCross compatibility fixes
+      - name: Apply Android native startup fixes
         run: python3 pc_port/android/scripts/apply_psycross_android.py
 
-      - name: Build ARM64 debug APK
-        working-directory: pc_port/android
-        run: gradle --no-daemon --stacktrace :app:assembleDebug
+      - name: Prepare isolated-process crash diagnostics
+        run: python3 pc_port/android/scripts/prepare_launcher_diagnostics.py
 
-      - name: Upload debug APK
+      - name: Verify diagnostic Android sources
+        run: |
+          grep -F 'android:process=":game"' pc_port/android/app/src/main/AndroidManifest.xml
+          grep -F 'versionName "0.1.1-debug-crash-report"' pc_port/android/app/build.gradle
+          grep -F 'El juego no completó el arranque' pc_port/android/app/src/main/java/com/slickamogus/silenthill/LauncherActivity.java
+          ! grep -F 'launchMarkerFile().delete();' pc_port/android/app/src/main/java/com/slickamogus/silenthill/LauncherActivity.java
+
+      - name: Build clean ARM64 diagnostic APK
+        working-directory: pc_port/android
+        run: gradle --no-daemon --stacktrace clean :app:assembleDebug
+
+      - name: Upload diagnostic APK
         uses: actions/upload-artifact@v4
         with:
-          name: silent-hill-android-debug
+          name: silent-hill-android-debug-${{ github.sha }}
           path: pc_port/android/app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
