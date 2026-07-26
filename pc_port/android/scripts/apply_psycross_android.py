@@ -1,14 +1,15 @@
 #!/usr/bin/env python3
-"""Apply Android-specific PsyCross fixes with checked source replacements.
+"""Apply checked Android startup fixes before the native build.
 
-A checked replacement is more robust than a hand-maintained unified diff for the
-pinned submodule: every expected source fragment must occur exactly once, or the
-build stops with a useful error naming the missing transformation.
+The Android build uses pinned submodules. Exact checked replacements make the
+build fail with a useful label when an upstream fragment changes, instead of
+silently producing an APK with only part of the mobile fixes.
 """
 
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[2] / "PsyCross"
+PC_PORT = Path(__file__).resolve().parents[2]
+PSYCROSS = PC_PORT / "PsyCross"
 
 
 def replace_once(path: Path, old: str, new: str, label: str) -> None:
@@ -25,8 +26,8 @@ def replace_once(path: Path, old: str, new: str, label: str) -> None:
     print(f"[applied] {label}")
 
 
-def patch_main() -> None:
-    path = ROOT / "src" / "PsyX_main.cpp"
+def patch_psycross_main() -> None:
+    path = PSYCROSS / "src" / "PsyX_main.cpp"
 
     replace_once(
         path,
@@ -97,8 +98,8 @@ def patch_main() -> None:
     )
 
 
-def patch_render() -> None:
-    path = ROOT / "src" / "render" / "PsyX_render.cpp"
+def patch_psycross_render() -> None:
+    path = PSYCROSS / "src" / "render" / "PsyX_render.cpp"
 
     replace_once(
         path,
@@ -208,9 +209,116 @@ def patch_render() -> None:
     )
 
 
+def patch_host_startup() -> None:
+    path = PC_PORT / "src" / "main_pc.c"
+
+    replace_once(
+        path,
+        """#ifdef _WIN32
+#define SH_NULL_DEVICE "NUL"
+#else
+#define SH_NULL_DEVICE "/dev/null"
+#endif
+""",
+        """#ifdef _WIN32
+#define SH_NULL_DEVICE "NUL"
+#else
+#define SH_NULL_DEVICE "/dev/null"
+#endif
+
+#ifdef __ANDROID__
+static void PcPort_WriteStartupStatus(const char* status)
+{
+    FILE* f = fopen("android_startup_status.txt", "wb");
+    if (f != NULL)
+    {
+        fputs(status, f);
+        fputc('\\n', f);
+        fclose(f);
+    }
+}
+#else
+#define PcPort_WriteStartupStatus(status) ((void)0)
+#endif
+""",
+        "add Android startup status writer",
+    )
+
+    replace_once(
+        path,
+        """    PcPort_PreparePlatformPaths();
+
+    PrintBanner();
+""",
+        """    PcPort_PreparePlatformPaths();
+    PcPort_WriteStartupStatus("FILES_READY");
+
+    PrintBanner();
+""",
+        "mark private files ready",
+    )
+
+    replace_once(
+        path,
+        """    /* Initialize PsyCross (creates SDL2 window + OpenGL context) */
+    SH_LOG("Initializing PsyCross (SDL2 + OpenGL)...");
+    PsyX_Initialise("Silent Hill", windowWidth, windowHeight, g_PcConfig.fullscreen);
+
+    SH_LOG("PsyCross initialized. Window: %dx%d", windowWidth, windowHeight);
+""",
+        """    /* Initialize PsyCross (creates SDL2 window + OpenGL context) */
+    PcPort_WriteStartupStatus("STARTING_GRAPHICS");
+    SH_LOG("Initializing PsyCross (SDL2 + OpenGL)...");
+    PsyX_Initialise("Silent Hill", windowWidth, windowHeight, g_PcConfig.fullscreen);
+
+    {
+        extern SDL_Window* g_window;
+        const char* gl_version = (const char*)glGetString(GL_VERSION);
+        if (g_window == NULL || gl_version == NULL)
+        {
+            PcPort_WriteStartupStatus("ERROR_GRAPHICS_CONTEXT");
+            SH_LOG("Android startup failed: SDL/OpenGL ES context was not created");
+            return 2;
+        }
+    }
+    PcPort_WriteStartupStatus("GRAPHICS_READY");
+    SH_LOG("PsyCross initialized. Window: %dx%d", windowWidth, windowHeight);
+""",
+        "validate Android graphics startup",
+    )
+
+    replace_once(
+        path,
+        """        if (cdImagePath[0]) {
+            SH_LOG("CD image found, initializing CDFS...");
+            PsyX_CDFS_Init(cdImagePath, 0, 0);
+""",
+        """        if (cdImagePath[0]) {
+            PcPort_WriteStartupStatus("STARTING_DISC");
+            SH_LOG("CD image found, initializing CDFS...");
+            PsyX_CDFS_Init(cdImagePath, 0, 0);
+            PcPort_WriteStartupStatus("DISC_READY");
+""",
+        "mark disc initialization",
+    )
+
+    replace_once(
+        path,
+        """    SH_LOG("All subsystems initialized. Entering MainLoop...");
+
+    /* The graphic-content warning""",
+        """    SH_LOG("All subsystems initialized. Entering MainLoop...");
+    PcPort_WriteStartupStatus("RUNNING");
+
+    /* The graphic-content warning""",
+        "mark main loop running",
+    )
+
+
 if __name__ == "__main__":
-    if not ROOT.is_dir():
-        raise SystemExit(f"PsyCross submodule not found at {ROOT}")
-    patch_main()
-    patch_render()
-    print("Android PsyCross compatibility fixes applied successfully.")
+    if not PSYCROSS.is_dir():
+        raise SystemExit(f"PsyCross submodule not found at {PSYCROSS}")
+    patch_psycross_main()
+    patch_psycross_render()
+    patch_host_startup()
+    print("Android native startup fixes applied successfully.")
