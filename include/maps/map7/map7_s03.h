@@ -881,7 +881,7 @@ void func_800DA9F8(VECTOR3* arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4);
 
 void func_800DAB18(VECTOR3* arg0, s32 arg1, s32 arg2, s32 arg3);
 
-void func_800DAC04(VECTOR3* arg0, void* arg1, s32 arg2);
+void func_800DAC04(VECTOR3* arg0, s32 unused, s32 arg2);
 
 // Does something wth character bones. Likely Harry-specific.
 void func_800DAD54(void);

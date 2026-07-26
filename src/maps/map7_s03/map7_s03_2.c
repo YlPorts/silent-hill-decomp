@@ -1,4 +1,5 @@
 #include <memory.h>
+#include <stdlib.h>
 #include "sh_log.h"
 
 #include "bodyprog/bodyprog.h"
@@ -2785,7 +2786,7 @@ void func_800DAB18(VECTOR3* arg0, s32 arg1, s32 arg2, s32 arg3) // 0x800DAB18
     }
 }
 
-void func_800DAC04(VECTOR3* arg0, void* arg1, s32 arg2) // 0x800DAC04
+void func_800DAC04(VECTOR3* arg0, s32 unused, s32 arg2) // 0x800DAC04
 {
     s32 i;
     s32 var_s4;
@@ -3600,7 +3601,7 @@ void func_800DC49C(s_800F3DAC* arg0) // 0x800DC49C
                             Q8_TO_Q12(mat->t[0]) + D_800F48A8.positionX,
                             Q8_TO_Q12(mat->t[1]),
                             Q8_TO_Q12(mat->t[2]) + D_800F48A8.positionZ);
-            func_800DAC04(&pos, NULL, cond);
+            func_800DAC04(&pos, 0, cond);
             arg0->field_4F4++;
         }
     }

@@ -318,6 +318,8 @@ void Math_RotMatrixZxyNeg(SVECTOR* rot, MATRIX* mat); // Previous name: `Math_Ma
 
 void Math_RotMatrixZxyNegGte(SVECTOR* rot, MATRIX* mat); // Previous name: `Math_MatrixRotate1`
 
+void Math_RotMatrixZxy(SVECTOR* rot, MATRIX* mat);
+
 /** @brief Multiplies two integers in a fixed-point Q format.
  *
  * @param a First fixed-point factor.

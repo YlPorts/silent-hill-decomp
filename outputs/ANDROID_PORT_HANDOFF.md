@@ -14,13 +14,13 @@ Actualizado: 2026-07-26
 
 - Archivos totales del repositorio: 2,182.
 - Tareas de la compilación Android/Ninja: 1,029.
-- Última ejecución completada: https://github.com/YlPorts/silent-hill-decomp/actions/runs/30221073226
-- Resultado de esa ejecución: 1,017 tareas pasaron, 2 fallaron y 10 no llegaron a ejecutarse.
-- Los fallos son `Chara_Incubus.c.o` y `Chara_Unknown23.c.o`, ambos por `func_8004C328` y `abs` sin declaraciones visibles.
-- La corrección local incluye `item_screens.h` y `<stdlib.h>` en ambas fuentes; debe verificarse en la ejecución siguiente.
+- Última ejecución completada: https://github.com/YlPorts/silent-hill-decomp/actions/runs/30221307239
+- Resultado de esa ejecución: 1,025 tareas pasaron, 2 fallaron y 2 no llegaron a ejecutarse.
+- Los fallos son `map7_s03_2.c.o` y `map7_s03_3.c.o` por APIs matemáticas, partículas, animación y `abs` sin declaraciones, además de un parámetro entero tipado como `void*`.
+- La corrección local añade las declaraciones/encabezados correctos y cambia el parámetro no usado de `func_800DAC04` a `s32`; debe verificarse en la ejecución siguiente.
 - Todavía no existe un APK válido. La compilación no ha llegado a `1029/1029`.
 
-Los 10 pendientes no son 10 errores. Ninja se detiene al encontrar un fallo; la mayoría de las tareas pendientes puede pasar sin cambios cuando llegue su turno.
+Las 2 pendientes no son 2 errores. Ninja se detiene al encontrar un fallo; pueden pasar sin cambios cuando llegue su turno.
 
 ## Cómo calcular el contador sin confundirlo
 

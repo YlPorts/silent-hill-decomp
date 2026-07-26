@@ -2,6 +2,7 @@
 
 #include "bodyprog/bodyprog.h"
 #include "bodyprog/events/events_main.h"
+#include "bodyprog/game_boot/fs_chara_anim.h"
 #include "maps/characters/player.h"
 #include "bodyprog/dms.h"
 #include "bodyprog/gfx/map_effects.h"
@@ -13,6 +14,7 @@
 #include "bodyprog/sound/sound_system.h"
 #include "main/rng.h"
 #include "maps/map7/map7_s03.h"
+#include "maps/particle.h"
 #include "maps/characters/alessa.h"
 #ifdef SH_PC_PORT
 #include "sh_log.h"
