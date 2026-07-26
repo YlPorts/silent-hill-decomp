@@ -2061,7 +2061,7 @@ void func_800DCE20(void) // 0x800DCE20
     }
 }
 
-void func_800DD348(void* unused, s32 idx, u8 spawnFlags) // 0x800DD348
+void func_800DD348(s32 unused, s32 idx, u8 spawnFlags) // 0x800DD348
 {
     u8* curSpawnFlags;
 
