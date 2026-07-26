@@ -624,6 +624,10 @@ void Player_UpperBodyUpdate(s_SubCharacter* player, s_PlayerExtra* extra);
  */
 bool Player_CombatAnimUpdate(void);
 
+void func_8007C0D8(s_SubCharacter* player, s_PlayerExtra* extra, GsCOORDINATE2* coords);
+
+s32 func_8007D6F0(s_SubCharacter* player, s_800C45C8* arg1);
+
 /** @brief Main animation and state handler for the player's upper body.
  * Returns `true` if combat animations where completed or if the player's health is >60%.
  */

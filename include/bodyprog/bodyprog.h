@@ -1734,6 +1734,8 @@ void func_8005A42C(s_GteScratchData* scratchData, q19_12 alpha);
 
 void func_8005A478(s_GteScratchData* scratchData, q19_12 alpha);
 
+s32 func_8005545C(SVECTOR* vec);
+
 /** `scratchData` is unused? */
 void func_8005A838(s_GteScratchData* scratchData, s32 scale);
 

@@ -3690,6 +3690,9 @@ void Player_LogicUpdate(s_SubCharacter* player, s_PlayerExtra* extra, GsCOORDINA
  * is continuous-hold (refill IsAttacking, keep swinging), which is exactly
  * what we want for hold-to-jab. */
 static bool s_pcMeleeNeedsRelease = false;
+static int  s_pcMtClickQueue      = 0;
+static s32  D_800C44D0;
+static s32  D_800C44D4;
 #endif
 
 void Player_UpperBodyStateUpdate(s_PlayerExtra* extra, e_PlayerUpperBodyState upperState, s32 unused, s32 arg3) // 0x80073FC0
@@ -4192,6 +4195,15 @@ void Player_UpperBodyUpdate(s_SubCharacter* player, s_PlayerExtra* extra) // 0x8
 #define SH_AIM_KF_REACHED_P(kf) (player->model.anim.keyframeIdx == (kf))
 #endif
 
+#ifdef SH_PC_PORT
+static bool Player_CombatAnimUpdate_PC(s_SubCharacter* player, s_PlayerExtra* extra, s32* enemyAttackedIdxPtr)
+{
+#define enemyAttackedIdx (*enemyAttackedIdxPtr)
+#include "player_combat_anim_update.inc"
+#undef enemyAttackedIdx
+}
+#endif
+
 bool Player_UpperBodyMainUpdate(s_SubCharacter* player, s_PlayerExtra* extra) // 0x80075504
 {
     s32        enemyAttackedIdx;
@@ -4205,8 +4217,10 @@ bool Player_UpperBodyMainUpdate(s_SubCharacter* player, s_PlayerExtra* extra) //
     s32        i;
     s16        var_s0;
     s32        playerTurn;
+#ifndef SH_PC_PORT
     static s32 D_800C44D0;
     static s32 D_800C44D4;
+#endif
 
 #ifdef SH_PC_PORT
     /* Multi-tap click queue + post-swing release latch.
@@ -4231,7 +4245,6 @@ bool Player_UpperBodyMainUpdate(s_SubCharacter* player, s_PlayerExtra* extra) //
      *     up and dispense as extra swings the moment the player stops sprinting.
      *   - Clear stale queue whenever no melee weapon is equipped, so a
      *     previously-buffered click can't carry across weapon swaps. */
-    static int s_pcMtClickQueue = 0;
     {
         s8 wa = g_SysWork.playerCombat.weaponAttack;
         bool meleeReady = (wa != (s8)NO_VALUE) &&
@@ -4280,6 +4293,7 @@ bool Player_UpperBodyMainUpdate(s_SubCharacter* player, s_PlayerExtra* extra) //
     }
 #endif
 
+#ifndef SH_PC_PORT
     bool Player_CombatAnimUpdate(void) // 0x80074350
     {
         s16 ssp20;
@@ -5060,6 +5074,7 @@ bool Player_UpperBodyMainUpdate(s_SubCharacter* player, s_PlayerExtra* extra) //
 
         return false;
     }
+#endif
 
     enemyAttackedIdx = NO_VALUE;
 
@@ -6012,7 +6027,11 @@ bool Player_UpperBodyMainUpdate(s_SubCharacter* player, s_PlayerExtra* extra) //
             break;
 
         case PlayerUpperBodyState_Attack:
+#ifdef SH_PC_PORT
+            if (Player_CombatAnimUpdate_PC(player, extra, &enemyAttackedIdx))
+#else
             if (Player_CombatAnimUpdate())
+#endif
             {
                 return true;
             }

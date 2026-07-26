@@ -10,6 +10,19 @@
 
 #ifdef SH_PC_PORT
 #include "sh_log.h"
+
+/* PsyCross implements the PSX memory-card filesystem, but its compatibility
+ * header does not expose these classic libapi declarations. Keep them local
+ * to avoid colliding with Android's POSIX APIs in unrelated translation units. */
+extern long open(char* path, unsigned long flags);
+extern long close(long fd);
+extern long lseek(long fd, long offset, long mode);
+extern long read(long fd, void* dest, long size);
+extern long write(long fd, void* src, long size);
+extern struct DIRENTRY* firstfile(char* path, struct DIRENTRY* entry);
+extern struct DIRENTRY* nextfile(struct DIRENTRY* entry);
+extern long erase(char* path);
+extern long format(char* path);
 #endif
 
 #ifndef PAD_HACK_IGNORE
