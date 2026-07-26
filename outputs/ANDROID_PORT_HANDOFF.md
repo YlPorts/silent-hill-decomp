@@ -14,13 +14,13 @@ Actualizado: 2026-07-26
 
 - Archivos totales del repositorio: 2,182.
 - Tareas de la compilación Android/Ninja: 1,029.
-- Última ejecución completada: https://github.com/YlPorts/silent-hill-decomp/actions/runs/30219561948
-- Resultado de esa ejecución: 840 tareas pasaron, 1 falló y 188 no llegaron a ejecutarse.
+- Última ejecución completada: https://github.com/YlPorts/silent-hill-decomp/actions/runs/30219802411
+- Resultado de esa ejecución: 837 tareas pasaron, 1 falló y 191 no llegaron a ejecutarse.
 - El único fallo es `map4_s03.c.o` por `SetMulRotMatrix` sin declaración visible.
-- La corrección local incluye `psyq/libgte.h` en `map4_s03.c` y en las otras cinco fuentes que usan esa función; debe verificarse en la ejecución siguiente.
+- La corrección local declara `SetMulRotMatrix` en el shim PSY-Q que Android realmente usa; debe verificarse en la ejecución siguiente.
 - Todavía no existe un APK válido. La compilación no ha llegado a `1029/1029`.
 
-Los 188 pendientes no son 188 errores. Ninja se detiene al encontrar un fallo; la mayoría de las tareas pendientes puede pasar sin cambios cuando llegue su turno.
+Los 191 pendientes no son 191 errores. Ninja se detiene al encontrar un fallo; la mayoría de las tareas pendientes puede pasar sin cambios cuando llegue su turno.
 
 ## Cómo calcular el contador sin confundirlo
 
