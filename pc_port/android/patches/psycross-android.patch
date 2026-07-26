@@ -105,7 +105,7 @@ diff --git a/src/render/PsyX_render.cpp b/src/render/PsyX_render.cpp
  		int actualSamples = 0;
  		SDL_GL_GetAttribute(SDL_GL_MULTISAMPLESAMPLES, &actualSamples);
  		eprintf("*MSAA: requested %dx, got %dx\n", g_cfg_msaaSamples, actualSamples);
-@@ -131,18 +134,30 @@
+@@ -131,17 +134,29 @@
  	             0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
  	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
  	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
@@ -135,4 +135,3 @@ diff --git a/src/render/PsyX_render.cpp b/src/render/PsyX_render.cpp
 +#endif
  	glReadBuffer(GL_NONE);
  	glBindFramebuffer(GL_FRAMEBUFFER, 0);
- 	/* continue */
