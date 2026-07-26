@@ -354,6 +354,9 @@ void Math_RotMatrixXyz(SVECTOR* rot, MATRIX* mat); // 0x80096A5C
 #ifdef SH_PC_PORT
 /** @brief Builds an X-Y-X rotation matrix using the portable GTE implementation. */
 void Math_RotMatrixXyxGte(SVECTOR* rot, MATRIX* mat);
+
+/** @brief Applies a translation and rotation to a coordinate matrix. */
+void Math_MatrixTransform(VECTOR3* pos, SVECTOR* rot, GsCOORDINATE2* coord);
 #endif
 
 #endif
