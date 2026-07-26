@@ -3,6 +3,8 @@
 #include <psyq/gtemac.h>
 
 #include "bodyprog/bodyprog.h"
+#include "bodyprog/events/events_main.h"
+#include "maps/characters/player.h"
 #include "bodyprog/dms.h"
 #include "bodyprog/events/bodyprog_data_800A99B4.h"
 #include "bodyprog/gfx/map_effects.h"

@@ -1,4 +1,7 @@
 #include "bodyprog/bodyprog.h"
+#include "bodyprog/events/events_main.h"
+#include "bodyprog/item_screens.h"
+#include "maps/characters/player.h"
 #include "bodyprog/dms.h"
 #include "bodyprog/gfx/map_effects.h"
 #include "bodyprog/math/math.h"

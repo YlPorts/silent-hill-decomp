@@ -1,6 +1,8 @@
 #include <memory.h>
 
 #include "bodyprog/bodyprog.h"
+#include "bodyprog/events/events_main.h"
+#include "maps/characters/player.h"
 #include "bodyprog/dms.h"
 #include "bodyprog/gfx/map_effects.h"
 #include "bodyprog/item_screens.h"
@@ -4232,4 +4234,3 @@ void func_800E9C28(void) // 0x800E9C28
             break;
     }
 }
-

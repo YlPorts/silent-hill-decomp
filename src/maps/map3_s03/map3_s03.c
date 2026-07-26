@@ -1,4 +1,6 @@
 #include "bodyprog/bodyprog.h"
+#include "bodyprog/item_screens.h"
+#include "bodyprog/sound/sound_system.h"
 #include "bodyprog/events/bodyprog_data_800A99B4.h"
 #include "bodyprog/math/math.h"
 #include "bodyprog/player.h"
@@ -1219,4 +1221,3 @@ void Map_WorldObjectsUpdate(void) // 0x800D429C
         }
     }
 }
-

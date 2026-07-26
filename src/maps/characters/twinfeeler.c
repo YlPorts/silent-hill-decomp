@@ -1,4 +1,6 @@
 #include "bodyprog/bodyprog.h"
+#include "bodyprog/sound/sound_system.h"
+#include "bodyprog/text/text_debug_draw.h"
 #include "bodyprog/math/math.h"
 #include "main/rng.h"
 #include "maps/shared.h"

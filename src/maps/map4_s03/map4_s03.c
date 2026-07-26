@@ -3,6 +3,9 @@
 #include <psyq/gtemac.h>
 
 #include "bodyprog/bodyprog.h"
+#include "bodyprog/events/events_main.h"
+#include "bodyprog/sound/sound_system.h"
+#include "bodyprog/text/text_debug_draw.h"
 #include "bodyprog/events/bodyprog_data_800A99B4.h"
 #include "bodyprog/events/npc_main.h"
 #include "bodyprog/gfx/map_effects.h"
