@@ -48,7 +48,7 @@ jobs:
         run: git submodule update --init --recursive
 
       - name: Apply Android PsyCross compatibility patch
-        run: git -C pc_port/PsyCross apply ../android/patches/psycross-android.patch
+        run: git -C pc_port/PsyCross apply --ignore-space-change --ignore-whitespace ../android/patches/psycross-android.patch
 
       - name: Build ARM64 debug APK
         working-directory: pc_port/android
