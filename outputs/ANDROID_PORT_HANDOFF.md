@@ -14,13 +14,13 @@ Actualizado: 2026-07-26
 
 - Archivos totales del repositorio: 2,182.
 - Tareas de la compilación Android/Ninja: 1,029.
-- Última ejecución completada: https://github.com/YlPorts/silent-hill-decomp/actions/runs/30218429038
-- Resultado de esa ejecución: 709 tareas pasaron, 1 falló y 319 no llegaron a ejecutarse.
-- El único fallo es `map2_s01_2.c.o` por APIs de control del jugador y sonido sin declaraciones visibles.
-- La corrección local incluye `maps/characters/player.h` y `sound_system.h` en `map2_s01_2.c`; debe verificarse en la ejecución siguiente.
+- Última ejecución completada: https://github.com/YlPorts/silent-hill-decomp/actions/runs/30218629114
+- Resultado de esa ejecución: 722 tareas pasaron, 1 falló y 306 no llegaron a ejecutarse.
+- El único fallo es `map2_s02.c.o` por APIs de inventario y eventos sin declaraciones visibles.
+- La corrección local incluye `item_screens.h` y `events_main.h` en `map2_s02.c`; debe verificarse en la ejecución siguiente.
 - Todavía no existe un APK válido. La compilación no ha llegado a `1029/1029`.
 
-Los 319 pendientes no son 319 errores. Ninja se detiene al encontrar un fallo; la mayoría de las tareas pendientes puede pasar sin cambios cuando llegue su turno.
+Los 306 pendientes no son 306 errores. Ninja se detiene al encontrar un fallo; la mayoría de las tareas pendientes puede pasar sin cambios cuando llegue su turno.
 
 ## Cómo calcular el contador sin confundirlo
 

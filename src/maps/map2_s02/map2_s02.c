@@ -1,6 +1,8 @@
 #include "bodyprog/bodyprog.h"
 #include "bodyprog/events/bodyprog_data_800A99B4.h"
+#include "bodyprog/events/events_main.h"
 #include "bodyprog/gfx/map_effects.h"
+#include "bodyprog/item_screens.h"
 #include "bodyprog/math/math.h"
 #include "main/rng.h"
 #include "maps/map2/map2_s02.h"
