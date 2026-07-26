@@ -91,7 +91,12 @@ void gte_ldv3c() { }
 void gte_stsxy3_g3() { }
 void gte_stsxy3c() { }
 void gte_stsz3c() { }
-void OuterProduct12() { }
+void OuterProduct12(VECTOR* v0, VECTOR* v1, VECTOR* out) {
+    out->vx = (long)(((long long)v0->vy * v1->vz - (long long)v0->vz * v1->vy) >> 12);
+    out->vy = (long)(((long long)v0->vz * v1->vx - (long long)v0->vx * v1->vz) >> 12);
+    out->vz = (long)(((long long)v0->vx * v1->vy - (long long)v0->vy * v1->vx) >> 12);
+    out->pad = 0;
+}
 void SetMulRotMatrix(MATRIX* m) { (void)m; }
 VECTOR* Square0(VECTOR* v0, VECTOR* v1) {
     v1->vx = v0->vx * v0->vx;
@@ -101,9 +106,10 @@ VECTOR* Square0(VECTOR* v0, VECTOR* v1) {
 }
 int Lzc(long val) {
     /* Leading zero count */
+    unsigned int bits = (unsigned int)val;
     int count = 0;
-    if (val == 0) return 32;
-    if (val < 0) val = ~val;
-    while (!(val & 0x80000000)) { count++; val <<= 1; }
+    if (bits == 0) return 32;
+    if (bits & 0x80000000u) bits = ~bits;
+    while (!(bits & 0x80000000u)) { count++; bits <<= 1; }
     return count;
 }

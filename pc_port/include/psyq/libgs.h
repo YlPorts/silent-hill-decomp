@@ -202,6 +202,7 @@ extern DRAWENV GsDRAWENV;
 extern void GsInitGraph(int x, int y, int mode, int a, int b);
 extern void GsInitGraph2(unsigned short x, unsigned short y, unsigned short intmode, unsigned short dith, unsigned short vrammode);
 extern void GsDefDispBuff2(unsigned short x0, unsigned short y0, unsigned short x1, unsigned short y1);
+extern void GsInitCoordinate2(void* super, GsCOORDINATE2* coord);
 extern void GsInit3D(void);
 extern void GsInitVcount(void);
 extern int  GsGetVcount(void);
