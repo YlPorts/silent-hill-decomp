@@ -3,6 +3,7 @@
 #include <psyq/gtemac.h>
 
 #include "bodyprog/bodyprog.h"
+#include "psyq/libgte.h"
 #include "bodyprog/events/events_main.h"
 #include "bodyprog/sound/sound_system.h"
 #include "bodyprog/text/text_debug_draw.h"

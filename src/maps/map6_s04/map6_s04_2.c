@@ -3,6 +3,7 @@
 #include <psyq/gtemac.h>
 
 #include "bodyprog/bodyprog.h"
+#include "psyq/libgte.h"
 #include "bodyprog/events/events_main.h"
 #include "maps/characters/player.h"
 #include "bodyprog/dms.h"

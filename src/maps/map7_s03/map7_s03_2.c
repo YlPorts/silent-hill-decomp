@@ -2,6 +2,7 @@
 #include "sh_log.h"
 
 #include "bodyprog/bodyprog.h"
+#include "psyq/libgte.h"
 #include "bodyprog/dms.h"
 #include "bodyprog/gfx/map_effects.h"
 #include "bodyprog/item_screens.h"

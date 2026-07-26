@@ -4,6 +4,7 @@
 #include <psyq/gtemac.h>
 
 #include "bodyprog/bodyprog.h"
+#include "psyq/libgte.h"
 #include "bodyprog/events/events_main.h"
 #include "bodyprog/item_screens.h"
 #include "bodyprog/sound/sound_system.h"
