@@ -2016,6 +2016,8 @@ void func_8008D78C(void);
 
 void func_80091380(void);
 
+void func_8009151C(u32 arg0, s32 arg1, s32 arg2);
+
 // TODO: Arrange these in address order for better insight into the original interface. -- Sezz
 // ------------------------------------------------------------------
 
@@ -2091,6 +2093,10 @@ s32 func_8005CB20(s_SubCharacter* chara, s_CollisionResult* collResult, q3_12 of
 /** Computes something for a targeted NPC. */
 bool func_8005D50C(s32* targetNpcIdx, q3_12* rotToTargetX, q3_12* rotToTargetY, const VECTOR3* attackPos,
                    u32 npcIdx, q19_12 angleConstraint);
+
+void func_8005DC1C(e_SfxId sfxId, const VECTOR3* pos, q23_8 vol, s32 soundType);
+
+void func_8005DC3C(e_SfxId sfxId, const VECTOR3* pos, q23_8 vol, s32 soundType, s32 pitch);
 
 bool func_80060044(POLY_FT4** poly, s32 idx);
 
