@@ -1,4 +1,5 @@
 #include "bodyprog/bodyprog.h"
+#include "bodyprog/events/events_main.h"
 #include "bodyprog/math/math.h"
 #include "bodyprog/sound/sound_system.h"
 #include "main/rng.h"
