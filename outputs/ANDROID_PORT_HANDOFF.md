@@ -14,13 +14,14 @@ Actualizado: 2026-07-26
 
 - Archivos totales del repositorio: 2,182.
 - Tareas de la compilación Android/Ninja: 1,029.
-- Última ejecución completada: https://github.com/YlPorts/silent-hill-decomp/actions/runs/30216016497
-- Resultado de esa ejecución: 590 tareas pasaron, 1 falló y 438 no llegaron a ejecutarse.
-- Único fallo de esa ejecución: `Chara_MonsterCybil.c.o` por `Rng_Rand16` sin declaración visible.
-- La corrección local añade `#include "main/rng.h"` a `src/maps/characters/monster_cybil.c`; debe verificarse en la ejecución siguiente.
+- Última ejecución completada: https://github.com/YlPorts/silent-hill-decomp/actions/runs/30216218254
+- Resultado de esa ejecución: 592 tareas pasaron, 2 fallaron y 435 no llegaron a ejecutarse.
+- Fallo 1: `Chara_PuppetNurse.c.o` por `abs` sin la declaración de `<stdlib.h>`.
+- Fallo 2: enlace de `libmain.so` por dos definiciones de `SDL_main`, en `main_pc.c` y `func_stubs.c`.
+- Las correcciones locales incluyen `<stdlib.h>` en Puppet Nurse y excluyen el stub duplicado de `SDL_main` bajo `__ANDROID__`; deben verificarse en la ejecución siguiente.
 - Todavía no existe un APK válido. La compilación no ha llegado a `1029/1029`.
 
-Los 438 pendientes no son 438 errores. Ninja se detiene al encontrar un fallo; la mayoría de las tareas pendientes puede pasar sin cambios cuando llegue su turno.
+Los 435 pendientes no son 435 errores. Ninja se detiene al encontrar un fallo; la mayoría de las tareas pendientes puede pasar sin cambios cuando llegue su turno.
 
 ## Cómo calcular el contador sin confundirlo
 

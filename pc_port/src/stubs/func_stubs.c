@@ -54,8 +54,10 @@ TIM_IMAGE* ReadTIM(TIM_IMAGE* timimg)
 }
 
 /* SDL_main - SDL2main.a calls this; redirect to our actual main */
+#ifndef __ANDROID__
 extern int main(int argc, char* argv[]);
 int SDL_main(int argc, char* argv[]) { return main(argc, argv); }
+#endif
 
 void CdMix() { }
 void CdRead2() { }

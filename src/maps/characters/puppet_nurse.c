@@ -1,3 +1,5 @@
+#include <stdlib.h>
+
 #include "bodyprog/bodyprog.h"
 #include "bodyprog/events/npc_main.h"
 #include "bodyprog/math/math.h"
