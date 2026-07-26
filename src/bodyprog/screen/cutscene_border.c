@@ -145,8 +145,42 @@ static q19_12 g_BlackBorderShade = Q12(0.0f);
 // CUTSCENE BORDERS
 // ========================================
 
+#ifdef SH_PC_PORT
+static void Screen_BlackBorderDraw(POLY_G4* poly, s32 color)
+{
+    s32 i;
+    s32 color0;
+    s32 color1;
+
+    color0 = color >> 4;
+    color1 = color >> 5;
+
+    if (color == Q12_CLAMPED(1.0f))
+    {
+        color1 = Q8_CLAMPED(1.0f);
+    }
+
+    for (i = 0; i < 2; i++)
+    {
+        poly[i * 2].r0 = color0;
+        poly[i * 2].g0 = color0;
+        poly[i * 2].b0 = color0;
+        poly[i * 2].r1 = color0;
+        poly[i * 2].g1 = color0;
+        poly[i * 2].b1 = color0;
+        poly[i * 2].r2 = color1;
+        poly[i * 2].g2 = color1;
+        poly[i * 2].b2 = color1;
+        poly[i * 2].r3 = color1;
+        poly[i * 2].g3 = color1;
+        poly[i * 2].b3 = color1;
+    }
+}
+#endif
+
 void Screen_CutsceneCameraStateUpdate(void) // 0x80032904
 {
+#ifndef SH_PC_PORT
     void Screen_BlackBorderDraw(POLY_G4* poly, s32 color)
     {
         s32 i;
@@ -177,6 +211,7 @@ void Screen_CutsceneCameraStateUpdate(void) // 0x80032904
             poly[i * 2].b3 = color1;
         }
     }
+#endif
 
     GsOT*    ot;
     POLY_G4* poly;
