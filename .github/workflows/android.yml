@@ -6,6 +6,7 @@ on:
       - codex/android-port-foundation
     paths:
       - "pc_port/android/**"
+      - "pc_port/include/**"
       - "pc_port/src/**"
       - "pc_port/maps/**"
       - "pc_port/CMakeLists.txt"

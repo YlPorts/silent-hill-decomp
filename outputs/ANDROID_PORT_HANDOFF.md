@@ -17,7 +17,7 @@ Actualizado: 2026-07-26
 - Última ejecución completada: https://github.com/YlPorts/silent-hill-decomp/actions/runs/30219802411
 - Resultado de esa ejecución: 837 tareas pasaron, 1 falló y 191 no llegaron a ejecutarse.
 - El único fallo es `map4_s03.c.o` por `SetMulRotMatrix` sin declaración visible.
-- La corrección local declara `SetMulRotMatrix` en el shim PSY-Q que Android realmente usa; debe verificarse en la ejecución siguiente.
+- La corrección local declara `SetMulRotMatrix` en el shim PSY-Q que Android realmente usa y añade `pc_port/include/**` al disparador del workflow; debe verificarse en la ejecución siguiente.
 - Todavía no existe un APK válido. La compilación no ha llegado a `1029/1029`.
 
 Los 191 pendientes no son 191 errores. Ninja se detiene al encontrar un fallo; la mayoría de las tareas pendientes puede pasar sin cambios cuando llegue su turno.
