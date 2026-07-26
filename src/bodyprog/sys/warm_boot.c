@@ -5,6 +5,7 @@
 
 #include "bodyprog/bodyprog.h"
 #include "bodyprog/demo.h"
+#include "bodyprog/game_boot/background_sound_init.h"
 #include "bodyprog/sys/joy.h"
 #include "bodyprog/screen/screen_draw.h"
 #include "bodyprog/sys/game_main.h"
