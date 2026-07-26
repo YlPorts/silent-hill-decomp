@@ -3,9 +3,11 @@
 #include "bodyprog/events/bodyprog_data_800A99B4.h"
 #include "bodyprog/math/math.h"
 #include "bodyprog/player.h"
+#include "bodyprog/sound/sound_system.h"
 #include "main/rng.h"
 #include "maps/map3/map3_s00.h"
 #include "maps/characters/kaufmann.h"
+#include "maps/characters/player.h"
 
 #include "../src/maps/chara_util.c" // 0x800CFE84
 
