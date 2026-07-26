@@ -6,9 +6,11 @@
 #include "bodyprog/gfx/map_effects.h"
 #include "bodyprog/math/math.h"
 #include "bodyprog/player.h"
+#include "bodyprog/sound/sound_system.h"
 #include "main/rng.h"
 #include "maps/map2/map2_s01.h"
 #include "maps/characters/dahlia.h"
+#include "maps/characters/player.h"
 
 #include "../src/maps/chara_util.c" // 0x800CDDA0
 
