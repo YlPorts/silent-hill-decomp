@@ -11,9 +11,11 @@
 
 #include "bodyprog/bodyprog.h"
 #include "bodyprog/libsd.h"
+#include "bodyprog/screen/background_draw.h"
 #include "bodyprog/screen/screen_draw.h"
 #include "bodyprog/sys/game_main.h"
 #include "bodyprog/sys/joy.h"
+#include "bodyprog/text/text_debug_draw.h"
 #include "bodyprog/text/text_draw.h"
 #include "bodyprog/math/math.h"
 #include "main/fileinfo.h"

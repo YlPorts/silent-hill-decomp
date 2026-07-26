@@ -138,7 +138,7 @@ void MapEvent_CafeCutscene(void) // 0x800DA980
             break;
 
         case 3:
-            func_80085EB8(2, &g_SysWork.playerWork.player, NULL, false);
+            func_80085EB8(2, &g_SysWork.playerWork.player, 0, false);
             SysWork_StateStepIncrement(0);
 
         case 4:
@@ -146,7 +146,7 @@ void MapEvent_CafeCutscene(void) // 0x800DA980
             break;
 
         case 5:
-            func_80085EB8(3, &g_SysWork.playerWork.player, NULL, false);
+            func_80085EB8(3, &g_SysWork.playerWork.player, 0, false);
             SysWork_StateStepIncrement(0);
 
         case 6:

@@ -2169,6 +2169,18 @@ void Game_WarmBoot(void);
 
 void SysWork_StateStepIncrementAfterFade(s32 stateStep, bool cond, s32 fadeType, q19_12 fadeTimestep, bool reset);
 
+void func_80085DF0(void);
+
+void SysWork_StateStepIncrementDelayed(q19_12 delay, bool reset);
+
+void func_80085EB8(u32 arg0, s_SubCharacter* chara, s32 arg2, bool reset);
+
+void MapMsg_DisplayAndHandleSelection(bool hasSelection, s32 mapMsgIdx, s32 step0, s32 step1, s32 step2, bool stepSecondary);
+
+void func_800865FC(bool isPos, s32 idx0, s32 idx1, q3_12 angleY, q19_12 offsetOrPosX, q19_12 offsetOrPosZ);
+
+void func_800866D4(s32 arg0, s32 arg1, bool reset);
+
 s32 func_800382B0(s32 arg0);
 
 /** @brief Computes the distance between two positions.

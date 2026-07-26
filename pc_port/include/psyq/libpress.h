@@ -2,4 +2,6 @@
 #ifndef _PSYQ_COMPAT_LIBPRESS_H
 #define _PSYQ_COMPAT_LIBPRESS_H
 #include <libpress.h>
+
+extern int DecDCToutCallback(void (*func)());
 #endif

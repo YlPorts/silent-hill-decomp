@@ -3,7 +3,10 @@
 #include "bodyprog/gfx/map_effects.h"
 #include "bodyprog/math/math.h"
 #include "bodyprog/player.h"
+#include "bodyprog/sound/sound_system.h"
+#include "bodyprog/text/text_debug_draw.h"
 #include "main/rng.h"
+#include "maps/characters/player.h"
 #include "maps/map0/map0_s00.h"
 #ifdef SH_PC_PORT
 #include "sh_log.h"

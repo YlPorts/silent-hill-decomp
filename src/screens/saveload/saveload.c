@@ -3,10 +3,14 @@
 #include <psyq/libetc.h>
 
 #include "bodyprog/bodyprog.h"
+#include "bodyprog/item_screens.h"
 #include "bodyprog/math/math.h"
 #include "bodyprog/memcard.h"
+#include "bodyprog/screen/background_draw.h"
 #include "bodyprog/screen/screen_data.h"
 #include "bodyprog/screen/screen_fade.h"
+#include "bodyprog/sound/sound_system.h"
+#include "bodyprog/text/text_debug_draw.h"
 #include "bodyprog/text/text_draw.h"
 #include "bodyprog/game_boot/game_boot.h"
 #include "screens/saveload.h"
