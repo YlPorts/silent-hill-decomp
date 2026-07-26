@@ -9,6 +9,7 @@
 #include "bodyprog/screen/screen_data.h"
 #include "bodyprog/screen/screen_data.h"
 #include "bodyprog/sys/joy.h"
+#include "bodyprog/sound/sound_system.h"
 #include "bodyprog/text/text_draw.h"
 #include "main/rng.h"
 #ifdef SH_PC_PORT
@@ -4452,4 +4453,3 @@ void Items_AmmoReloadCalculation(s32* currentAmmo, s32* availableAmmo, u8 gunIdx
 // `bodyprog_80055028.c` directly.
 const s32 rodataPad_80028524 = 0;
 const s32 rodataPad_80028528 = 0;
- 

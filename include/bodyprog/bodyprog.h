@@ -2252,6 +2252,12 @@ void GameFs_BgItemLoad(void);
 
 void func_8003BED0(void);
 
+void Map_PlaceIpdAtCell(s16 ipdFileIdx, s32 cellX, s32 cellZ);
+
+bool Ipd_AreChunksLoaded(void);
+
+s32 func_8004287C(s_WorldObjectModel* model, s_WorldObjectMetadata* metadata, q19_12 posX, q19_12 posZ);
+
 /** @brief Gets the speed zone type at a given position.
  *
  * @param posX X position.

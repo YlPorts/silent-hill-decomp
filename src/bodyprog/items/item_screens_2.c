@@ -13,6 +13,8 @@
 #include "bodyprog/item_screens.h"
 #include "bodyprog/player.h"
 #include "bodyprog/math/math.h"
+#include "bodyprog/ranking.h"
+#include "bodyprog/sound/sound_system.h"
 
 #ifdef SH_PC_PORT
 #include "pc_inventory_mouse.h"

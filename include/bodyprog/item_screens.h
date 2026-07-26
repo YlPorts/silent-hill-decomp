@@ -397,6 +397,8 @@ void Gfx_Inventory_HealthStatusDraw(void);
 
 void Gfx_Inventory_ItemDescriptionDraw(s32* selectedItemId);
 
+void Gfx_Inventory_2dBackgroundDraw(s32* selectedItemId);
+
 /** Name could be inaccurate.
  * Breaking this function call makes items no longer rotate,
  * and trying to scroll through the items will softlock the game.

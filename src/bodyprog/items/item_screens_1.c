@@ -43,15 +43,15 @@ void Inventory_ExitAnimEquippedItemUpdate(u8* weaponId) // 0x8004C088
             g_SysWork.playerCombat.isAiming = false;
         }
 
-        weaponId = WEAPON_ATTACK_ID_GET(g_Player_WeaponAttack);
-        if (weaponId == EquippedWeaponId_Chainsaw &&
-            g_SysWork.playerCombat.weaponAttack != weaponId)
+        *weaponId = WEAPON_ATTACK_ID_GET(g_Player_WeaponAttack);
+        if (*weaponId == EquippedWeaponId_Chainsaw &&
+            g_SysWork.playerCombat.weaponAttack != *weaponId)
         {
             goto Inventory_ExitAnimEquippedItemUpdate_block; // TODO: Remove goto if possible.
         }
 
-        if (weaponId == EquippedWeaponId_RockDrill &&
-            g_SysWork.playerCombat.weaponAttack != WEAPON_ATTACK(weaponId, AttackInputType_Tap))
+        if (*weaponId == EquippedWeaponId_RockDrill &&
+            g_SysWork.playerCombat.weaponAttack != WEAPON_ATTACK(*weaponId, AttackInputType_Tap))
         {
         Inventory_ExitAnimEquippedItemUpdate_block:
             playerChara.field_44.field_0    = 0;
