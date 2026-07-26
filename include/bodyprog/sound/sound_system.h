@@ -379,8 +379,6 @@ void Sd_AudioStop(void);
 
 u8 Sd_PlaySfx(u16 sfxId, q0_7 balance, u8 vol);
 
-void func_8005DD44(e_SfxId sfxId, VECTOR3* pos, q23_8 vol, s8 pitch);
-
 /** Updates attributes from currently playing specified audio. */
 void Sd_SfxAttributesUpdate(u16 sfxId, q0_7 balance, u8 vol, s8 pitch);
 

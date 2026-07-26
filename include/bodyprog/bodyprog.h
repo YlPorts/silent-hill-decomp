@@ -2110,6 +2110,8 @@ void func_8005DC1C(e_SfxId sfxId, const VECTOR3* pos, q23_8 vol, s32 soundType);
 
 void func_8005DC3C(e_SfxId sfxId, const VECTOR3* pos, q23_8 vol, s32 soundType, s32 pitch);
 
+void func_8005DD44(e_SfxId sfxId, VECTOR3* pos, q23_8 vol, s8 pitch);
+
 bool func_80060044(POLY_FT4** poly, s32 idx);
 
 bool func_800611C0(POLY_FT4** poly, s32 idx);
