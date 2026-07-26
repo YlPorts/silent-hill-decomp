@@ -14,14 +14,13 @@ Actualizado: 2026-07-26
 
 - Archivos totales del repositorio: 2,182.
 - Tareas de la compilación Android/Ninja: 1,029.
-- Última ejecución completada: https://github.com/YlPorts/silent-hill-decomp/actions/runs/30216218254
-- Resultado de esa ejecución: 592 tareas pasaron, 2 fallaron y 435 no llegaron a ejecutarse.
-- Fallo 1: `Chara_PuppetNurse.c.o` por `abs` sin la declaración de `<stdlib.h>`.
-- Fallo 2: enlace de `libmain.so` por dos definiciones de `SDL_main`, en `main_pc.c` y `func_stubs.c`.
-- Las correcciones locales incluyen `<stdlib.h>` en Puppet Nurse y excluyen el stub duplicado de `SDL_main` bajo `__ANDROID__`; deben verificarse en la ejecución siguiente.
+- Última ejecución completada: https://github.com/YlPorts/silent-hill-decomp/actions/runs/30216424883
+- Resultado de esa ejecución: 598 tareas pasaron, 1 falló y 430 no llegaron a ejecutarse.
+- Único fallo: `Chara_Romper.c.o` por `Sd_SfxStop` y `sharedFunc_800D2E9C_0_s00` sin declaraciones visibles.
+- La corrección local incluye los encabezados de sonido y del personaje jugador en `romper.c`; debe verificarse en la ejecución siguiente.
 - Todavía no existe un APK válido. La compilación no ha llegado a `1029/1029`.
 
-Los 435 pendientes no son 435 errores. Ninja se detiene al encontrar un fallo; la mayoría de las tareas pendientes puede pasar sin cambios cuando llegue su turno.
+Los 430 pendientes no son 430 errores. Ninja se detiene al encontrar un fallo; la mayoría de las tareas pendientes puede pasar sin cambios cuando llegue su turno.
 
 ## Cómo calcular el contador sin confundirlo
 
