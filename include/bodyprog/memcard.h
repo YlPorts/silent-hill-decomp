@@ -461,6 +461,8 @@ extern s8 __pad_bss_800BCD41[3];
 void MemCard_SysInit(void);
 void MemCard_SysInit2(void);
 
+bool func_80033548(void);
+
 /** @brief Clear memory card data in RAM. */
 void MemCard_RamClear(s32 deviceId);
 

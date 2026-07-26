@@ -14,6 +14,7 @@
 #include <psyq/strings.h>
 
 #include "bodyprog/bodyprog.h"
+#include "bodyprog/events/player_pos_update.h"
 #include "bodyprog/game_boot/game_boot.h"
 #include "bodyprog/memcard.h"
 #include "bodyprog/screen/screen_data.h"
@@ -29,6 +30,8 @@ static void MainMenu_MainTextDraw(void);
 static void MainMenu_DifficultyTextDraw(s32 idx);
 static void MainMenu_BackgroundDraw(void);
 static void func_8003BCF4(void);
+void func_8003B560(void);
+void MainMenu_FogUpdate(void);
 #endif
 #include "main/rng.h"
 #include "screens/stream/stream.h"

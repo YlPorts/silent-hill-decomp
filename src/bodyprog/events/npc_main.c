@@ -12,10 +12,12 @@
 #include "bodyprog/game_boot/fs_chara_anim.h"
 #include "bodyprog/demo.h"
 #include "bodyprog/events/bodyprog_data_800A99B4.h"
+#include "bodyprog/events/collision_flags_update.h"
 #include "bodyprog/events/npc_main.h"
 #include "bodyprog/events/radio.h"
 #include "bodyprog/math/math.h"
 #include "bodyprog/player.h"
+#include "bodyprog/ranking.h"
 #include "bodyprog/screen/screen_data.h"
 #include "bodyprog/sound/sound_system.h"
 #include "main/fsqueue.h"
@@ -25,6 +27,52 @@ static s32 Camera_Distance2dGet(const VECTOR3* pos);
 extern int g_DebugAnimKfView;
 extern int g_DebugViewNpcSlot;
 void Pc_KeyframeViewerPoseNpc(s_AnmHeader* anmHdr, GsCOORDINATE2* boneCoords);
+#endif
+
+typedef struct
+{
+    s8      bitIdx_0;
+    u8      unk_1[3];
+    s32     field_4;
+    VECTOR3 field_8;
+} s_func_800382EC_0;
+
+#ifdef SH_PC_PORT
+static s32 Pc_NpcTrackerIndexFind(s32 bitIdx, const s_func_800382EC_0* entries)
+{
+    s32 i;
+
+    for (i = 0; i < 2; i++)
+    {
+        if (bitIdx == entries[i].bitIdx_0)
+        {
+            return i;
+        }
+    }
+
+    return NO_VALUE;
+}
+
+static s32 Pc_NpcTrackerIndexAllocate(const s_func_800382EC_0* entries, u32* usedBits)
+{
+    s32 i;
+
+    for (i = 0; i < 2; i++)
+    {
+        if (entries[i].bitIdx_0 == NO_VALUE)
+        {
+            break;
+        }
+
+        if ((*usedBits & (1u << entries[i].bitIdx_0)) == 0)
+        {
+            *usedBits |= 1u << entries[i].bitIdx_0;
+            return i;
+        }
+    }
+
+    return NO_VALUE;
+}
 #endif
 
 void Savegame_EnemyStateUpdate(s_SubCharacter* chara) // 0x80037DC4
@@ -417,14 +465,6 @@ static bool Pc_ActorIdleClipGet(s32 charaId, s16* outStartKf, s16* outEndKf, q19
 
 void Game_NpcUpdate(void) // 0x80038354
 {
-    typedef struct
-    {
-        s8      bitIdx_0;
-        u8      unk_1[3];
-        s32     field_4;
-        VECTOR3 field_8;
-    } s_func_800382EC_0;
-
     s_func_800382EC_0  field_0[3];
     u32                field_40;
     s32                posZShift6;
@@ -453,7 +493,8 @@ void Game_NpcUpdate(void) // 0x80038354
     s_SubCharacter*    npc;
     s_func_800382EC_0* temp_s0_3;
 
-    // GCC extension funcs.
+    // GCC extension funcs used by the original PSX build.
+#ifndef SH_PC_PORT
     s32 func_800382B0(s32 arg0)
     {
         s32 i;
@@ -489,6 +530,7 @@ void Game_NpcUpdate(void) // 0x80038354
 
         return NO_VALUE;
     }
+#endif
 
     posXShift6 = Q12_TO_Q6(g_SysWork.playerWork.player.position.vx);
     posZShift6 = Q12_TO_Q6(g_SysWork.playerWork.player.position.vz);
@@ -883,7 +925,11 @@ void Game_NpcUpdate(void) // 0x80038354
         }
         else
         {
+#ifdef SH_PC_PORT
+            var_v0_4 = Pc_NpcTrackerIndexFind(temp_s0_2, field_0);
+#else
             var_v0_4 = func_800382B0(temp_s0_2);
+#endif
         }
 
         if (var_v0_4 >= 0)
@@ -902,7 +948,11 @@ void Game_NpcUpdate(void) // 0x80038354
         temp_s1 = D_800BCDA8[l].field_1;
         if (temp_s1 == NO_VALUE)
         {
+#ifdef SH_PC_PORT
+            temp_v0_4 = Pc_NpcTrackerIndexAllocate(field_0, &field_40);
+#else
             temp_v0_4 = func_800382EC();
+#endif
             if (temp_v0_4 != temp_s1)
             {
                 var_v0_5 = field_0[temp_v0_4].bitIdx_0;

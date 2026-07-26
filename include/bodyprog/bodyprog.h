@@ -2153,6 +2153,8 @@ void SysWork_SavegameReadPlayer(void);
 /** @brief Handles a warm game reboot. */
 void Game_WarmBoot(void);
 
+void SysWork_StateStepIncrementAfterFade(s32 stateStep, bool cond, s32 fadeType, q19_12 fadeTimestep, bool reset);
+
 s32 func_800382B0(s32 arg0);
 
 /** @brief Computes the distance between two positions.

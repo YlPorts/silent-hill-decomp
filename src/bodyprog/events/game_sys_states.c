@@ -14,15 +14,19 @@
 extern s_WorldEnvWork g_WorldEnvWork;
 #endif
 #include "bodyprog/events/bodyprog_data_800A99B4.h"
+#include "bodyprog/events/collision_trigger.h"
 #include "bodyprog/events/events_main.h"
 #include "bodyprog/events/npc_main.h"
+#include "bodyprog/events/player_pos_update.h"
 #include "bodyprog/events/radio.h"
 #include "bodyprog/demo.h"
+#include "bodyprog/game_boot/game_boot.h"
 #include "bodyprog/gfx/map_effects.h"
 #include "bodyprog/item_screens.h"
 #include "bodyprog/math/math.h"
 #include "bodyprog/memcard.h"
 #include "bodyprog/screen/screen_data.h"
+#include "bodyprog/screen/background_draw.h"
 #include "bodyprog/screen/screen_draw.h"
 #include "bodyprog/text/text_draw.h"
 #include "bodyprog/player.h"
@@ -31,6 +35,7 @@ extern s_WorldEnvWork g_WorldEnvWork;
 #include "bodyprog/sound/sound_system.h"
 #include "main/fsqueue.h"
 #include "main/rng.h"
+#include "screens/stream/stream.h"
 #ifdef SH_PC_PORT
 #include <stdio.h>
 extern void vcGetNowCamPos(VECTOR3* cam_pos);
