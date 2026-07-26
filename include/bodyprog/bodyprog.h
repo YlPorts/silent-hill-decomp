@@ -2173,6 +2173,10 @@ void SysWork_StateStepIncrementAfterFade(s32 stateStep, bool cond, s32 fadeType,
 
 void func_80085DF0(void);
 
+void func_80085D78(bool reset);
+
+void func_80085DC0(bool arg0, s32 sysStateStep);
+
 void SysWork_StateStepIncrementDelayed(q19_12 delay, bool reset);
 
 void func_80085EB8(u32 arg0, s_SubCharacter* chara, s32 arg2, bool reset);
@@ -2185,11 +2189,21 @@ void func_800866D4(s32 arg0, s32 arg1, bool reset);
 
 void func_8008605C(e_EventFlag eventFlagIdx, s32 stepTrue, s32 stepFalse, bool stepSecondary);
 
+void func_800862F8(s32 stateStep, e_FsFile fileIdx, bool reset);
+
+void func_80086470(u32 stateStep, e_InvItemId itemId, s32 itemCount, bool reset);
+
 void func_80086728(s_SubCharacter* chara, s32 arg1, s32 arg2, bool reset);
+
+void func_8008677C(s_SubCharacter* chara, s32 arg1, s32 arg2);
+
+void func_800867B4(s32 state, s32 paperMapFileIdx);
 
 void func_800868DC(s32 idx);
 
 s32 func_800868F4(s32 arg0, s32 arg1, s32 idx);
+
+s32 func_8008694C(s32 arg0, s16 arg1, s16 arg2, s32 arg3, s32 idx);
 
 void Map_MessageWithAudio(s32 mapMsgIdx, u8* audioIdx, const u16* audioCmds);
 
@@ -2198,6 +2212,27 @@ void Camera_PositionSet(VECTOR3* pos, q19_12 offsetOrPosX, q19_12 offsetOrPosY, 
 
 void Camera_LookAtSet(VECTOR3* lookAt, q19_12 lookAtOffsetOrPosX, q19_12 lookAtOffsetOrPosY, q19_12 lookAtOffsetOrPosZ,
                       q19_12 angularAccelX, q19_12 angularAccelY, q19_12 angularSpeedXMax, q19_12 angularSpeedYMax, bool warp);
+
+void func_80086C58(s_SubCharacter* chara, s32 arg1);
+
+void func_80086D04(s_SubCharacter* chara);
+
+void func_80086DA8(e_FsFile fileIdx, q19_12 fadeTimestep);
+
+void func_80086E50(e_FsFile fileIdx, q19_12 fadeTimestep0, q19_12 fadeTimestep1);
+
+void func_80086F44(q19_12 fadeTimestep0, q19_12 fadeTimestep1);
+
+void Map_MessageWithSfx(s32 mapMsgIdx, e_SfxId sfxId, VECTOR3* sfxPos);
+
+void func_8008716C(e_FsFile textureFileIdx, q19_12 fadeTimestep0, q19_12 fadeTimestep1);
+
+void MapMsg_DisplayWithTexture(e_FsFile textureFileIdx, q19_12 fadeTimestep0, q19_12 fadeTimestep1, s32 mapMsgIdx);
+
+void MapMsg_DisplayWithTexture1(e_FsFile textureFileIdx, q19_12 fadeTimestep0, q19_12 fadeTimestep1,
+                                s32 mapMsgIdx0, s32 mapMsgIdx1);
+
+void Event_MapTake(s32 mapFlagIdx, e_EventFlag eventFlagIdx, s32 mapMsgIdx);
 
 s32 func_800382B0(s32 arg0);
 
