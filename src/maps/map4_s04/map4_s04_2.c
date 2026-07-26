@@ -1,4 +1,5 @@
 #include "bodyprog/bodyprog.h"
+#include "bodyprog/item_screens.h"
 #include "bodyprog/text/text_debug_draw.h"
 #include "maps/characters/player.h"
 #include "bodyprog/dms.h"
