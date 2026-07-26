@@ -1,6 +1,7 @@
 #include "game.h"
 
 #include <psyq/libetc.h>
+#include <psyq/libgte.h>
 #include <psyq/libpad.h>
 #include <psyq/strings.h>
 

@@ -1,6 +1,8 @@
 #include "game.h"
 #include "inline_no_dmpsx.h"
 
+#include <psyq/libgte.h>
+
 #include "bodyprog/bodyprog.h"
 #include "bodyprog/math/math.h"
 #include "bodyprog/screen/screen_data.h"

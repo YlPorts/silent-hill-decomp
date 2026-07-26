@@ -10,6 +10,7 @@ extern float g_PsxPixelAspect;
 
 #include <psyq/gtemac.h>
 #include <psyq/libapi.h>
+#include <psyq/libgte.h>
 #include <psyq/strings.h>
 
 #include "bodyprog/bodyprog.h"
@@ -19,6 +20,7 @@ extern float g_PsxPixelAspect;
 #include "bodyprog/item_screens.h"
 #include "bodyprog/player.h"
 #include "bodyprog/sound/sound_system.h"
+#include "bodyprog/text/text_debug_draw.h"
 #include "main/rng.h"
 #ifdef SH_PC_PORT
 #include <stdio.h>
@@ -3928,7 +3930,7 @@ void func_8005A900(s_MeshHeader* meshHdr, s32 offset, s_GteScratchData* scratchD
     }
 }
 
-u8 func_8005AA08(s_MeshHeader* meshHdr, s32 arg1, s_GteScratchData2* scratchData) // 0x8005AA08
+void func_8005AA08(s_MeshHeader* meshHdr, s32 arg1, s_GteScratchData2* scratchData) // 0x8005AA08
 {
     // Same as `gte_strgb3`, but takes `VECTOR3` pointer to store results.
     // Not sure why this was needed, the func that uses it also ends up calling the normal `gte_strgb3` too.

@@ -1,6 +1,7 @@
 #include "game.h"
 #include "inline_no_dmpsx.h"
 
+#include <psyq/libgs.h>
 #include <psyq/strings.h>
 #ifdef SH_PC_PORT
 #include <stdio.h>
@@ -597,4 +598,4 @@ int Anim_IsPlaybackLoop(void* fn) { return fn == (void*)Anim_PlaybackLoop; }
 int Anim_IsBlendLinear(void* fn)  { return fn == (void*)Anim_BlendLinear;  }
 #endif
 
-// 
+//

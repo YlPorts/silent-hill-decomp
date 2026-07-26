@@ -12,6 +12,7 @@
 #define PC_MAX_IPD_CHUNKS 256
 #endif
 
+#include <psyq/libgte.h>
 #include <psyq/strings.h>
 
 #include "bodyprog/bodyprog.h"

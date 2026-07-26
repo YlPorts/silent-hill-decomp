@@ -1457,6 +1457,12 @@ bool Ipd_IsTextureLoaded(s_IpdHeader* ipdHdr);
 
 s_IpdCollisionData* Ipd_HeaderCollisionDataGet(s_IpdHeader* ipdHdr);
 
+s32 Map_IpdIdxGet(s32 cellX, s32 cellZ);
+
+void IpdHeader_FixOffsets(s_IpdHeader* ipdHdr, s_LmHeader** lmHdrs, s32 lmHdrCount,
+                          s_ActiveChunkTextures* fullPageActiveTexs, s_ActiveChunkTextures* halfPageActiveTexs,
+                          e_FsFile fileIdx);
+
 void Ipd_Init(s_IpdHeader* ipdHdr, s_LmHeader** lmHdrs, s32 lmHdrCount,
               s_ActiveChunkTextures* fullPageActiveTexs, s_ActiveChunkTextures* halfPageActiveTexs,
               e_FsFile fileIdx);
@@ -1733,7 +1739,7 @@ void func_8005A838(s_GteScratchData* scratchData, s32 scale);
 
 void func_8005A900(s_MeshHeader* meshHdr, s32 offset, s_GteScratchData* scratchData, MATRIX* viewMat);
 
-u8 func_8005AA08(s_MeshHeader* meshHdr, s32 arg1, s_GteScratchData2* scratchData);
+void func_8005AA08(s_MeshHeader* meshHdr, s32 arg1, s_GteScratchData2* scratchData);
 
 void func_8005AC50(s_MeshHeader* meshHdr, s_GteScratchData2* scratchData, GsOT_TAG* ot, bool arg3);
 
@@ -1752,6 +1758,8 @@ void func_8005B424(VECTOR3* vec0, const VECTOR3* vec1);
 
 /** @unused No references. */
 void func_800563E8(s_LmHeader* lmHdr, s32 arg1, s32 arg2, s32 arg3);
+
+void LmHeader_FixOffsets(s_LmHeader* lmHdr);
 
 void Lm_MaterialFileIdxApply(s_LmHeader* lmHdr, e_FsFile fileIdx, s_FsImageDesc* image, s32 blendMode);
 
@@ -1787,6 +1795,8 @@ void Gfx_FogOverlayQuadDraw(s16 arg0, s16 arg1, s16 arg2, s16 arg3, s32 arg4, s3
 
 /** Crucial 3D drawing function. */
 void func_80057090(s_ModelInfo* modelInfo, GsOT* otTag, s32 arg2, MATRIX* viewMat, MATRIX* worldMat, u16 arg5);
+
+void func_80057228(MATRIX* mat, s32 alpha, SVECTOR* arg2, VECTOR3* arg3);
 
 s32 func_800571D0(u32 arg0);
 
