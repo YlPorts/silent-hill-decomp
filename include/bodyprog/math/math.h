@@ -352,6 +352,8 @@ MATRIX* Math_RotMatrixZ(s32, MATRIX*); // Previous name: `shRotMatrixZ`
 void Math_RotMatrixXyz(SVECTOR* rot, MATRIX* mat); // 0x80096A5C
 
 #ifdef SH_PC_PORT
+typedef struct _GsCOORDINATE2 GsCOORDINATE2;
+
 /** @brief Builds an X-Y-X rotation matrix using the portable GTE implementation. */
 void Math_RotMatrixXyxGte(SVECTOR* rot, MATRIX* mat);
 
