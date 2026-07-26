@@ -3,6 +3,7 @@
 #include "bodyprog/bodyprog.h"
 #include "bodyprog/math/math.h"
 #include "bodyprog/player.h"
+#include "main/rng.h"
 
 #include "maps/characters/monster_cybil.h"
 s_Model g_MonsterCybil_ExtraModel;
