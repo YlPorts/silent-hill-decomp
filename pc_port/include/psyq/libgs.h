@@ -280,6 +280,7 @@ extern void GsSetProjection(long h);
 
 /* Object rendering */
 extern void GsSortObject4(GsDOBJ2 *obj, GsOT *ot, int shift, unsigned long *scratch);
+extern void GsSortFastSprite(GsSPRITE *spr, GsOT *ot, int shift);
 extern void GsGetLw(GsCOORDINATE2 *coord, MATRIX *m);
 extern void GsGetLs(GsCOORDINATE2 *coord, MATRIX *m);
 extern void GsGetLws(GsCOORDINATE2 *coord, MATRIX *lw, MATRIX *ls);

@@ -1,6 +1,7 @@
 #include "game.h"
 #ifdef SH_PC_PORT
 #include "sh_log.h"
+#include <stdlib.h>
 #endif
 
 #include <abs.h>
