@@ -27,9 +27,7 @@ def replace_once(text: str, old: str, new: str, label: str) -> str:
 
 text = LAUNCHER.read_text(encoding="utf-8")
 
-# Reaching MainLoop or even presenting one frame does not prove the process will
-# remain alive. Keep the marker until the next launch so a :game process death
-# always returns to the launcher with the last persistent native stage.
+# Keep the marker so a :game process death returns with the last native stage.
 text = replace_once(
     text,
     '''        if (launchPending && "RUNNING".equals(startupStage)) {
@@ -71,9 +69,15 @@ text = replace_once(
             case "FIRST_FRAME_INPUT_READY": return "lógica previa del primer fotograma";
             case "FIRST_FRAME_STATE_UPDATE": return "actualización del estado inicial del juego";
             case "FIRST_FRAME_STATE_READY": return "preparación del dibujo inicial";
-            case "FIRST_FRAME_DRAW_OT0": return "entrada al dibujado del fondo y objetos";
-            case "FIRST_FRAME_DEPTH_CLEAR": return "limpieza del búfer de profundidad de OpenGL ES";
-            case "FIRST_FRAME_PARSE_OT": return "procesamiento de la tabla de dibujo del primer fotograma";
+            case "FIRST_FRAME_DRAW_OT0": return "entrada al dibujo del fondo y objetos";
+            case "FIRST_FRAME_DEPTH_CLEAR": return "limpieza de profundidad OpenGL ES";
+            case "FIRST_FRAME_PARSE_OT": return "entrada a la tabla de dibujo";
+            case "FIRST_FRAME_BEGIN_SCENE": return "preparación del framebuffer";
+            case "FIRST_FRAME_BEGIN_SCENE_READY": return "framebuffer preparado; iniciando primitivas";
+            case "FIRST_FRAME_OT_WALK": return "recorrido de las primitivas de PlayStation";
+            case "FIRST_FRAME_OT_WALK_READY": return "primitivas procesadas; preparando vértices";
+            case "FIRST_FRAME_DRAW_SPLITS": return "subida de vértices y dibujo de lotes OpenGL ES";
+            case "FIRST_FRAME_DRAW_SPLITS_READY": return "primer lote gráfico completado";
             case "FIRST_FRAME_DRAW_OT2": return "dibujo de la interfaz del primer fotograma";
             case "FIRST_FRAME_PRESENT": return "presentación del primer fotograma en OpenGL ES";
             case "FIRST_FRAME_PRESENTED": return "el primer fotograma se mostró; el cierre ocurrió después";
@@ -86,7 +90,44 @@ text = replace_once(
             case "CRASH_SIGNAL": return "FALLO NATIVO por señal desconocida";
             case "RUNNING": return "versión anterior del diagnóstico: entrada al bucle principal";
 ''',
-    "describe precise native startup and signal stages",
+    "describe precise GLES ordering-table stages",
+)
+
+# Existing installations retain config.cfg. Force a lightweight compatibility
+# profile until the base Android renderer is stable.
+text = replace_once(
+    text,
+    '''            String original = new String(Files.readAllBytes(config.toPath()), StandardCharsets.UTF_8);
+            String updated = original.replaceAll(
+                    "(?m)^\\s*global_chara_pool\\s*=\\s*[^\\r\\n]+$",
+                    "global_chara_pool = 0");
+            if (!updated.contains("global_chara_pool = 0")) {
+                updated = updated + (updated.endsWith("\\n") ? "" : "\\n")
+                        + "global_chara_pool = 0\\n";
+            }
+''',
+    '''            String original = new String(Files.readAllBytes(config.toPath()), StandardCharsets.UTF_8);
+            String updated = original;
+            String[][] safeValues = {
+                    {"global_chara_pool", "0"},
+                    {"use_pgxp", "0"},
+                    {"post_process", "0"},
+                    {"tonemap", "0"},
+                    {"flashlight_mode", "0"},
+                    {"texture_packs", "0"},
+                    {"msaa_samples", "0"}
+            };
+            for (String[] pair : safeValues) {
+                String line = pair[0] + " = " + pair[1];
+                String pattern = "(?m)^\\s*" + pair[0] + "\\s*=\\s*[^\\r\\n]+$";
+                if (updated.matches("(?s).*" + pattern + ".*")) {
+                    updated = updated.replaceAll(pattern, java.util.regex.Matcher.quoteReplacement(line));
+                } else {
+                    updated = updated + (updated.endsWith("\\n") ? "" : "\\n") + line + "\\n";
+                }
+            }
+''',
+    "enforce lightweight Android renderer configuration",
 )
 
 LAUNCHER.write_text(text, encoding="utf-8")
