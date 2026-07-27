@@ -138,7 +138,7 @@ def patch_android_texture_lighting() -> None:
 ''',
         '''\tGTE_ANDROID_VERTEX_COLOR\\
 ''',
-        "androidRgb = mix",
+        "\tGTE_ANDROID_VERTEX_COLOR\\\n",
         "route vertex colour through Android compatibility macro",
     )
 
