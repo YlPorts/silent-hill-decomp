@@ -18,6 +18,9 @@ LAUNCHER = (
 
 
 def replace_once(text: str, old: str, new: str, label: str) -> str:
+    if new in text:
+        print(f"[already applied] {label}")
+        return text
     count = text.count(old)
     if count != 1:
         raise RuntimeError(f"{label}: expected exactly one match, found {count}")
@@ -94,19 +97,19 @@ text = replace_once(
 )
 
 # Existing installations retain config.cfg. Force a lightweight compatibility
-# profile until the base Android renderer is stable.
-text = replace_once(
-    text,
-    '''            String original = new String(Files.readAllBytes(config.toPath()), StandardCharsets.UTF_8);
+# profile until the base Android renderer is stable. Raw Python strings preserve
+# the doubled backslashes that must exist in Java string literals.
+safe_config_old = r'''            String original = new String(Files.readAllBytes(config.toPath()), StandardCharsets.UTF_8);
             String updated = original.replaceAll(
                     "(?m)^\\s*global_chara_pool\\s*=\\s*[^\\r\\n]+$",
                     "global_chara_pool = 0");
             if (!updated.contains("global_chara_pool = 0")) {
-                updated = updated + (updated.endsWith("\\n") ? "" : "\\n")
-                        + "global_chara_pool = 0\\n";
+                updated = updated + (updated.endsWith("\n") ? "" : "\n")
+                        + "global_chara_pool = 0\n";
             }
-''',
-    '''            String original = new String(Files.readAllBytes(config.toPath()), StandardCharsets.UTF_8);
+'''
+
+safe_config_new = r'''            String original = new String(Files.readAllBytes(config.toPath()), StandardCharsets.UTF_8);
             String updated = original;
             String[][] safeValues = {
                     {"global_chara_pool", "0"},
@@ -120,13 +123,18 @@ text = replace_once(
             for (String[] pair : safeValues) {
                 String line = pair[0] + " = " + pair[1];
                 String pattern = "(?m)^\\s*" + pair[0] + "\\s*=\\s*[^\\r\\n]+$";
-                if (updated.matches("(?s).*" + pattern + ".*")) {
+                if (java.util.regex.Pattern.compile(pattern).matcher(updated).find()) {
                     updated = updated.replaceAll(pattern, java.util.regex.Matcher.quoteReplacement(line));
                 } else {
-                    updated = updated + (updated.endsWith("\\n") ? "" : "\\n") + line + "\\n";
+                    updated = updated + (updated.endsWith("\n") ? "" : "\n") + line + "\n";
                 }
             }
-''',
+'''
+
+text = replace_once(
+    text,
+    safe_config_old,
+    safe_config_new,
     "enforce lightweight Android renderer configuration",
 )
 
