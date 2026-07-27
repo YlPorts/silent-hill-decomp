@@ -11,8 +11,8 @@ android {
         applicationId "com.slickamogus.silenthill"
         minSdk 26
         targetSdk 36
-        versionCode 7
-        versionName "0.1.6-rgba-ot-guard"
+        versionCode 8
+        versionName "0.1.7-ot-color-realtime"
 
         ndk {
             abiFilters "arm64-v8a"
