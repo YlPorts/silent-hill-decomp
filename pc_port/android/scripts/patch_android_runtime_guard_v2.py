@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
-"""Execute patch_android_runtime_guard.py with corrected idempotency semantics.
+"""Execute patch_android_runtime_guard.py with safe regex replacement semantics.
 
 The original helper treated the mere presence of a marker as proof that a regex
-replacement had completed. Two replacements deliberately share markers with an
-earlier step, so they could be skipped prematurely. This wrapper changes the
-check to skip only when the old pattern is no longer present, then executes the
-same reviewed patch body.
+replacement had completed, and passed C/C++ replacement text directly through
+Python's regex-template parser. This wrapper skips only when the old pattern is
+gone and inserts replacement text through a lambda so sequences such as \n and
+\0 remain literal source code.
 """
 
 from pathlib import Path
@@ -21,7 +21,9 @@ new_helper = '''    old_pattern_still_present = re.search(pattern, text, flags=r
     if marker in text and not old_pattern_still_present:
         print(f"[already applied] {label}")
         return
-    updated, count = re.subn(pattern, replacement, text, count=1, flags=re.DOTALL)
+    updated, count = re.subn(
+        pattern, lambda _match: replacement, text, count=1, flags=re.DOTALL
+    )
 '''
 if source.count(old_helper) != 1:
     raise RuntimeError("runtime guard helper layout changed; refusing an unverified execution")
