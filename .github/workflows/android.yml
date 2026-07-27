@@ -52,34 +52,41 @@ jobs:
         run: |
           python3 -m py_compile pc_port/android/scripts/apply_psycross_android.py
           python3 -m py_compile pc_port/android/scripts/patch_first_frame_android.py
+          python3 -m py_compile pc_port/android/scripts/patch_android_gles_ot.py
           python3 -m py_compile pc_port/android/scripts/prepare_launcher_diagnostics.py
 
       - name: Apply Android native startup fixes
         run: python3 pc_port/android/scripts/apply_psycross_android.py
 
-      - name: Apply Android first-frame fix
+      - name: Apply Android first-frame diagnostics
         run: python3 pc_port/android/scripts/patch_first_frame_android.py
+
+      - name: Apply Android GLES ordering-table fix
+        run: python3 pc_port/android/scripts/patch_android_gles_ot.py
 
       - name: Prepare isolated-process crash diagnostics
         run: python3 pc_port/android/scripts/prepare_launcher_diagnostics.py
 
-      - name: Verify diagnostic Android sources
+      - name: Verify Android GLES renderer fix
         run: |
           grep -F 'android:process=":game"' pc_port/android/app/src/main/AndroidManifest.xml
-          grep -F 'versionName "0.1.2-first-frame-fix"' pc_port/android/app/build.gradle
-          grep -F 'MAINLOOP_WARNING_SKIPPED' src/bodyprog/sys/game_main.c
+          grep -F 'versionName "0.1.3-gles-ot-fix"' pc_port/android/app/build.gradle
+          grep -F '#include <GLES3/gl3.h>' pc_port/src/stubs/libgs_stub.c
+          grep -F 'glClearDepthf(1.0f);' pc_port/src/stubs/libgs_stub.c
+          grep -F 'FIRST_FRAME_DEPTH_CLEAR' pc_port/src/stubs/libgs_stub.c
+          grep -F 'FIRST_FRAME_PARSE_OT' pc_port/src/stubs/libgs_stub.c
           grep -F 'FIRST_FRAME_PRESENTED' src/bodyprog/sys/game_main.c
           grep -F 'CRASH_SIGSEGV' pc_port/src/main_pc.c
           grep -F 'El juego no completó el arranque' pc_port/android/app/src/main/java/com/slickamogus/silenthill/LauncherActivity.java
           ! grep -F 'launchMarkerFile().delete();' pc_port/android/app/src/main/java/com/slickamogus/silenthill/LauncherActivity.java
 
-      - name: Build clean ARM64 first-frame-fix APK
+      - name: Build clean ARM64 GLES ordering-table fix APK
         working-directory: pc_port/android
         run: gradle --no-daemon --stacktrace clean :app:assembleDebug
 
-      - name: Upload first-frame-fix APK
+      - name: Upload GLES ordering-table fix APK
         uses: actions/upload-artifact@v4
         with:
-          name: silent-hill-android-first-frame-fix-${{ github.sha }}
+          name: silent-hill-android-gles-ot-fix-${{ github.sha }}
           path: pc_port/android/app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
