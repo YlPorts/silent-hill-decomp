@@ -71,7 +71,9 @@ text = replace_once(
             case "FIRST_FRAME_INPUT_READY": return "lógica previa del primer fotograma";
             case "FIRST_FRAME_STATE_UPDATE": return "actualización del estado inicial del juego";
             case "FIRST_FRAME_STATE_READY": return "preparación del dibujo inicial";
-            case "FIRST_FRAME_DRAW_OT0": return "dibujo del fondo y objetos del primer fotograma";
+            case "FIRST_FRAME_DRAW_OT0": return "entrada al dibujado del fondo y objetos";
+            case "FIRST_FRAME_DEPTH_CLEAR": return "limpieza del búfer de profundidad de OpenGL ES";
+            case "FIRST_FRAME_PARSE_OT": return "procesamiento de la tabla de dibujo del primer fotograma";
             case "FIRST_FRAME_DRAW_OT2": return "dibujo de la interfaz del primer fotograma";
             case "FIRST_FRAME_PRESENT": return "presentación del primer fotograma en OpenGL ES";
             case "FIRST_FRAME_PRESENTED": return "el primer fotograma se mostró; el cierre ocurrió después";
