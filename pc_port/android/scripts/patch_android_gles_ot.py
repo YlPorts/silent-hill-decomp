@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
-"""Fix Android GLES VRAM, mobile memory use, and first ordering-table draw.
+"""Fix Android GLES VRAM upload, mobile memory use, and ordering-table startup.
 
-Android uses an OpenGL ES 3 context. PsyCross still selected the legacy
-GL_LUMINANCE_ALPHA VRAM texture and the PC GS stub called desktop glClearDepth.
-The mobile build also reserved desktop-sized PGXP shadow tables before the title
-screen. Apply checked Android-only replacements while leaving desktop builds
-unchanged.
+Android uses an OpenGL ES 3 context. Some mobile drivers did not preserve the
+second byte of the PSX RGB555 word reliably through the two-channel VRAM path,
+which left mostly the low byte visible and produced a red/green corrupted image.
+Use a universally supported RGBA8 texture on Android and explicitly expand each
+16-bit PSX word to R=low byte, G=high byte before uploading. Desktop builds keep
+their original renderer path.
 """
 
 from pathlib import Path
@@ -14,6 +15,7 @@ PC_PORT = Path(__file__).resolve().parents[2]
 PSYCROSS = PC_PORT / "PsyCross"
 LIBGS = PC_PORT / "src" / "stubs" / "libgs_stub.c"
 RENDER_HEADER = PSYCROSS / "include" / "PsyX" / "PsyX_render.h"
+RENDER = PSYCROSS / "src" / "render" / "PsyX_render.cpp"
 GPU = PSYCROSS / "src" / "gpu" / "PsyX_GPU.cpp"
 LIBGPU = PSYCROSS / "src" / "psx" / "libgpu.c"
 
@@ -106,18 +108,19 @@ def patch_vram_format_and_mobile_buffers() -> None:
         """#if defined(RENDERER_OGL)
 #\tdefine VRAM_FORMAT            GL_RG
 #\tdefine VRAM_INTERNAL_FORMAT   GL_RG8
-#elif defined(RENDERER_OGLES) && (OGLES_VERSION >= 3)
-/* GLES3 removed the legacy LUMINANCE_ALPHA texture format. Keep each PSX
- * RGB555 word as two exact normalized bytes in RG8, matching the shader's
- * low-byte/high-byte reconstruction and avoiding the red/corrupt palette. */
-#\tdefine VRAM_FORMAT            GL_RG
-#\tdefine VRAM_INTERNAL_FORMAT   GL_RG8
+#elif defined(__ANDROID__) && defined(RENDERER_OGLES) && (OGLES_VERSION >= 3)
+/* Use RGBA8 as the transport texture on Android. Each PSX RGB555 word is
+ * expanded before upload to R=low byte, G=high byte, B=0, A=255. Sampling .rg
+ * therefore reconstructs the exact original 16-bit word even on drivers that
+ * mishandle the second channel of an RG8 upload. */
+#\tdefine VRAM_FORMAT            GL_RGBA
+#\tdefine VRAM_INTERNAL_FORMAT   GL_RGBA8
 #elif defined(RENDERER_OGLES)
 #\tdefine VRAM_FORMAT            GL_LUMINANCE_ALPHA
 #\tdefine VRAM_INTERNAL_FORMAT   GL_LUMINANCE_ALPHA
 #endif
 """,
-        "use RG8 VRAM storage on OpenGL ES 3",
+        "use RGBA8 transport VRAM on Android GLES3",
     )
 
     replace_once(
@@ -146,6 +149,104 @@ def patch_vram_format_and_mobile_buffers() -> None:
 #endif
 """,
         "reduce Android-only PGXP shadow tables",
+    )
+
+
+def patch_android_vram_upload() -> None:
+    replace_once(
+        RENDER,
+        """unsigned short vram[VRAM_WIDTH * VRAM_HEIGHT];
+
+void GR_ResetDevice()
+""",
+        """unsigned short vram[VRAM_WIDTH * VRAM_HEIGHT];
+
+#if defined(__ANDROID__)
+/* RGBA8 upload staging. The renderer still decodes the first two sampled
+ * channels as the low/high bytes of one PSX RGB555 word. Expanding explicitly
+ * avoids mobile-driver channel loss and makes byte order unambiguous. */
+static unsigned char s_androidVramRGBA[VRAM_WIDTH * VRAM_HEIGHT * 4];
+
+static void GR_ExpandVramWordsToRGBA(const unsigned short* src,
+                                     unsigned char* dst,
+                                     size_t pixelCount)
+{
+    for (size_t i = 0; i < pixelCount; i++)
+    {
+        const unsigned short word = src[i];
+        dst[i * 4 + 0] = (unsigned char)(word & 0xFF);
+        dst[i * 4 + 1] = (unsigned char)(word >> 8);
+        dst[i * 4 + 2] = 0;
+        dst[i * 4 + 3] = 255;
+    }
+}
+#endif
+
+void GR_ResetDevice()
+""",
+        "add Android PSX-word RGBA expansion",
+    )
+
+    replace_once(
+        RENDER,
+        """#if defined(RENDERER_OGL)
+\tglTexImage2D(GL_TEXTURE_2D, 0, VRAM_INTERNAL_FORMAT, VRAM_WIDTH, VRAM_HEIGHT, 0, VRAM_FORMAT, GL_UNSIGNED_BYTE, vram);
+#else
+\tglTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, VRAM_WIDTH, VRAM_HEIGHT, VRAM_FORMAT, GL_UNSIGNED_BYTE, vram);
+#endif
+""",
+        """#if defined(__ANDROID__)
+\tGR_ExpandVramWordsToRGBA(vram, s_androidVramRGBA,
+\t                         (size_t)VRAM_WIDTH * (size_t)VRAM_HEIGHT);
+\tglTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, VRAM_WIDTH, VRAM_HEIGHT,
+\t                GL_RGBA, GL_UNSIGNED_BYTE, s_androidVramRGBA);
+#elif defined(RENDERER_OGL)
+\tglTexImage2D(GL_TEXTURE_2D, 0, VRAM_INTERNAL_FORMAT, VRAM_WIDTH, VRAM_HEIGHT, 0, VRAM_FORMAT, GL_UNSIGNED_BYTE, vram);
+#else
+\tglTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, VRAM_WIDTH, VRAM_HEIGHT, VRAM_FORMAT, GL_UNSIGNED_BYTE, vram);
+#endif
+""",
+        "expand full Android VRAM upload to RGBA8",
+    )
+
+    replace_once(
+        RENDER,
+        """\tfor (int i = 0; i < 2; i++)
+\t{
+\t\tglBindTexture(GL_TEXTURE_2D, g_vramTexturesDouble[i]);
+\t\tglTexSubImage2D(GL_TEXTURE_2D, 0, x, y, w, h, VRAM_FORMAT, GL_UNSIGNED_BYTE, block);
+\t}
+\tglBindTexture(GL_TEXTURE_2D, g_lastBoundTexture);
+
+\tfree(block);
+""",
+        """#if defined(__ANDROID__)
+\tunsigned char* rgbaBlock = (unsigned char*)malloc((size_t)w * (size_t)h * 4u);
+\tif (!rgbaBlock)
+\t{
+\t\tfree(block);
+\t\treturn;
+\t}
+\tGR_ExpandVramWordsToRGBA(block, rgbaBlock, (size_t)w * (size_t)h);
+#endif
+
+\tfor (int i = 0; i < 2; i++)
+\t{
+\t\tglBindTexture(GL_TEXTURE_2D, g_vramTexturesDouble[i]);
+#if defined(__ANDROID__)
+\t\tglTexSubImage2D(GL_TEXTURE_2D, 0, x, y, w, h, GL_RGBA, GL_UNSIGNED_BYTE, rgbaBlock);
+#else
+\t\tglTexSubImage2D(GL_TEXTURE_2D, 0, x, y, w, h, VRAM_FORMAT, GL_UNSIGNED_BYTE, block);
+#endif
+\t}
+\tglBindTexture(GL_TEXTURE_2D, g_lastBoundTexture);
+
+#if defined(__ANDROID__)
+\tfree(rgbaBlock);
+#endif
+\tfree(block);
+""",
+        "expand direct Android VRAM-region uploads to RGBA8",
     )
 
 
@@ -232,5 +333,6 @@ if __name__ == "__main__":
         raise SystemExit(f"PsyCross submodule not found at {PSYCROSS}")
     patch_libgs()
     patch_vram_format_and_mobile_buffers()
+    patch_android_vram_upload()
     patch_shared_draw_trace()
-    print("Android GLES VRAM and ordering-table fixes applied successfully.")
+    print("Android GLES RGBA VRAM and ordering-table fixes applied successfully.")
