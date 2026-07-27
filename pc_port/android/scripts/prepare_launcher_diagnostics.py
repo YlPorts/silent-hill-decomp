@@ -207,7 +207,7 @@ text = replace_once(
     text,
     '''        legal.setText("Este port no incluye archivos del juego. Selecciona un volcado BIN obtenido legalmente de tu propio disco de Silent Hill para PlayStation.");
 ''',
-    '''        legal.setText("Este port no incluye archivos del juego. Selecciona un volcado BIN obtenido legalmente de tu propio disco de Silent Hill para PlayStation.\nVersión: " + appVersion());
+    '''        legal.setText("Este port no incluye archivos del juego. Selecciona un volcado BIN obtenido legalmente de tu propio disco de Silent Hill para PlayStation.\\nVersión: " + appVersion());
 ''',
     "show the installed diagnostic build version",
 )
