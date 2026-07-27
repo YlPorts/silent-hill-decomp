@@ -4,8 +4,9 @@
 The original helper treated the mere presence of a marker as proof that a regex
 replacement had completed, and passed C/C++ replacement text directly through
 Python's regex-template parser. This wrapper skips only when the old pattern is
-gone and inserts replacement text through a lambda so sequences such as \n and
-\0 remain literal source code.
+gone and inserts replacement text through a lambda so C escape sequences remain
+literal source code. It also masks both primitive attribute bits when validating
+packet sizes, matching PsyCross's own primitive dispatch.
 """
 
 from pathlib import Path
@@ -28,4 +29,7 @@ new_helper = '''    old_pattern_still_present = re.search(pattern, text, flags=r
 if source.count(old_helper) != 1:
     raise RuntimeError("runtime guard helper layout changed; refusing an unverified execution")
 source = source.replace(old_helper, new_helper, 1)
+if source.count("switch (code & 0xFD)") != 1:
+    raise RuntimeError("primitive validation mask layout changed")
+source = source.replace("switch (code & 0xFD)", "switch (code & 0xFC)", 1)
 exec(compile(source, str(SCRIPT), "exec"), {"__name__": "__main__", "__file__": str(SCRIPT)})
