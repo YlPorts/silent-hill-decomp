@@ -84,21 +84,58 @@ text = replace_once(
             case "FIRST_FRAME_DRAW_OT2": return "dibujo de la interfaz del primer fotograma";
             case "FIRST_FRAME_PRESENT": return "presentación del primer fotograma en OpenGL ES";
             case "FIRST_FRAME_PRESENTED": return "el primer fotograma se mostró; el cierre ocurrió después";
+            case "OT_INVALID_NODE": return "la tabla apuntó a un nodo de memoria no legible";
+            case "OT_INVALID_PACKET": return "un paquete gráfico quedó fuera de memoria legible";
+            case "OT_INVALID_PRIMITIVE": return "una primitiva gráfica tenía una cabecera inválida";
+            case "OT_TRUNCATED_PRIMITIVE": return "una primitiva gráfica estaba truncada";
+            case "OT_UNHANDLED_PRIMITIVE": return "el motor encontró una primitiva no compatible";
+            case "OT_PRIMITIVE_OVERRUN": return "una primitiva excedía el tamaño de su paquete";
+            case "OT_INVALID_NEXT": return "la tabla contenía un enlace de memoria inválido";
             case "EXITED_NORMALLY": return "MainLoop terminó normalmente";
-            case "CRASH_SIGSEGV": return "FALLO NATIVO SIGSEGV (acceso inválido a memoria)";
-            case "CRASH_SIGABRT": return "FALLO NATIVO SIGABRT (el motor abortó)";
-            case "CRASH_SIGBUS": return "FALLO NATIVO SIGBUS (acceso de memoria no alineado o inválido)";
-            case "CRASH_SIGILL": return "FALLO NATIVO SIGILL (instrucción no válida)";
-            case "CRASH_SIGFPE": return "FALLO NATIVO SIGFPE (error aritmético)";
-            case "CRASH_SIGNAL": return "FALLO NATIVO por señal desconocida";
+            case "CRASH_SIGSEGV": return "FALLO NATIVO SIGSEGV (acceso inválido a memoria)" + detail;
+            case "CRASH_SIGABRT": return "FALLO NATIVO SIGABRT (el motor abortó)" + detail;
+            case "CRASH_SIGBUS": return "FALLO NATIVO SIGBUS (acceso no alineado o inválido)" + detail;
+            case "CRASH_SIGILL": return "FALLO NATIVO SIGILL (instrucción no válida)" + detail;
+            case "CRASH_SIGFPE": return "FALLO NATIVO SIGFPE (error aritmético)" + detail;
+            case "CRASH_SIGNAL": return "FALLO NATIVO por señal desconocida" + detail;
             case "RUNNING": return "versión anterior del diagnóstico: entrada al bucle principal";
 ''',
-    "describe precise GLES ordering-table stages",
+    "describe precise Android rendering and OT failures",
 )
 
-# Existing installations retain config.cfg. Force a lightweight compatibility
-# profile until the base Android renderer is stable. Raw Python strings preserve
-# the doubled backslashes that must exist in Java string literals.
+text = replace_once(
+    text,
+    '''    private static String describeStartupStage(String stage) {
+        switch (stage) {
+''',
+    '''    private static String describeStartupStage(String stage) {
+        String token = stage;
+        String detail = "";
+        int separator = stage.indexOf('|');
+        if (separator >= 0) {
+            token = stage.substring(0, separator);
+            String rawDetail = stage.substring(separator + 1).trim();
+            if (!rawDetail.isEmpty()) {
+                detail = " — " + rawDetail;
+            }
+        }
+        switch (token) {
+''',
+    "split native signal token from primitive context",
+)
+
+text = replace_once(
+    text,
+    '''            default: return stage.isEmpty() ? "sin diagnóstico nativo" : stage;
+''',
+    '''            default: return token.isEmpty() ? "sin diagnóstico nativo" : token + detail;
+''',
+    "show unknown diagnostic details without hiding them",
+)
+
+# Existing installations retain config.cfg. Force a neutral, low-memory profile
+# while the base Android renderer is being stabilized. Raw strings preserve the
+# doubled backslashes required by Java regex literals.
 safe_config_old = r'''            String original = new String(Files.readAllBytes(config.toPath()), StandardCharsets.UTF_8);
             String updated = original.replaceAll(
                     "(?m)^\\s*global_chara_pool\\s*=\\s*[^\\r\\n]+$",
@@ -113,11 +150,22 @@ safe_config_new = r'''            String original = new String(Files.readAllByte
             String updated = original;
             String[][] safeValues = {
                     {"global_chara_pool", "0"},
+                    {"resident_textures", "0"},
+                    {"preload_chunks", "0"},
+                    {"whole_map_exteriors", "0"},
                     {"use_pgxp", "0"},
                     {"post_process", "0"},
+                    {"post_process_intensity", "0.0"},
                     {"tonemap", "0"},
+                    {"tonemap_intensity", "0.0"},
+                    {"brightness", "1.0"},
+                    {"contrast", "1.0"},
+                    {"saturation", "1.0"},
+                    {"psx_dither", "0"},
+                    {"menu_filter", "0"},
                     {"flashlight_mode", "0"},
                     {"texture_packs", "0"},
+                    {"msaa", "0"},
                     {"msaa_samples", "0"}
             };
             for (String[] pair : safeValues) {
@@ -135,7 +183,33 @@ text = replace_once(
     text,
     safe_config_old,
     safe_config_new,
-    "enforce lightweight Android renderer configuration",
+    "enforce neutral low-memory Android renderer configuration",
+)
+
+text = replace_once(
+    text,
+    '''    private View buildContentView() {
+''',
+    '''    private String appVersion() {
+        try {
+            return getPackageManager().getPackageInfo(getPackageName(), 0).versionName;
+        } catch (Exception ignored) {
+            return "desconocida";
+        }
+    }
+
+    private View buildContentView() {
+''',
+    "add visible installed APK version helper",
+)
+
+text = replace_once(
+    text,
+    '''        legal.setText("Este port no incluye archivos del juego. Selecciona un volcado BIN obtenido legalmente de tu propio disco de Silent Hill para PlayStation.");
+''',
+    '''        legal.setText("Este port no incluye archivos del juego. Selecciona un volcado BIN obtenido legalmente de tu propio disco de Silent Hill para PlayStation.\nVersión: " + appVersion());
+''',
+    "show the installed diagnostic build version",
 )
 
 LAUNCHER.write_text(text, encoding="utf-8")
