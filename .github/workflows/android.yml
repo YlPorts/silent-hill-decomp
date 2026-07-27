@@ -86,10 +86,37 @@ jobs:
           ! grep -F 'PcPort_WriteStartupStatus("FIRST_FRAME_PARSE_OT")' pc_port/src/stubs/libgs_stub.c
           ! grep -F 's_androidFirstOtTrace = 0' pc_port/PsyCross/src/psx/libgpu.c
           ! grep -F 'launchMarkerFile().delete();' pc_port/android/app/src/main/java/com/slickamogus/silenthill/LauncherActivity.java
+          python3 - <<'PY'
+          from pathlib import Path
+          launcher = Path("pc_port/android/app/src/main/java/com/slickamogus/silenthill/LauncherActivity.java").read_text(encoding="utf-8")
+          good = r"PlayStation.\nVersión: "
+          bad = "PlayStation.\nVersión: "
+          if good not in launcher:
+              raise SystemExit("generated launcher is missing the escaped version newline")
+          if bad in launcher:
+              raise SystemExit("generated launcher contains an illegal literal newline inside the Java string")
+          PY
 
       - name: Build clean ARM64 RGBA and OT guard APK
         working-directory: pc_port/android
-        run: gradle --no-daemon --stacktrace clean :app:assembleDebug
+        shell: bash
+        run: |
+          set +e
+          gradle --no-daemon --stacktrace --console=plain clean :app:assembleDebug > android-build.log 2>&1
+          status=$?
+          if [ "$status" -ne 0 ]; then
+            echo "Gradle failed; final diagnostic lines follow:"
+            tail -n 250 android-build.log
+          fi
+          exit "$status"
+
+      - name: Upload Android build log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: silent-hill-android-build-log-${{ github.sha }}
+          path: pc_port/android/android-build.log
+          if-no-files-found: warn
 
       - name: Upload Android RGBA and OT guard APK
         uses: actions/upload-artifact@v4
