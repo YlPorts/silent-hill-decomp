@@ -53,6 +53,7 @@ jobs:
           python3 -m py_compile pc_port/android/scripts/apply_psycross_android.py
           python3 -m py_compile pc_port/android/scripts/patch_first_frame_android.py
           python3 -m py_compile pc_port/android/scripts/patch_android_gles_ot.py
+          python3 -m py_compile pc_port/android/scripts/patch_android_runtime_guard.py
           python3 -m py_compile pc_port/android/scripts/prepare_launcher_diagnostics.py
 
       - name: Apply Android native startup fixes
@@ -61,37 +62,36 @@ jobs:
       - name: Apply Android first-frame diagnostics
         run: python3 pc_port/android/scripts/patch_first_frame_android.py
 
-      - name: Apply Android RGBA VRAM and renderer fixes
+      - name: Apply Android RGBA VRAM foundation
         run: python3 pc_port/android/scripts/patch_android_gles_ot.py
+
+      - name: Apply Android channel and OT runtime guards
+        run: python3 pc_port/android/scripts/patch_android_runtime_guard.py
 
       - name: Prepare isolated-process crash diagnostics
         run: python3 pc_port/android/scripts/prepare_launcher_diagnostics.py
 
-      - name: Verify Android RGBA VRAM build
+      - name: Verify Android RGBA and OT guard build
         run: |
           grep -F 'android:process=":game"' pc_port/android/app/src/main/AndroidManifest.xml
-          grep -F 'versionName "0.1.5-rgba-vram-fix"' pc_port/android/app/build.gradle
-          grep -F '#include <GLES3/gl3.h>' pc_port/src/stubs/libgs_stub.c
-          grep -F 'glClearDepthf(1.0f);' pc_port/src/stubs/libgs_stub.c
-          grep -F 'VRAM_FORMAT            GL_RGBA' pc_port/PsyCross/include/PsyX/PsyX_render.h
-          grep -F 'VRAM_INTERNAL_FORMAT   GL_RGBA8' pc_port/PsyCross/include/PsyX/PsyX_render.h
-          grep -F 'GR_ExpandVramWordsToRGBA' pc_port/PsyCross/src/render/PsyX_render.cpp
-          grep -F 's_androidVramRGBA' pc_port/PsyCross/src/render/PsyX_render.cpp
-          grep -F 'GL_RGBA, GL_UNSIGNED_BYTE, s_androidVramRGBA' pc_port/PsyCross/src/render/PsyX_render.cpp
-          grep -F '#define SHADOW_BITS 17' pc_port/PsyCross/src/gpu/PsyX_GPU.cpp
-          grep -F 'FIRST_FRAME_OT_WALK' pc_port/PsyCross/src/psx/libgpu.c
-          grep -F 'safeValues' pc_port/android/app/src/main/java/com/slickamogus/silenthill/LauncherActivity.java
-          grep -F 'FIRST_FRAME_PRESENTED' src/bodyprog/sys/game_main.c
-          grep -F 'CRASH_SIGSEGV' pc_port/src/main_pc.c
+          grep -F 'versionName "0.1.6-rgba-ot-guard"' pc_port/android/app/build.gradle
+          grep -F 'highByte = max(raw.g, max(raw.b, raw.a))' pc_port/PsyCross/src/render/PsyX_render.cpp
+          grep -F 'glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE)' pc_port/PsyCross/src/render/PsyX_render.cpp
+          grep -F 'AndroidPointerReadable' pc_port/PsyCross/src/gpu/PsyX_GPU.cpp
+          grep -F 'OT_INVALID_NEXT' pc_port/PsyCross/src/gpu/PsyX_GPU.cpp
+          grep -F 's_PcPortCrashContext' pc_port/src/main_pc.c
+          grep -F 'resident_textures", "0' pc_port/android/app/src/main/java/com/slickamogus/silenthill/LauncherActivity.java
+          grep -F 'Versión: ' pc_port/android/app/src/main/java/com/slickamogus/silenthill/LauncherActivity.java
+          ! grep -F 'PcPort_WriteStartupStatus("FIRST_FRAME_PARSE_OT")' pc_port/src/stubs/libgs_stub.c
           ! grep -F 'launchMarkerFile().delete();' pc_port/android/app/src/main/java/com/slickamogus/silenthill/LauncherActivity.java
 
-      - name: Build clean ARM64 RGBA VRAM APK
+      - name: Build clean ARM64 RGBA and OT guard APK
         working-directory: pc_port/android
         run: gradle --no-daemon --stacktrace clean :app:assembleDebug
 
-      - name: Upload RGBA VRAM APK
+      - name: Upload Android RGBA and OT guard APK
         uses: actions/upload-artifact@v4
         with:
-          name: silent-hill-android-rgba-vram-fix-${{ github.sha }}
+          name: silent-hill-android-rgba-ot-guard-${{ github.sha }}
           path: pc_port/android/app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
