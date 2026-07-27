@@ -54,6 +54,7 @@ jobs:
           python3 -m py_compile pc_port/android/scripts/patch_first_frame_android.py
           python3 -m py_compile pc_port/android/scripts/patch_android_gles_ot.py
           python3 -m py_compile pc_port/android/scripts/patch_android_runtime_guard.py
+          python3 -m py_compile pc_port/android/scripts/patch_android_runtime_guard_v2.py
           python3 -m py_compile pc_port/android/scripts/prepare_launcher_diagnostics.py
 
       - name: Apply Android native startup fixes
@@ -66,7 +67,7 @@ jobs:
         run: python3 pc_port/android/scripts/patch_android_gles_ot.py
 
       - name: Apply Android channel and OT runtime guards
-        run: python3 pc_port/android/scripts/patch_android_runtime_guard.py
+        run: python3 pc_port/android/scripts/patch_android_runtime_guard_v2.py
 
       - name: Prepare isolated-process crash diagnostics
         run: python3 pc_port/android/scripts/prepare_launcher_diagnostics.py
@@ -79,10 +80,11 @@ jobs:
           grep -F 'glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE)' pc_port/PsyCross/src/render/PsyX_render.cpp
           grep -F 'AndroidPointerReadable' pc_port/PsyCross/src/gpu/PsyX_GPU.cpp
           grep -F 'OT_INVALID_NEXT' pc_port/PsyCross/src/gpu/PsyX_GPU.cpp
-          grep -F 's_PcPortCrashContext' pc_port/src/main_pc.c
+          grep -F 'write(fd, s_PcPortCrashContext' pc_port/src/main_pc.c
           grep -F 'resident_textures", "0' pc_port/android/app/src/main/java/com/slickamogus/silenthill/LauncherActivity.java
           grep -F 'Versión: ' pc_port/android/app/src/main/java/com/slickamogus/silenthill/LauncherActivity.java
           ! grep -F 'PcPort_WriteStartupStatus("FIRST_FRAME_PARSE_OT")' pc_port/src/stubs/libgs_stub.c
+          ! grep -F 's_androidFirstOtTrace = 0' pc_port/PsyCross/src/psx/libgpu.c
           ! grep -F 'launchMarkerFile().delete();' pc_port/android/app/src/main/java/com/slickamogus/silenthill/LauncherActivity.java
 
       - name: Build clean ARM64 RGBA and OT guard APK
