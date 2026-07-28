@@ -20,7 +20,7 @@ permissions:
   contents: read
 
 jobs:
-  build-armv7-color-fix:
+  build-armv7-runtime-fix:
     runs-on: ubuntu-latest
     timeout-minutes: 90
 
@@ -48,14 +48,16 @@ jobs:
       - name: Check out pinned native dependencies
         run: git submodule update --init --recursive
 
-      - name: Validate focused Android patch scripts
+      - name: Validate Android patch scripts
         run: |
           python3 -m py_compile pc_port/android/scripts/apply_psycross_android.py
           python3 -m py_compile pc_port/android/scripts/patch_first_frame_android.py
           python3 -m py_compile pc_port/android/scripts/patch_android_gles_ot.py
           python3 -m py_compile pc_port/android/scripts/patch_android_exact_indexed.py
+          python3 -m py_compile pc_port/android/scripts/patch_android_armv7_runtime.py
           python3 -m py_compile pc_port/android/scripts/configure_android_variant.py
           python3 -m py_compile pc_port/android/scripts/prepare_launcher_diagnostics.py
+          python3 -m py_compile pc_port/android/scripts/patch_launcher_runtime_defaults.py
 
       - name: Apply Android native startup fixes
         run: python3 pc_port/android/scripts/apply_psycross_android.py
@@ -66,40 +68,50 @@ jobs:
       - name: Apply Android RGBA VRAM foundation
         run: python3 pc_port/android/scripts/patch_android_gles_ot.py
 
-      - name: Apply exact Android indexed texture colors
+      - name: Apply exact indexed texture colors
         run: python3 pc_port/android/scripts/patch_android_exact_indexed.py
 
-      - name: Configure ARMv7 color-fix build
+      - name: Apply drawable, offscreen, geometry and audio fixes
+        run: python3 pc_port/android/scripts/patch_android_armv7_runtime.py
+
+      - name: Configure ARMv7 runtime-fix build
         run: |
           python3 pc_port/android/scripts/configure_android_variant.py \
             --abi "armeabi-v7a" \
-            --version-code "14" \
-            --version-name "0.2.0-armv7-colorfix"
+            --version-code "15" \
+            --version-name "0.2.1-armv7-runtimefix"
 
-      - name: Prepare isolated-process crash diagnostics
+      - name: Prepare isolated-process diagnostics
         run: python3 pc_port/android/scripts/prepare_launcher_diagnostics.py
 
-      - name: Verify focused ARMv7 color fix
+      - name: Normalize existing-install display and audio settings
+        run: python3 pc_port/android/scripts/patch_launcher_runtime_defaults.py
+
+      - name: Verify focused ARMv7 runtime fix
         run: |
           grep -F 'android:process=":game"' pc_port/android/app/src/main/AndroidManifest.xml
-          grep -F 'versionName "0.2.0-armv7-colorfix"' pc_port/android/app/build.gradle
+          grep -F 'versionName "0.2.1-armv7-runtimefix"' pc_port/android/app/build.gradle
           grep -F 'abiFilters "armeabi-v7a"' pc_port/android/app/build.gradle
-          grep -F 'const unsigned char high = (unsigned char)(word >> 8);' pc_port/PsyCross/src/render/PsyX_render.cpp
-          grep -F 'dst[i * 4 + 2] = high;' pc_port/PsyCross/src/render/PsyX_render.cpp
-          grep -F 'dst[i * 4 + 3] = high;' pc_port/PsyCross/src/render/PsyX_render.cpp
-          grep -F 'ivec2 VRAMBytesAt(vec2 pixel)' pc_port/PsyCross/src/render/PsyX_render.cpp
-          grep -F 'texelFetch(s_texture, p, 0)' pc_port/PsyCross/src/render/PsyX_render.cpp
-          grep -F 'ANDROID_EXACT_GPU_SAMPLE_TEXTURE_4BIT_FUNC' pc_port/PsyCross/src/render/PsyX_render.cpp
-          grep -F 'ANDROID_EXACT_GPU_SAMPLE_TEXTURE_8BIT_FUNC' pc_port/PsyCross/src/render/PsyX_render.cpp
-          grep -F 'ANDROID_EXACT_GPU_SAMPLE_TEXTURE_16BIT_FUNC' pc_port/PsyCross/src/render/PsyX_render.cpp
-          grep -F 'glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE)' pc_port/PsyCross/src/render/PsyX_render.cpp
+          grep -F 'GR_RefreshAndroidDrawableSize' pc_port/PsyCross/src/render/PsyX_render.cpp
+          grep -F 'SDL_GL_GetDrawableSize' pc_port/PsyCross/src/render/PsyX_render.cpp
+          grep -F 'ANDROID_SYNC_OFFSCREEN_PACK' pc_port/PsyCross/src/render/PsyX_render.cpp
+          grep -F 'const u_char* rgba = (const u_char*)&c;' pc_port/PsyCross/src/render/PsyX_render.cpp
+          grep -F 'GR_DirectUploadVRAMRegion(g_PreviousOffscreen.x' pc_port/PsyCross/src/render/PsyX_render.cpp
+          grep -F 'extern "C" { int g_PsxPolySizeCull = 0; }' pc_port/PsyCross/src/gpu/PsyX_GPU.cpp
+          grep -F 'Android: opening default OpenAL output device' pc_port/PsyCross/src/audio/PsyX_SPUAL.cpp
+          grep -F 'attrs[n++] = 48000;' pc_port/PsyCross/src/audio/PsyX_SPUAL.cpp
+          grep -F '{"widescreen_mode", "2"}' pc_port/android/app/src/main/java/com/slickamogus/silenthill/LauncherActivity.java
+          grep -F '{"menu_pillarbox", "0"}' pc_port/android/app/src/main/java/com/slickamogus/silenthill/LauncherActivity.java
+          grep -F '{"audio_output", "1"}' pc_port/android/app/src/main/java/com/slickamogus/silenthill/LauncherActivity.java
+          grep -F 'widescreen_mode = 2' pc_port/android/app/src/main/assets/mobile-config.cfg
+          grep -F 'audio_output = 1' pc_port/android/app/src/main/assets/mobile-config.cfg
           ! grep -F 'AndroidPointerReadable' pc_port/PsyCross/src/gpu/PsyX_GPU.cpp
           ! grep -F 'OT_INVALID_NEXT' pc_port/PsyCross/src/gpu/PsyX_GPU.cpp
           ! grep -F 'GTE_ANDROID_VERTEX_COLOR' pc_port/PsyCross/src/render/PsyX_render.cpp
           ! grep -F 'PcPort_WriteStartupStatus("FIRST_FRAME_PARSE_OT")' pc_port/src/stubs/libgs_stub.c
           ! grep -F 'PcPort_WriteStartupStatus("FIRST_FRAME_DEPTH_CLEAR")' pc_port/src/stubs/libgs_stub.c
 
-      - name: Build clean ARMv7 color-fix APK
+      - name: Build clean ARMv7 runtime-fix APK
         working-directory: pc_port/android
         shell: bash
         run: |
@@ -108,7 +120,7 @@ jobs:
           status=$?
           if [ "$status" -ne 0 ]; then
             echo "Gradle failed; final diagnostic lines follow:"
-            tail -n 350 android-build.log
+            tail -n 400 android-build.log
           fi
           exit "$status"
 
@@ -116,13 +128,13 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: silent-hill-android-build-log-armv7-colorfix-${{ github.sha }}
+          name: silent-hill-android-build-log-armv7-runtimefix-${{ github.sha }}
           path: pc_port/android/android-build.log
           if-no-files-found: warn
 
-      - name: Upload ARMv7 color-fix APK
+      - name: Upload ARMv7 runtime-fix APK
         uses: actions/upload-artifact@v4
         with:
-          name: silent-hill-android-armv7-colorfix-${{ github.sha }}
+          name: silent-hill-android-armv7-runtimefix-${{ github.sha }}
           path: pc_port/android/app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
