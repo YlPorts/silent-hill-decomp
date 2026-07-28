@@ -97,12 +97,16 @@ jobs:
           grep -F 'android:process=":game"' pc_port/android/app/src/main/AndroidManifest.xml
           grep -F 'versionName "${{ matrix.version_name }}"' pc_port/android/app/build.gradle
           grep -F 'abiFilters "${{ matrix.abi }}"' pc_port/android/app/build.gradle
-          grep -F 'typedef uint32_t u_long;' pc_port/PsyCross/include/psx/types.h
-          grep -F 'typedef uint32_t ulong;' pc_port/PsyCross/include/psx/types.h
-          grep -F 'PSYX_ANDROID_PSX_ULONG_32' pc_port/PsyCross/include/psx/types.h
-          grep -F 'Android PSX u_long must be 32-bit' pc_port/PsyCross/include/psx/types.h
+          grep -F 'typedef uint32_t psx_u_long;' pc_port/PsyCross/include/psx/types.h
+          grep -F 'typedef uint32_t psx_ulong;' pc_port/PsyCross/include/psx/types.h
+          grep -F 'PSYX_ANDROID_PSX_WORD_ALIAS_32' pc_port/PsyCross/include/psx/types.h
+          grep -F 'Android PSX word must be 32-bit' pc_port/PsyCross/include/psx/types.h
           grep -F 'GL_RGBA8' pc_port/PsyCross/include/PsyX/PsyX_render.h
           grep -F 'Versión: ' pc_port/android/app/src/main/java/com/slickamogus/silenthill/LauncherActivity.java
+          ! grep -R -n -P '\b(?:u_long|ulong)\b' \
+              pc_port/PsyCross pc_port/src pc_port/include pc_port/maps src include \
+              --include='*.c' --include='*.cc' --include='*.cpp' --include='*.cxx' \
+              --include='*.h' --include='*.hh' --include='*.hpp' --include='*.hxx' --include='*.inl'
           ! grep -F 'VRAMBytesAt' pc_port/PsyCross/src/render/PsyX_render.cpp
           ! grep -F 'AndroidPointerReadable' pc_port/PsyCross/src/gpu/PsyX_GPU.cpp
           ! grep -F 'GTE_ANDROID_VERTEX_COLOR' pc_port/PsyCross/src/render/PsyX_render.cpp
