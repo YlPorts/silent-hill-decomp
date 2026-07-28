@@ -1,99 +1,160 @@
 #!/usr/bin/env python3
-"""Keep PlayStation SDK word aliases 32-bit on Android, including ARM64.
+"""Give PlayStation word aliases private fixed-width names on Android.
 
-PsyCross inherits Psy-Q aliases such as u_long/ulong. On Windows x64, C/C++
-`unsigned long` is 32-bit, but Android ARM64 follows LP64 and makes it 64-bit.
-Those aliases are used for PSX packets and binary data, which must remain
-32-bit regardless of host pointer width. Primitive links already use uintptr_t
-when USE_EXTENDED_PRIM_POINTERS is enabled, so pointer-sized data stays intact.
+Android's <sys/types.h> already declares u_long. On ARM64 that host alias is
+64-bit, while Psy-Q/game packets require a 32-bit word. Redefining u_long is
+illegal, so this build-time patch renames project-owned uses to psx_u_long and
+psx_ulong, then defines those aliases explicitly as uint32_t. System headers and
+pointer-sized primitive links remain untouched.
 """
 
 from pathlib import Path
 import re
 
 PC_PORT = Path(__file__).resolve().parents[2]
+REPO_ROOT = PC_PORT.parent
 PSYCROSS = PC_PORT / "PsyCross"
 TYPES = PSYCROSS / "include" / "psx" / "types.h"
 LIBGS = PC_PORT / "src" / "stubs" / "libgs_stub.c"
 
+SOURCE_ROOTS = (
+    PSYCROSS,
+    PC_PORT / "src",
+    PC_PORT / "include",
+    PC_PORT / "maps",
+    REPO_ROOT / "src",
+    REPO_ROOT / "include",
+)
+SOURCE_SUFFIXES = {".c", ".cc", ".cpp", ".cxx", ".h", ".hh", ".hpp", ".hxx", ".inl"}
 
-def replace_exact(text: str, old: str, new: str, label: str) -> str:
-    if new in text:
-        print(f"[already applied] {label}")
-        return text
-    count = text.count(old)
+
+def project_source_files():
+    seen: set[Path] = set()
+    for root in SOURCE_ROOTS:
+        if not root.exists():
+            continue
+        for path in root.rglob("*"):
+            if not path.is_file() or path.suffix.lower() not in SOURCE_SUFFIXES:
+                continue
+            if path in seen:
+                continue
+            seen.add(path)
+            yield path
+
+
+def rename_project_aliases() -> tuple[int, int, int]:
+    files_changed = 0
+    u_long_count = 0
+    ulong_count = 0
+    for path in project_source_files():
+        text = path.read_text(encoding="utf-8")
+        updated, count_u_long = re.subn(r"\bu_long\b", "psx_u_long", text)
+        updated, count_ulong = re.subn(r"\bulong\b", "psx_ulong", updated)
+        if count_u_long or count_ulong:
+            path.write_text(updated, encoding="utf-8")
+            files_changed += 1
+            u_long_count += count_u_long
+            ulong_count += count_ulong
+    print(
+        f"[applied] renamed PSX aliases in {files_changed} files "
+        f"(u_long={u_long_count}, ulong={ulong_count})"
+    )
+    return files_changed, u_long_count, ulong_count
+
+
+def remove_guarded_alias_block(text: str, guard: str, alias: str) -> str:
+    pattern = re.compile(
+        rf"#ifndef {re.escape(guard)}\n"
+        rf"#define {re.escape(guard)}\n"
+        rf"typedef[^;]+\b{re.escape(alias)}\s*;[^\n]*\n"
+        rf"#endif\n",
+        re.MULTILINE,
+    )
+    updated, count = pattern.subn("", text, count=1)
     if count != 1:
-        raise RuntimeError(f"{label}: expected one match, found {count}")
-    print(f"[applied] {label}")
-    return text.replace(old, new, 1)
+        raise RuntimeError(
+            f"expected one guarded {alias} typedef block ({guard}), found {count}"
+        )
+    return updated
 
 
-def patch_types() -> None:
+def install_fixed_width_aliases() -> None:
     text = TYPES.read_text(encoding="utf-8")
 
-    text = replace_exact(
-        text,
-        """#ifndef _ULONG_T
-#define _ULONG_T
-typedef\tunsigned long\tu_long;
-#endif
-""",
-        """#ifndef _ULONG_T
-#define _ULONG_T
-#if defined(__ANDROID__)
-/* A PSX long is always one 32-bit word. Android ARM64 uses LP64, where host
- * unsigned long is 64-bit, so use the fixed-width representation explicitly. */
-typedef uint32_t u_long;
-#define PSYX_ANDROID_PSX_ULONG_32 1
+    # rename_project_aliases changes the original typedef names too. Remove those
+    # guarded host-width definitions; their guards may already be defined by
+    # Bionic and therefore cannot safely own the PSX aliases.
+    text = remove_guarded_alias_block(text, "_ULONG_T", "psx_u_long")
+    text = remove_guarded_alias_block(text, "_SYSV_ULONG", "psx_ulong")
+
+    marker = "PSYX_ANDROID_PSX_WORD_ALIAS_32"
+    if marker not in text:
+        include_marker = "#include <stddef.h>\n"
+        if include_marker not in text:
+            raise RuntimeError("types.h include insertion marker not found")
+        aliases = """
+
+/* Android/Bionic owns the names u_long and ulong. Keep Psy-Q's 32-bit packet
+ * words under private aliases so LP64 cannot widen game data and system headers
+ * are never redefined. */
+typedef uint32_t psx_u_long;
+typedef uint32_t psx_ulong;
+#define PSYX_ANDROID_PSX_WORD_ALIAS_32 1
+
+#if defined(__cplusplus)
+static_assert(sizeof(psx_u_long) == 4, "Android PSX word must be 32-bit");
+static_assert(sizeof(psx_ulong) == 4, "Android PSX compatibility word must be 32-bit");
 #else
-typedef\tunsigned long\tu_long;
+_Static_assert(sizeof(psx_u_long) == 4, "Android PSX word must be 32-bit");
+_Static_assert(sizeof(psx_ulong) == 4, "Android PSX compatibility word must be 32-bit");
 #endif
-#endif
-""",
-        "make u_long a 32-bit PSX word on Android",
-    )
-
-    text = replace_exact(
-        text,
-        """#ifndef _SYSV_ULONG
-#define _SYSV_ULONG
-typedef\tunsigned long\tulong;\t\t/* sys V compat */
-#endif
-""",
-        """#ifndef _SYSV_ULONG
-#define _SYSV_ULONG
-#if defined(__ANDROID__)
-typedef uint32_t ulong;\t\t/* PSX/System V compatibility word */
-#else
-typedef\tunsigned long\tulong;\t\t/* sys V compat */
-#endif
-#endif
-""",
-        "make ulong a 32-bit PSX word on Android",
-    )
-
-    assertion = """
-#if defined(__ANDROID__)
-# if defined(__cplusplus)
-static_assert(sizeof(u_long) == 4, "Android PSX u_long must be 32-bit");
-static_assert(sizeof(ulong) == 4, "Android PSX ulong must be 32-bit");
-# else
-_Static_assert(sizeof(u_long) == 4, "Android PSX u_long must be 32-bit");
-_Static_assert(sizeof(ulong) == 4, "Android PSX ulong must be 32-bit");
-# endif
-#endif
-
 """
-    if "Android PSX u_long must be 32-bit" not in text:
-        marker = "#define\tNBBY\t8\n"
-        if marker not in text:
-            raise RuntimeError("type-width assertion insertion marker not found")
-        text = text.replace(marker, assertion + marker, 1)
-        print("[applied] add Android PSX word-width assertions")
+        text = text.replace(include_marker, include_marker + aliases, 1)
+        print("[applied] installed private fixed-width PSX aliases")
     else:
-        print("[already applied] add Android PSX word-width assertions")
+        print("[already applied] private fixed-width PSX aliases")
+
+    # Remove the assertion block generated by the previous conflicting patch if
+    # this script is ever run over an already transformed checkout.
+    text = re.sub(
+        r"\n#if defined\(__ANDROID__\)\n"
+        r"# if defined\(__cplusplus\)\n"
+        r"static_assert\(sizeof\(psx_u_long\).*?"
+        r"#endif\n\n",
+        "\n",
+        text,
+        count=1,
+        flags=re.DOTALL,
+    )
 
     TYPES.write_text(text, encoding="utf-8")
+
+
+def verify_no_host_aliases_remain() -> None:
+    offenders: list[str] = []
+    pattern = re.compile(r"\b(?:u_long|ulong)\b")
+    for path in project_source_files():
+        text = path.read_text(encoding="utf-8")
+        if pattern.search(text):
+            offenders.append(str(path.relative_to(REPO_ROOT)))
+            if len(offenders) >= 20:
+                break
+    if offenders:
+        raise RuntimeError(
+            "host-width aliases remain after Android PSX rename: " + ", ".join(offenders)
+        )
+
+    types_text = TYPES.read_text(encoding="utf-8")
+    required = (
+        "typedef uint32_t psx_u_long;",
+        "typedef uint32_t psx_ulong;",
+        "PSYX_ANDROID_PSX_WORD_ALIAS_32",
+        "Android PSX word must be 32-bit",
+    )
+    missing = [token for token in required if token not in types_text]
+    if missing:
+        raise RuntimeError(f"fixed-width PSX alias verification failed: {missing}")
+    print("Android project contains no host u_long/ulong aliases.")
 
 
 def remove_render_loop_file_io() -> None:
@@ -114,6 +175,8 @@ def remove_render_loop_file_io() -> None:
 if __name__ == "__main__":
     if not PSYCROSS.is_dir():
         raise SystemExit(f"PsyCross submodule not found at {PSYCROSS}")
-    patch_types()
+    rename_project_aliases()
+    install_fixed_width_aliases()
+    verify_no_host_aliases_remain()
     remove_render_loop_file_io()
-    print("Android fixed-width PSX word patch applied successfully.")
+    print("Android private fixed-width PSX word aliases applied successfully.")
