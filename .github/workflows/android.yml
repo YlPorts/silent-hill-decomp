@@ -20,24 +20,9 @@ permissions:
   contents: read
 
 jobs:
-  build-debug-apk:
-    name: build-${{ matrix.artifact_label }}
+  build-armv7-color-fix:
     runs-on: ubuntu-latest
     timeout-minutes: 90
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          # Control build: Android/ARM64 LP64, where host unsigned long is 64-bit.
-          - abi: arm64-v8a
-            version_code: 12
-            version_name: 0.1.9-arm64-control
-            artifact_label: arm64-control
-          # Native 32-bit comparison: no typedef rewriting is needed on ARMv7.
-          - abi: armeabi-v7a
-            version_code: 13
-            version_name: 0.1.9-armv7-native32
-            artifact_label: armv7-native32
 
     steps:
       - name: Check out source
@@ -63,11 +48,12 @@ jobs:
       - name: Check out pinned native dependencies
         run: git submodule update --init --recursive
 
-      - name: Validate Android patch scripts
+      - name: Validate focused Android patch scripts
         run: |
           python3 -m py_compile pc_port/android/scripts/apply_psycross_android.py
           python3 -m py_compile pc_port/android/scripts/patch_first_frame_android.py
           python3 -m py_compile pc_port/android/scripts/patch_android_gles_ot.py
+          python3 -m py_compile pc_port/android/scripts/patch_android_exact_indexed.py
           python3 -m py_compile pc_port/android/scripts/configure_android_variant.py
           python3 -m py_compile pc_port/android/scripts/prepare_launcher_diagnostics.py
 
@@ -80,41 +66,40 @@ jobs:
       - name: Apply Android RGBA VRAM foundation
         run: python3 pc_port/android/scripts/patch_android_gles_ot.py
 
-      - name: Configure ${{ matrix.artifact_label }} variant
+      - name: Apply exact Android indexed texture colors
+        run: python3 pc_port/android/scripts/patch_android_exact_indexed.py
+
+      - name: Configure ARMv7 color-fix build
         run: |
           python3 pc_port/android/scripts/configure_android_variant.py \
-            --abi "${{ matrix.abi }}" \
-            --version-code "${{ matrix.version_code }}" \
-            --version-name "${{ matrix.version_name }}"
+            --abi "armeabi-v7a" \
+            --version-code "14" \
+            --version-name "0.2.0-armv7-colorfix"
 
       - name: Prepare isolated-process crash diagnostics
         run: python3 pc_port/android/scripts/prepare_launcher_diagnostics.py
 
-      - name: Verify clean ABI comparison variant
+      - name: Verify focused ARMv7 color fix
         run: |
           grep -F 'android:process=":game"' pc_port/android/app/src/main/AndroidManifest.xml
-          grep -F 'versionName "${{ matrix.version_name }}"' pc_port/android/app/build.gradle
-          grep -F 'abiFilters "${{ matrix.abi }}"' pc_port/android/app/build.gradle
-          grep -F 'GL_RGBA8' pc_port/PsyCross/include/PsyX/PsyX_render.h
-          grep -F 'Versión: ' pc_port/android/app/src/main/java/com/slickamogus/silenthill/LauncherActivity.java
-          ! grep -F 'VRAMBytesAt' pc_port/PsyCross/src/render/PsyX_render.cpp
+          grep -F 'versionName "0.2.0-armv7-colorfix"' pc_port/android/app/build.gradle
+          grep -F 'abiFilters "armeabi-v7a"' pc_port/android/app/build.gradle
+          grep -F 'const unsigned char high = (unsigned char)(word >> 8);' pc_port/PsyCross/src/render/PsyX_render.cpp
+          grep -F 'dst[i * 4 + 2] = high;' pc_port/PsyCross/src/render/PsyX_render.cpp
+          grep -F 'dst[i * 4 + 3] = high;' pc_port/PsyCross/src/render/PsyX_render.cpp
+          grep -F 'ivec2 VRAMBytesAt(vec2 pixel)' pc_port/PsyCross/src/render/PsyX_render.cpp
+          grep -F 'texelFetch(s_texture, p, 0)' pc_port/PsyCross/src/render/PsyX_render.cpp
+          grep -F 'ANDROID_EXACT_GPU_SAMPLE_TEXTURE_4BIT_FUNC' pc_port/PsyCross/src/render/PsyX_render.cpp
+          grep -F 'ANDROID_EXACT_GPU_SAMPLE_TEXTURE_8BIT_FUNC' pc_port/PsyCross/src/render/PsyX_render.cpp
+          grep -F 'ANDROID_EXACT_GPU_SAMPLE_TEXTURE_16BIT_FUNC' pc_port/PsyCross/src/render/PsyX_render.cpp
+          grep -F 'glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE)' pc_port/PsyCross/src/render/PsyX_render.cpp
           ! grep -F 'AndroidPointerReadable' pc_port/PsyCross/src/gpu/PsyX_GPU.cpp
-          ! grep -F 'GTE_ANDROID_VERTEX_COLOR' pc_port/PsyCross/src/render/PsyX_render.cpp
           ! grep -F 'OT_INVALID_NEXT' pc_port/PsyCross/src/gpu/PsyX_GPU.cpp
+          ! grep -F 'GTE_ANDROID_VERTEX_COLOR' pc_port/PsyCross/src/render/PsyX_render.cpp
           ! grep -F 'PcPort_WriteStartupStatus("FIRST_FRAME_PARSE_OT")' pc_port/src/stubs/libgs_stub.c
           ! grep -F 'PcPort_WriteStartupStatus("FIRST_FRAME_DEPTH_CLEAR")' pc_port/src/stubs/libgs_stub.c
-          python3 - <<'PY'
-          from pathlib import Path
-          launcher = Path("pc_port/android/app/src/main/java/com/slickamogus/silenthill/LauncherActivity.java").read_text(encoding="utf-8")
-          good = r"PlayStation.\nVersión: "
-          bad = "PlayStation.\nVersión: "
-          if good not in launcher:
-              raise SystemExit("generated launcher is missing the escaped version newline")
-          if bad in launcher:
-              raise SystemExit("generated launcher contains an illegal literal newline inside the Java string")
-          PY
 
-      - name: Build clean ${{ matrix.artifact_label }} APK
+      - name: Build clean ARMv7 color-fix APK
         working-directory: pc_port/android
         shell: bash
         run: |
@@ -123,21 +108,21 @@ jobs:
           status=$?
           if [ "$status" -ne 0 ]; then
             echo "Gradle failed; final diagnostic lines follow:"
-            tail -n 300 android-build.log
+            tail -n 350 android-build.log
           fi
           exit "$status"
 
-      - name: Upload ${{ matrix.artifact_label }} build log
+      - name: Upload ARMv7 build log
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: silent-hill-android-build-log-${{ matrix.artifact_label }}-${{ github.sha }}
+          name: silent-hill-android-build-log-armv7-colorfix-${{ github.sha }}
           path: pc_port/android/android-build.log
           if-no-files-found: warn
 
-      - name: Upload ${{ matrix.artifact_label }} APK
+      - name: Upload ARMv7 color-fix APK
         uses: actions/upload-artifact@v4
         with:
-          name: silent-hill-android-${{ matrix.artifact_label }}-${{ github.sha }}
+          name: silent-hill-android-armv7-colorfix-${{ github.sha }}
           path: pc_port/android/app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
