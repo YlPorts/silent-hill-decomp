@@ -53,9 +53,7 @@ jobs:
           python3 -m py_compile pc_port/android/scripts/apply_psycross_android.py
           python3 -m py_compile pc_port/android/scripts/patch_first_frame_android.py
           python3 -m py_compile pc_port/android/scripts/patch_android_gles_ot.py
-          python3 -m py_compile pc_port/android/scripts/patch_android_runtime_guard.py
-          python3 -m py_compile pc_port/android/scripts/patch_android_runtime_guard_v2.py
-          python3 -m py_compile pc_port/android/scripts/patch_android_realtime_ot_color.py
+          python3 -m py_compile pc_port/android/scripts/patch_android_exact_indexed.py
           python3 -m py_compile pc_port/android/scripts/prepare_launcher_diagnostics.py
 
       - name: Apply Android native startup fixes
@@ -67,45 +65,41 @@ jobs:
       - name: Apply Android RGBA VRAM foundation
         run: python3 pc_port/android/scripts/patch_android_gles_ot.py
 
-      - name: Apply Android channel and OT runtime guards
-        run: python3 pc_port/android/scripts/patch_android_runtime_guard_v2.py
-
-      - name: Remove OT diagnostic overhead and neutralize textured lighting
-        run: python3 pc_port/android/scripts/patch_android_realtime_ot_color.py
+      - name: Apply exact Android indexed-texture renderer
+        run: python3 pc_port/android/scripts/patch_android_exact_indexed.py
 
       - name: Prepare isolated-process crash diagnostics
         run: python3 pc_port/android/scripts/prepare_launcher_diagnostics.py
 
-      - name: Verify Android real-time OT and color fallback build
+      - name: Verify exact indexed-texture build
         run: |
           grep -F 'android:process=":game"' pc_port/android/app/src/main/AndroidManifest.xml
-          grep -F 'versionName "0.1.7-ot-color-realtime"' pc_port/android/app/build.gradle
-          grep -F 'highByte = max(raw.g, max(raw.b, raw.a))' pc_port/PsyCross/src/render/PsyX_render.cpp
-          grep -F 'Normal rendering must not snprintf' pc_port/PsyCross/src/gpu/PsyX_GPU.cpp
-          grep -F 'return start >= 0x10000ULL' pc_port/PsyCross/src/gpu/PsyX_GPU.cpp
-          grep -F 'GTE_ANDROID_VERTEX_COLOR' pc_port/PsyCross/src/render/PsyX_render.cpp
-          grep -F 'androidTextured = step(1.5, a_texcoord.z)' pc_port/PsyCross/src/render/PsyX_render.cpp
-          grep -F 'vec3 androidRgb = mix' pc_port/PsyCross/src/render/PsyX_render.cpp
+          grep -F 'versionName "0.1.8-exact-indexed-clut"' pc_port/android/app/build.gradle
+          grep -F 'ivec2 VRAMBytesAt(vec2 pixel)' pc_port/PsyCross/src/render/PsyX_render.cpp
+          grep -F 'texelFetch(s_texture, p, 0)' pc_port/PsyCross/src/render/PsyX_render.cpp
+          grep -F 'ANDROID_EXACT_GPU_SAMPLE_TEXTURE_4BIT_FUNC' pc_port/PsyCross/src/render/PsyX_render.cpp
+          grep -F 'ANDROID_EXACT_GPU_SAMPLE_TEXTURE_8BIT_FUNC' pc_port/PsyCross/src/render/PsyX_render.cpp
+          grep -F 'int index = (packed >> ((p.x & 3) * 4)) & 15' pc_port/PsyCross/src/render/PsyX_render.cpp
+          grep -F 'glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE)' pc_port/PsyCross/src/render/PsyX_render.cpp
           grep -F 'resident_textures", "0' pc_port/android/app/src/main/java/com/slickamogus/silenthill/LauncherActivity.java
           grep -F 'Versión: ' pc_port/android/app/src/main/java/com/slickamogus/silenthill/LauncherActivity.java
-          ! grep -F '/proc/self/maps' pc_port/PsyCross/src/gpu/PsyX_GPU.cpp
-          ! grep -F 's_androidFirstOtTrace = 0' pc_port/PsyCross/src/psx/libgpu.c
-          ! grep -F 'launchMarkerFile().delete();' pc_port/android/app/src/main/java/com/slickamogus/silenthill/LauncherActivity.java
+          ! grep -F 'AndroidPointerReadable' pc_port/PsyCross/src/gpu/PsyX_GPU.cpp
+          ! grep -F 'OT_INVALID_NEXT' pc_port/PsyCross/src/gpu/PsyX_GPU.cpp
+          ! grep -F 'GTE_ANDROID_VERTEX_COLOR' pc_port/PsyCross/src/render/PsyX_render.cpp
+          ! grep -F 'PcPort_WriteStartupStatus("FIRST_FRAME_PARSE_OT")' pc_port/src/stubs/libgs_stub.c
+          ! grep -F 'PcPort_WriteStartupStatus("FIRST_FRAME_DEPTH_CLEAR")' pc_port/src/stubs/libgs_stub.c
           python3 - <<'PY'
           from pathlib import Path
           launcher = Path("pc_port/android/app/src/main/java/com/slickamogus/silenthill/LauncherActivity.java").read_text(encoding="utf-8")
-          shader = Path("pc_port/PsyCross/src/render/PsyX_render.cpp").read_text(encoding="utf-8")
           good = r"PlayStation.\nVersión: "
           bad = "PlayStation.\nVersión: "
           if good not in launcher:
               raise SystemExit("generated launcher is missing the escaped version newline")
           if bad in launcher:
               raise SystemExit("generated launcher contains an illegal literal newline inside the Java string")
-          if shader.count("\tGTE_ANDROID_VERTEX_COLOR\\") != 1:
-              raise SystemExit("Android vertex-color compatibility macro is not used exactly once")
           PY
 
-      - name: Build clean ARM64 real-time OT and color APK
+      - name: Build clean ARM64 exact indexed-texture APK
         working-directory: pc_port/android
         shell: bash
         run: |
@@ -126,9 +120,9 @@ jobs:
           path: pc_port/android/android-build.log
           if-no-files-found: warn
 
-      - name: Upload Android real-time OT and color APK
+      - name: Upload exact indexed-texture APK
         uses: actions/upload-artifact@v4
         with:
-          name: silent-hill-android-ot-color-realtime-${{ github.sha }}
+          name: silent-hill-android-exact-indexed-clut-${{ github.sha }}
           path: pc_port/android/app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
