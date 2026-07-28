@@ -28,14 +28,16 @@ jobs:
       fail-fast: false
       matrix:
         include:
+          # Control build: Android/ARM64 LP64, where host unsigned long is 64-bit.
           - abi: arm64-v8a
-            version_code: 10
-            version_name: 0.1.9-arm64-psx32
-            artifact_label: arm64-psx32
+            version_code: 12
+            version_name: 0.1.9-arm64-control
+            artifact_label: arm64-control
+          # Native 32-bit comparison: no typedef rewriting is needed on ARMv7.
           - abi: armeabi-v7a
-            version_code: 11
-            version_name: 0.1.9-armv7-psx32
-            artifact_label: armv7-psx32
+            version_code: 13
+            version_name: 0.1.9-armv7-native32
+            artifact_label: armv7-native32
 
     steps:
       - name: Check out source
@@ -66,7 +68,6 @@ jobs:
           python3 -m py_compile pc_port/android/scripts/apply_psycross_android.py
           python3 -m py_compile pc_port/android/scripts/patch_first_frame_android.py
           python3 -m py_compile pc_port/android/scripts/patch_android_gles_ot.py
-          python3 -m py_compile pc_port/android/scripts/patch_android_psx_word_types.py
           python3 -m py_compile pc_port/android/scripts/configure_android_variant.py
           python3 -m py_compile pc_port/android/scripts/prepare_launcher_diagnostics.py
 
@@ -79,9 +80,6 @@ jobs:
       - name: Apply Android RGBA VRAM foundation
         run: python3 pc_port/android/scripts/patch_android_gles_ot.py
 
-      - name: Force fixed-width PlayStation words
-        run: python3 pc_port/android/scripts/patch_android_psx_word_types.py
-
       - name: Configure ${{ matrix.artifact_label }} variant
         run: |
           python3 pc_port/android/scripts/configure_android_variant.py \
@@ -92,21 +90,13 @@ jobs:
       - name: Prepare isolated-process crash diagnostics
         run: python3 pc_port/android/scripts/prepare_launcher_diagnostics.py
 
-      - name: Verify clean PSX32 variant
+      - name: Verify clean ABI comparison variant
         run: |
           grep -F 'android:process=":game"' pc_port/android/app/src/main/AndroidManifest.xml
           grep -F 'versionName "${{ matrix.version_name }}"' pc_port/android/app/build.gradle
           grep -F 'abiFilters "${{ matrix.abi }}"' pc_port/android/app/build.gradle
-          grep -F 'typedef uint32_t psx_u_long;' pc_port/PsyCross/include/psx/types.h
-          grep -F 'typedef uint32_t psx_ulong;' pc_port/PsyCross/include/psx/types.h
-          grep -F 'PSYX_ANDROID_PSX_WORD_ALIAS_32' pc_port/PsyCross/include/psx/types.h
-          grep -F 'Android PSX word must be 32-bit' pc_port/PsyCross/include/psx/types.h
           grep -F 'GL_RGBA8' pc_port/PsyCross/include/PsyX/PsyX_render.h
           grep -F 'Versión: ' pc_port/android/app/src/main/java/com/slickamogus/silenthill/LauncherActivity.java
-          ! grep -R -n -P '\b(?:u_long|ulong)\b' \
-              pc_port/PsyCross pc_port/src pc_port/include pc_port/maps src include \
-              --include='*.c' --include='*.cc' --include='*.cpp' --include='*.cxx' \
-              --include='*.h' --include='*.hh' --include='*.hpp' --include='*.hxx' --include='*.inl'
           ! grep -F 'VRAMBytesAt' pc_port/PsyCross/src/render/PsyX_render.cpp
           ! grep -F 'AndroidPointerReadable' pc_port/PsyCross/src/gpu/PsyX_GPU.cpp
           ! grep -F 'GTE_ANDROID_VERTEX_COLOR' pc_port/PsyCross/src/render/PsyX_render.cpp
