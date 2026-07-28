@@ -32,19 +32,6 @@ def replace_once(path: Path, old: str, new: str, label: str) -> None:
     print(f"[applied] {label}")
 
 
-def replace_section(text: str, start_marker: str, end_marker: str,
-                    replacement: str, label: str) -> str:
-    if replacement in text:
-        print(f"[already applied] {label}")
-        return text
-    start = text.find(start_marker)
-    end = text.find(end_marker, start + len(start_marker))
-    if start < 0 or end < 0 or end <= start:
-        raise RuntimeError(f"{label}: section markers not found")
-    print(f"[applied] {label}")
-    return text[:start] + replacement + text[end:]
-
-
 def remove_per_draw_file_io() -> None:
     text = LIBGS.read_text(encoding="utf-8")
     for stage in ("FIRST_FRAME_DEPTH_CLEAR", "FIRST_FRAME_PARSE_OT"):
@@ -91,7 +78,6 @@ def patch_rgba_transport() -> None:
     elif new_pack in text:
         print("[already applied] keep framebuffer-feedback byte layout consistent")
     else:
-        # Older pinned PsyCross revisions may not include the feedback pack shader.
         print("[not present] framebuffer-feedback pack shader")
 
     # Defensive reset for a driver/state leak that can leave only one channel writable.
@@ -115,9 +101,6 @@ def patch_rgba_transport() -> None:
 def patch_exact_indexed_shaders() -> None:
     text = RENDER.read_text(encoding="utf-8")
 
-    # Replace only the Android fetch helper created by the prior RGBA patch.
-    android_fetch_start = "#if defined(__ANDROID__)\n#define GPU_FETCH_VRAM_FUNC\\"
-    android_fetch_end = "#elif (VRAM_FORMAT == GL_LUMINANCE_ALPHA)"
     exact_fetch = r'''#if defined(__ANDROID__)
 #define GPU_FETCH_VRAM_FUNC\
         "\tuniform sampler2D s_texture;\n"\
@@ -131,12 +114,25 @@ def patch_exact_indexed_shaders() -> None:
         "\tint VRAMWordAt(vec2 pixel) { ivec2 b = VRAMBytesAt(pixel); return b.x | (b.y << 8); }\n"\
         "\tvec2 VRAM(vec2 uv) { return vec2(VRAMBytesAt(uv * vec2(1024.0, 512.0))) * (1.0 / 255.0); }\n"
 '''
+
     if "ivec2 VRAMBytesAt(vec2 pixel)" not in text:
-        start = text.find(android_fetch_start)
-        end = text.find(android_fetch_end, start)
-        if start < 0 or end < 0:
-            raise RuntimeError("exact VRAM fetch: Android fetch block not found")
-        text = text[:start] + exact_fetch + text[end:]
+        # Support either the untouched PsyCross conditional or an earlier Android
+        # branch inserted by a previous diagnostic patch.
+        android_start = text.find("#if defined(__ANDROID__)\n#define GPU_FETCH_VRAM_FUNC\\")
+        android_end = text.find("#elif (VRAM_FORMAT == GL_LUMINANCE_ALPHA)", android_start)
+        if android_start >= 0 and android_end > android_start:
+            text = text[:android_start] + exact_fetch + text[android_end:]
+        else:
+            original_if = "#if (VRAM_FORMAT == GL_LUMINANCE_ALPHA)"
+            original_start = text.find(original_if)
+            if original_start < 0:
+                raise RuntimeError("exact VRAM fetch: original conditional not found")
+            original_tail = text[original_start:].replace(
+                original_if,
+                "#elif (VRAM_FORMAT == GL_LUMINANCE_ALPHA)",
+                1,
+            )
+            text = text[:original_start] + exact_fetch + original_tail
         print("[applied] use texelFetch for exact Android VRAM bytes")
     else:
         print("[already applied] use texelFetch for exact Android VRAM bytes")
