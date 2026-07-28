@@ -1,18 +1,13 @@
 #!/usr/bin/env python3
-"""Use an exact GLES3 VRAM/CLUT path and remove render-loop diagnostics.
+"""Install an Android GLES3 integer VRAM/CLUT sampler robustly.
 
-The Konami/KCET logos use direct-colour data and already render correctly, while
-FMV frames, menus, and most world textures use 4/8-bit indexed PSX textures.
-The desktop shader extracts those indices with normalised floating-point math.
-On the affected Android GLES driver that path corrupts CLUT lookups.
-
-For Android GLES3, fetch VRAM texels with texelFetch and perform 4/8-bit index
-extraction with integer bit operations. Desktop and non-Android GLES retain the
-original shader strings. Also remove status-file writes from every GsDrawOt;
-those writes run many times per frame and can stall both rendering and audio.
+The patch is applied to the pinned PsyCross checkout during GitHub Actions.  It
+uses structural macro boundaries instead of depending on indentation or on a
+particular previously generated Android fetch block.
 """
 
 from pathlib import Path
+import re
 
 PC_PORT = Path(__file__).resolve().parents[2]
 PSYCROSS = PC_PORT / "PsyCross"
@@ -20,88 +15,98 @@ RENDER = PSYCROSS / "src" / "render" / "PsyX_render.cpp"
 LIBGS = PC_PORT / "src" / "stubs" / "libgs_stub.c"
 
 
-def replace_once(path: Path, old: str, new: str, label: str) -> None:
-    text = path.read_text(encoding="utf-8")
-    if new and new in text:
-        print(f"[already applied] {label}")
-        return
-    count = text.count(old)
-    if count != 1:
-        raise RuntimeError(f"{label}: expected one match in {path}, found {count}")
-    path.write_text(text.replace(old, new, 1), encoding="utf-8")
-    print(f"[applied] {label}")
-
-
 def remove_per_draw_file_io() -> None:
     text = LIBGS.read_text(encoding="utf-8")
+    removed = 0
     for stage in ("FIRST_FRAME_DEPTH_CLEAR", "FIRST_FRAME_PARSE_OT"):
-        line = f'        PcPort_WriteStartupStatus("{stage}");\n'
-        count = text.count(line)
-        if count == 1:
-            text = text.replace(line, "", 1)
-            print(f"[applied] remove per-draw status {stage}")
-        elif count == 0:
-            print(f"[already applied] remove per-draw status {stage}")
-        else:
-            raise RuntimeError(f"remove {stage}: found {count} matches")
+        pattern = re.compile(
+            rf'^\s*PcPort_WriteStartupStatus\("{re.escape(stage)}"\);\s*\n',
+            re.MULTILINE,
+        )
+        text, count = pattern.subn("", text, count=1)
+        removed += count
+        print(f"[{'applied' if count else 'not present'}] remove per-draw status {stage}")
     LIBGS.write_text(text, encoding="utf-8")
+    print(f"Removed {removed} render-loop status writes.")
 
 
 def patch_rgba_transport() -> None:
-    # Preserve the high PSX byte redundantly. texelFetch reads G first, while B/A
-    # provide a safe fallback on drivers that return one secondary channel as 0.
-    replace_once(
-        RENDER,
-        """        dst[i * 4 + 0] = (unsigned char)(word & 0xFF);
-        dst[i * 4 + 1] = (unsigned char)(word >> 8);
-        dst[i * 4 + 2] = 0;
-        dst[i * 4 + 3] = 255;
-""",
-        """        const unsigned char low = (unsigned char)(word & 0xFF);
-        const unsigned char high = (unsigned char)(word >> 8);
-        dst[i * 4 + 0] = low;
-        dst[i * 4 + 1] = high;
-        dst[i * 4 + 2] = high;
-        dst[i * 4 + 3] = high;
-""",
-        "replicate the PSX high byte in Android RGBA transport",
-    )
-
-    # Framebuffer->VRAM feedback must use the same byte layout as CPU uploads.
-    old_pack = '"\\tfragColor = vec4(lo / 255.0, hi / 255.0, 0.0, 1.0);\\n"\n'
-    new_pack = '"\\tfragColor = vec4(lo / 255.0, hi / 255.0, hi / 255.0, hi / 255.0);\\n"\n'
     text = RENDER.read_text(encoding="utf-8")
+
+    if "const unsigned char high = (unsigned char)(word >> 8);" not in text:
+        assignment_pattern = re.compile(
+            r"(?P<indent>[ \t]*)dst\[i \* 4 \+ 0\] = \(unsigned char\)\(word & 0xFF\);\n"
+            r"(?P=indent)dst\[i \* 4 \+ 1\] = \(unsigned char\)\(word >> 8\);\n"
+            r"(?P=indent)dst\[i \* 4 \+ 2\] = 0;\n"
+            r"(?P=indent)dst\[i \* 4 \+ 3\] = 255;"
+        )
+
+        def expand(match: re.Match[str]) -> str:
+            indent = match.group("indent")
+            return (
+                f"{indent}const unsigned char low = (unsigned char)(word & 0xFF);\n"
+                f"{indent}const unsigned char high = (unsigned char)(word >> 8);\n"
+                f"{indent}dst[i * 4 + 0] = low;\n"
+                f"{indent}dst[i * 4 + 1] = high;\n"
+                f"{indent}dst[i * 4 + 2] = high;\n"
+                f"{indent}dst[i * 4 + 3] = high;"
+            )
+
+        text, count = assignment_pattern.subn(expand, text, count=1)
+        if count != 1:
+            raise RuntimeError(
+                f"RGBA transport: expected one PSX-word expansion block, found {count}"
+            )
+        print("[applied] replicate the high PSX byte across G/B/A")
+    else:
+        print("[already applied] replicate the high PSX byte across G/B/A")
+
+    old_pack = '"\\tfragColor = vec4(lo / 255.0, hi / 255.0, 0.0, 1.0);\\n"'
+    new_pack = '"\\tfragColor = vec4(lo / 255.0, hi / 255.0, hi / 255.0, hi / 255.0);\\n"'
     if old_pack in text:
         text = text.replace(old_pack, new_pack, 1)
-        RENDER.write_text(text, encoding="utf-8")
-        print("[applied] keep framebuffer-feedback byte layout consistent")
+        print("[applied] keep feedback packing consistent with RGBA transport")
     elif new_pack in text:
-        print("[already applied] keep framebuffer-feedback byte layout consistent")
+        print("[already applied] keep feedback packing consistent with RGBA transport")
     else:
-        print("[not present] framebuffer-feedback pack shader")
+        print("[not present] framebuffer feedback packing shader")
 
-    # Defensive reset for a driver/state leak that can leave only one channel writable.
-    replace_once(
-        RENDER,
-        """#if USE_OPENGL
-#ifdef RENDERER_OGLES
-\tglClearDepthf(1.0f);
-""",
-        """#if USE_OPENGL
-#ifdef __ANDROID__
-\tglColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
-#endif
-#ifdef RENDERER_OGLES
-\tglClearDepthf(1.0f);
-""",
-        "restore RGBA writes at the start of every Android scene",
-    )
+    begin = text.find("void GR_BeginScene()")
+    if begin < 0:
+        raise RuntimeError("RGBA mask: GR_BeginScene was not found")
+    use_gl = text.find("#if USE_OPENGL", begin)
+    if use_gl < 0:
+        raise RuntimeError("RGBA mask: GR_BeginScene OpenGL block was not found")
+    mask = "#ifdef __ANDROID__\n\tglColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);\n#endif\n"
+    scene_end = text.find("void GR_EndScene()", begin)
+    if mask not in text[begin:scene_end]:
+        insert_at = use_gl + len("#if USE_OPENGL\n")
+        text = text[:insert_at] + mask + text[insert_at:]
+        print("[applied] restore all framebuffer colour channels each scene")
+    else:
+        print("[already applied] restore all framebuffer colour channels each scene")
+
+    RENDER.write_text(text, encoding="utf-8")
 
 
-def patch_exact_indexed_shaders() -> None:
-    text = RENDER.read_text(encoding="utf-8")
+def replace_fetch_block(text: str) -> str:
+    if "ivec2 VRAMBytesAt(vec2 pixel)" in text:
+        print("[already applied] exact integer VRAM fetch")
+        return text
 
-    exact_fetch = r'''#if defined(__ANDROID__)
+    original_start = text.find("#if (VRAM_FORMAT == GL_LUMINANCE_ALPHA)")
+    android_start = text.find("#if defined(__ANDROID__)\n#define GPU_FETCH_VRAM_FUNC")
+    start_candidates = [value for value in (original_start, android_start) if value >= 0]
+    if not start_candidates:
+        raise RuntimeError("exact VRAM fetch: conditional block start was not found")
+    start = min(start_candidates)
+
+    end_marker = "\n\n/* PGXP path"
+    end = text.find(end_marker, start)
+    if end < 0:
+        raise RuntimeError("exact VRAM fetch: PGXP boundary was not found")
+
+    exact = r'''#if defined(__ANDROID__)
 #define GPU_FETCH_VRAM_FUNC\
         "\tuniform sampler2D s_texture;\n"\
         "\tivec2 VRAMBytesAt(vec2 pixel) {\n"\
@@ -113,49 +118,45 @@ def patch_exact_indexed_shaders() -> None:
         "\t}\n"\
         "\tint VRAMWordAt(vec2 pixel) { ivec2 b = VRAMBytesAt(pixel); return b.x | (b.y << 8); }\n"\
         "\tvec2 VRAM(vec2 uv) { return vec2(VRAMBytesAt(uv * vec2(1024.0, 512.0))) * (1.0 / 255.0); }\n"
-'''
+#elif (VRAM_FORMAT == GL_LUMINANCE_ALPHA)
+#define GPU_FETCH_VRAM_FUNC\
+        "\tuniform sampler2D s_texture;\n"\
+        "\tvec2 VRAM(vec2 uv) { return floor(texture2D(s_texture, uv).ra * 255.0 + 0.5) * (1.0 / 255.0); }\n"
+#else
+#define GPU_FETCH_VRAM_FUNC\
+        "\tuniform sampler2D s_texture;\n"\
+        "\tvec2 VRAM(vec2 uv) { return floor(texture2D(s_texture, uv).rg * 255.0 + 0.5) * (1.0 / 255.0); }\n"
+#endif'''
 
-    if "ivec2 VRAMBytesAt(vec2 pixel)" not in text:
-        # Support either the untouched PsyCross conditional or an earlier Android
-        # branch inserted by a previous diagnostic patch.
-        android_start = text.find("#if defined(__ANDROID__)\n#define GPU_FETCH_VRAM_FUNC\\")
-        android_end = text.find("#elif (VRAM_FORMAT == GL_LUMINANCE_ALPHA)", android_start)
-        if android_start >= 0 and android_end > android_start:
-            text = text[:android_start] + exact_fetch + text[android_end:]
-        else:
-            original_if = "#if (VRAM_FORMAT == GL_LUMINANCE_ALPHA)"
-            original_start = text.find(original_if)
-            if original_start < 0:
-                raise RuntimeError("exact VRAM fetch: original conditional not found")
-            original_tail = text[original_start:].replace(
-                original_if,
-                "#elif (VRAM_FORMAT == GL_LUMINANCE_ALPHA)",
-                1,
-            )
-            text = text[:original_start] + exact_fetch + original_tail
-        print("[applied] use texelFetch for exact Android VRAM bytes")
-    else:
-        print("[already applied] use texelFetch for exact Android VRAM bytes")
+    print("[applied] replace VRAM fetch conditional with Android texelFetch path")
+    return text[:start] + exact + text[end:]
 
-    def wrap_macro(name: str, next_name: str, android_body: str) -> None:
-        nonlocal text
-        marker = f"ANDROID_EXACT_{name}"
-        if marker in text:
-            print(f"[already applied] exact {name}")
-            return
-        start_marker = f"#define {name}\\"
-        end_marker = f"#define {next_name}\\"
-        start = text.find(start_marker)
-        end = text.find(end_marker, start + len(start_marker))
-        if start < 0 or end < 0:
-            raise RuntimeError(f"exact {name}: macro boundaries not found")
-        original = text[start:end].rstrip() + "\n"
-        replacement = (
-            f"#if defined(__ANDROID__)\n#define ANDROID_EXACT_{name} 1\n"
-            f"{android_body}\n#else\n{original}#endif\n\n"
+
+def wrap_macro(text: str, name: str, next_name: str, android_body: str) -> str:
+    marker = f"ANDROID_EXACT_{name}"
+    if marker in text:
+        print(f"[already applied] exact {name}")
+        return text
+
+    start = text.find(f"#define {name}")
+    end = text.find(f"#define {next_name}", start + 1)
+    if start < 0 or end < 0 or end <= start:
+        raise RuntimeError(
+            f"exact {name}: structural boundaries were not found (start={start}, end={end})"
         )
-        text = text[:start] + replacement + text[end:]
-        print(f"[applied] exact {name}")
+
+    original = text[start:end].rstrip() + "\n"
+    replacement = (
+        f"#if defined(__ANDROID__)\n#define {marker} 1\n"
+        f"{android_body.rstrip()}\n#else\n{original}#endif\n\n"
+    )
+    print(f"[applied] exact integer {name}")
+    return text[:start] + replacement + text[end:]
+
+
+def patch_exact_indexed_shaders() -> None:
+    text = RENDER.read_text(encoding="utf-8")
+    text = replace_fetch_block(text)
 
     sample4 = r'''#define GPU_SAMPLE_TEXTURE_4BIT_FUNC\
         "\tfloat samplePSX(vec2 tc) {\n"\
@@ -179,11 +180,23 @@ def patch_exact_indexed_shaders() -> None:
         "\t\treturn float(VRAMWordAt(v_page_clut.xy + vec2(p)));\n"\
         "\t}\n"'''
 
-    wrap_macro("GPU_SAMPLE_TEXTURE_4BIT_FUNC", "GPU_SAMPLE_TEXTURE_8BIT_FUNC", sample4)
-    wrap_macro("GPU_SAMPLE_TEXTURE_8BIT_FUNC", "GPU_SAMPLE_TEXTURE_16BIT_FUNC", sample8)
-    wrap_macro("GPU_SAMPLE_TEXTURE_16BIT_FUNC", "GPU_BILINEAR_SAMPLE_FUNC", sample16)
+    text = wrap_macro(text, "GPU_SAMPLE_TEXTURE_4BIT_FUNC", "GPU_SAMPLE_TEXTURE_8BIT_FUNC", sample4)
+    text = wrap_macro(text, "GPU_SAMPLE_TEXTURE_8BIT_FUNC", "GPU_SAMPLE_TEXTURE_16BIT_FUNC", sample8)
+    text = wrap_macro(text, "GPU_SAMPLE_TEXTURE_16BIT_FUNC", "GPU_BILINEAR_SAMPLE_FUNC", sample16)
+
+    required = (
+        "ivec2 VRAMBytesAt(vec2 pixel)",
+        "ANDROID_EXACT_GPU_SAMPLE_TEXTURE_4BIT_FUNC",
+        "ANDROID_EXACT_GPU_SAMPLE_TEXTURE_8BIT_FUNC",
+        "ANDROID_EXACT_GPU_SAMPLE_TEXTURE_16BIT_FUNC",
+        "texelFetch(s_texture, p, 0)",
+    )
+    missing = [token for token in required if token not in text]
+    if missing:
+        raise RuntimeError(f"exact indexed shader verification failed: {missing}")
 
     RENDER.write_text(text, encoding="utf-8")
+    print("Android integer VRAM/CLUT shader source verified.")
 
 
 if __name__ == "__main__":
@@ -192,4 +205,4 @@ if __name__ == "__main__":
     remove_per_draw_file_io()
     patch_rgba_transport()
     patch_exact_indexed_shaders()
-    print("Android exact indexed-texture and real-time render fixes applied successfully.")
+    print("Android exact indexed-texture patch applied successfully.")
