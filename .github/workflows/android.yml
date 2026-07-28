@@ -21,8 +21,21 @@ permissions:
 
 jobs:
   build-debug-apk:
+    name: build-${{ matrix.artifact_label }}
     runs-on: ubuntu-latest
     timeout-minutes: 90
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - abi: arm64-v8a
+            version_code: 10
+            version_name: 0.1.9-arm64-psx32
+            artifact_label: arm64-psx32
+          - abi: armeabi-v7a
+            version_code: 11
+            version_name: 0.1.9-armv7-psx32
+            artifact_label: armv7-psx32
 
     steps:
       - name: Check out source
@@ -53,7 +66,8 @@ jobs:
           python3 -m py_compile pc_port/android/scripts/apply_psycross_android.py
           python3 -m py_compile pc_port/android/scripts/patch_first_frame_android.py
           python3 -m py_compile pc_port/android/scripts/patch_android_gles_ot.py
-          python3 -m py_compile pc_port/android/scripts/patch_android_exact_indexed.py
+          python3 -m py_compile pc_port/android/scripts/patch_android_psx_word_types.py
+          python3 -m py_compile pc_port/android/scripts/configure_android_variant.py
           python3 -m py_compile pc_port/android/scripts/prepare_launcher_diagnostics.py
 
       - name: Apply Android native startup fixes
@@ -65,27 +79,34 @@ jobs:
       - name: Apply Android RGBA VRAM foundation
         run: python3 pc_port/android/scripts/patch_android_gles_ot.py
 
-      - name: Apply exact Android indexed-texture renderer
-        run: python3 pc_port/android/scripts/patch_android_exact_indexed.py
+      - name: Force fixed-width PlayStation words
+        run: python3 pc_port/android/scripts/patch_android_psx_word_types.py
+
+      - name: Configure ${{ matrix.artifact_label }} variant
+        run: |
+          python3 pc_port/android/scripts/configure_android_variant.py \
+            --abi "${{ matrix.abi }}" \
+            --version-code "${{ matrix.version_code }}" \
+            --version-name "${{ matrix.version_name }}"
 
       - name: Prepare isolated-process crash diagnostics
         run: python3 pc_port/android/scripts/prepare_launcher_diagnostics.py
 
-      - name: Verify exact indexed-texture build
+      - name: Verify clean PSX32 variant
         run: |
           grep -F 'android:process=":game"' pc_port/android/app/src/main/AndroidManifest.xml
-          grep -F 'versionName "0.1.8-exact-indexed-clut"' pc_port/android/app/build.gradle
-          grep -F 'ivec2 VRAMBytesAt(vec2 pixel)' pc_port/PsyCross/src/render/PsyX_render.cpp
-          grep -F 'texelFetch(s_texture, p, 0)' pc_port/PsyCross/src/render/PsyX_render.cpp
-          grep -F 'ANDROID_EXACT_GPU_SAMPLE_TEXTURE_4BIT_FUNC' pc_port/PsyCross/src/render/PsyX_render.cpp
-          grep -F 'ANDROID_EXACT_GPU_SAMPLE_TEXTURE_8BIT_FUNC' pc_port/PsyCross/src/render/PsyX_render.cpp
-          grep -F 'int index = (packed >> ((p.x & 3) * 4)) & 15' pc_port/PsyCross/src/render/PsyX_render.cpp
-          grep -F 'glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE)' pc_port/PsyCross/src/render/PsyX_render.cpp
-          grep -F 'resident_textures", "0' pc_port/android/app/src/main/java/com/slickamogus/silenthill/LauncherActivity.java
+          grep -F 'versionName "${{ matrix.version_name }}"' pc_port/android/app/build.gradle
+          grep -F 'abiFilters "${{ matrix.abi }}"' pc_port/android/app/build.gradle
+          grep -F 'typedef uint32_t u_long;' pc_port/PsyCross/include/psx/types.h
+          grep -F 'typedef uint32_t ulong;' pc_port/PsyCross/include/psx/types.h
+          grep -F 'PSYX_ANDROID_PSX_ULONG_32' pc_port/PsyCross/include/psx/types.h
+          grep -F 'Android PSX u_long must be 32-bit' pc_port/PsyCross/include/psx/types.h
+          grep -F 'GL_RGBA8' pc_port/PsyCross/include/PsyX/PsyX_render.h
           grep -F 'Versión: ' pc_port/android/app/src/main/java/com/slickamogus/silenthill/LauncherActivity.java
+          ! grep -F 'VRAMBytesAt' pc_port/PsyCross/src/render/PsyX_render.cpp
           ! grep -F 'AndroidPointerReadable' pc_port/PsyCross/src/gpu/PsyX_GPU.cpp
-          ! grep -F 'OT_INVALID_NEXT' pc_port/PsyCross/src/gpu/PsyX_GPU.cpp
           ! grep -F 'GTE_ANDROID_VERTEX_COLOR' pc_port/PsyCross/src/render/PsyX_render.cpp
+          ! grep -F 'OT_INVALID_NEXT' pc_port/PsyCross/src/gpu/PsyX_GPU.cpp
           ! grep -F 'PcPort_WriteStartupStatus("FIRST_FRAME_PARSE_OT")' pc_port/src/stubs/libgs_stub.c
           ! grep -F 'PcPort_WriteStartupStatus("FIRST_FRAME_DEPTH_CLEAR")' pc_port/src/stubs/libgs_stub.c
           python3 - <<'PY'
@@ -99,7 +120,7 @@ jobs:
               raise SystemExit("generated launcher contains an illegal literal newline inside the Java string")
           PY
 
-      - name: Build clean ARM64 exact indexed-texture APK
+      - name: Build clean ${{ matrix.artifact_label }} APK
         working-directory: pc_port/android
         shell: bash
         run: |
@@ -108,21 +129,21 @@ jobs:
           status=$?
           if [ "$status" -ne 0 ]; then
             echo "Gradle failed; final diagnostic lines follow:"
-            tail -n 250 android-build.log
+            tail -n 300 android-build.log
           fi
           exit "$status"
 
-      - name: Upload Android build log
+      - name: Upload ${{ matrix.artifact_label }} build log
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: silent-hill-android-build-log-${{ github.sha }}
+          name: silent-hill-android-build-log-${{ matrix.artifact_label }}-${{ github.sha }}
           path: pc_port/android/android-build.log
           if-no-files-found: warn
 
-      - name: Upload exact indexed-texture APK
+      - name: Upload ${{ matrix.artifact_label }} APK
         uses: actions/upload-artifact@v4
         with:
-          name: silent-hill-android-exact-indexed-clut-${{ github.sha }}
+          name: silent-hill-android-${{ matrix.artifact_label }}-${{ github.sha }}
           path: pc_port/android/app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
