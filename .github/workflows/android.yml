@@ -72,14 +72,25 @@ jobs:
         run: python3 pc_port/android/scripts/patch_android_exact_indexed.py
 
       - name: Apply drawable, offscreen, geometry and audio fixes
-        run: python3 pc_port/android/scripts/patch_android_armv7_runtime.py
+        shell: bash
+        run: |
+          set -o pipefail
+          python3 pc_port/android/scripts/patch_android_armv7_runtime.py 2>&1 | tee pc_port/android/runtime-patch.log
+
+      - name: Upload runtime patch log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: silent-hill-android-runtime-patch-log-${{ github.sha }}
+          path: pc_port/android/runtime-patch.log
+          if-no-files-found: warn
 
       - name: Configure ARMv7 runtime-fix build
         run: |
           python3 pc_port/android/scripts/configure_android_variant.py \
             --abi "armeabi-v7a" \
-            --version-code "15" \
-            --version-name "0.2.1-armv7-runtimefix"
+            --version-code "16" \
+            --version-name "0.2.2-armv7-runtimefix2"
 
       - name: Prepare isolated-process diagnostics
         run: python3 pc_port/android/scripts/prepare_launcher_diagnostics.py
@@ -90,13 +101,13 @@ jobs:
       - name: Verify focused ARMv7 runtime fix
         run: |
           grep -F 'android:process=":game"' pc_port/android/app/src/main/AndroidManifest.xml
-          grep -F 'versionName "0.2.1-armv7-runtimefix"' pc_port/android/app/build.gradle
+          grep -F 'versionName "0.2.2-armv7-runtimefix2"' pc_port/android/app/build.gradle
           grep -F 'abiFilters "armeabi-v7a"' pc_port/android/app/build.gradle
           grep -F 'GR_RefreshAndroidDrawableSize' pc_port/PsyCross/src/render/PsyX_render.cpp
           grep -F 'SDL_GL_GetDrawableSize' pc_port/PsyCross/src/render/PsyX_render.cpp
           grep -F 'ANDROID_SYNC_OFFSCREEN_PACK' pc_port/PsyCross/src/render/PsyX_render.cpp
-          grep -F 'const u_char* rgba = (const u_char*)&c;' pc_port/PsyCross/src/render/PsyX_render.cpp
-          grep -F 'GR_DirectUploadVRAMRegion(g_PreviousOffscreen.x' pc_port/PsyCross/src/render/PsyX_render.cpp
+          grep -F 'dst[col] = (ushort)(r | (g << 5) | (b << 10) | (a << 15));' pc_port/PsyCross/src/render/PsyX_render.cpp
+          grep -F 'GR_DirectUploadVRAMRegion(x, y, w, h);' pc_port/PsyCross/src/render/PsyX_render.cpp
           grep -F 'extern "C" { int g_PsxPolySizeCull = 0; }' pc_port/PsyCross/src/gpu/PsyX_GPU.cpp
           grep -F 'Android: opening default OpenAL output device' pc_port/PsyCross/src/audio/PsyX_SPUAL.cpp
           grep -F 'attrs[n++] = 48000;' pc_port/PsyCross/src/audio/PsyX_SPUAL.cpp
@@ -128,13 +139,13 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: silent-hill-android-build-log-armv7-runtimefix-${{ github.sha }}
+          name: silent-hill-android-build-log-armv7-runtimefix2-${{ github.sha }}
           path: pc_port/android/android-build.log
           if-no-files-found: warn
 
       - name: Upload ARMv7 runtime-fix APK
         uses: actions/upload-artifact@v4
         with:
-          name: silent-hill-android-armv7-runtimefix-${{ github.sha }}
+          name: silent-hill-android-armv7-runtimefix2-${{ github.sha }}
           path: pc_port/android/app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
